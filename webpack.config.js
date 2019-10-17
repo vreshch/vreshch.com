@@ -35,11 +35,11 @@ module.exports = {
         }, {
             from: __dirname + '/src/static/sitemap.xml'
         }, {
-            from: __dirname + '/src/static/images/',
-            to: __dirname + '/dist/static/images/'
-        }, {
-            from: __dirname + '/src/static/downloads/',
-            to: __dirname + '/dist/static/downloads/'
+            from: __dirname + '/src/static/crystallography_online.jpg'
+        },{
+            from: __dirname + '/src/static/diffractwd.jpg'
+        },{
+            from: __dirname + '/src/static/nphoto.jpg'
         }]),
     ],
 

@@ -23,9 +23,9 @@
         "lintfix": "tslint -c tslint.json -p tsconfig.json 'src/**/*.tsx' --fix",
         "backend": "ts-node src/backend/run.ts",
         "nodemon": "nodemon -e ts -w ./src -x ts-node src/backend/run.ts",
-        "serve": "webpack-dev-server  --config ./webpack.config.base.js",
+        "serve": "webpack-dev-server  --config ./webpack.config.js",
         "build": "npm run build:backend && npm run build:frontend",
-        "build:frontend": "webpack-cli --config webpack.config.base.js --mode production",
+        "build:frontend": "webpack-cli --config webpack.config.js --mode production",
         "build:backend": "tsc",
         "start:build": "node ./dist/backend/run.js",
         "start": "npm run serve"
