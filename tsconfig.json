@@ -1,0 +1,42 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es5",
+        "noImplicitAny": false,
+        "moduleResolution": "node",
+        "sourceMap": false,
+        "declaration": false,
+        "types": [
+            "node"
+        ],
+        "outDir": "dist",
+        "jsx": "react",
+        "baseUrl": ".",
+        "paths": {
+            "*": [
+                "node_modules/*"
+            ]
+        }
+    },
+
+    "rules": {
+    },
+
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+
+    "awesomeTypescriptLoaderOptions": {
+        "forkChecker": true,
+        "useWebpackText": true
+    },
+
+    "atom": {
+        "rewriteTsconfig": false
+    },
+
+    "include": [
+        "src/**/*"
+    ]
+}

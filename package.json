@@ -17,6 +17,56 @@
         "type": "Apache-2.0",
         "url": "http://www.apache.org/licenses/LICENSE-2.0"
     },
-    "dependencies": {},
-    "devDependencies": {}
+    "scripts": {
+        "verify": "npm run lint",
+        "lint": "tslint -c tslint.json -p tsconfig.json 'src/**/*.tsx'",
+        "lintfix": "tslint -c tslint.json -p tsconfig.json 'src/**/*.tsx' --fix",
+        "backend": "ts-node src/backend/run.ts",
+        "nodemon": "nodemon -e ts -w ./src -x ts-node src/backend/run.ts",
+        "serve": "webpack-dev-server  --config ./webpack.config.base.js",
+        "build": "npm run build:backend && npm run build:frontend",
+        "build:frontend": "webpack-cli --config webpack.config.base.js --mode production",
+        "build:backend": "tsc",
+        "start:build": "node ./dist/backend/run.js",
+        "start": "npm run serve"
+    },
+    "dependencies": {
+        "autoprefixer": "9.6.5",
+        "bluebird": "3.7.1",
+        "body-parser": "1.19.0",
+        "bootstrap": "4.3.1",
+        "classnames": "2.2.6",
+        "connect-timeout": "1.9.0",
+        "cross-env": "6.0.3",
+        "express": "4.17.1",
+        "history": "4.10.1",
+        "lodash.escape": "4.0.1",
+        "react": "16.10.2",
+        "react-dom": "16.10.2",
+        "react-router": "5.1.2",
+        "react-router-dom": "5.1.2",
+        "react-ga": "2.7.0"
+    },
+    "devDependencies": {
+        "@types/node": "12.11.1",
+        "awesome-typescript-loader": "5.2.1",
+        "copy-webpack-plugin": "5.0.4",
+        "css-loader": "3.2.0",
+        "extract-text-webpack-plugin": "4.0.0-beta.0",
+        "file-loader": "4.2.0",
+        "html-webpack-plugin": "3.2.0",
+        "less": "3.10.3",
+        "less-loader": "5.0.0",
+        "nodemon": "1.19.4",
+        "postcss-loader": "3.0.0",
+        "style-loader": "1.0.0",
+        "ts-node": "8.4.1",
+        "tslint": "5.20.0",
+        "tslint-react": "4.1.0",
+        "typescript": "3.6.4",
+        "url-loader": "2.2.0",
+        "webpack": "4.41.2",
+        "webpack-cli": "3.3.9",
+        "webpack-dev-server": "3.8.2"
+    }
 }
