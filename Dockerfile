@@ -1,5 +1,5 @@
 # create a file named Dockerfile
-FROM mhart/alpine-node:12.12.0
+FROM node:14.4.0-alpine3.12
 RUN apk add --no-cache curl
 RUN mkdir /app
 WORKDIR /app
