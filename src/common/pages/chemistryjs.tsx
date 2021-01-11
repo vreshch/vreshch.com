@@ -4,26 +4,26 @@ import * as React from "react";
 export const ChemistryJSPage = () => {
     return (
             <div>
-                <h1>Chemistry JS</h1>
+                <h1>@chemistry </h1>
                 <hr />
                 <div className="app-text">
-                    <p>Open source project
-                        <a href="http://crystallography-online.com" target="_blank">@chemistry</a>;
-                        that has a goal to facilitate development in cheminformatics and crystallography
-                        fields with help of JavaScript / TypeScript</p>
-                    <p>Libraries list :</p>
+                    <p>Set of open source projects related to Chemistry/Crystallography released under MIT license on <a href="https://github.com/chemistry" target="_blank">github</a></p>
                     <dl>
-                        <dt><a href="https://github.com/chemistry/chem-js-lib/tree/master/packages/math" target="_blank">@chemistry/math</a></dt>
-                        <dd>Math library that facilitate linear algebra calculations;
-                          Include classes: Vec3, Matrix3x3, Matrix3x4, Transform3d, Quaternion</dd>
+                        <dt><a href="https://github.com/chemistry/crystallography.io" target="_blank">@chemistry/crystallography.io</a></dt>
+                        <dd>Alternative web interface for COD database website available at: <a href="http://crystallography.io/" target="_blank">http://crystallography.io/</a></dd>
                     </dl>
                     <dl>
-                        <dt><a href="https://github.com/chemistry/chem-js-lib/tree/master/packages/elements" target="_blank">@chemistry/elements</a></dt>
-                        <dd>Information about elements</dd>
+                        <dt><a href="https://github.com/chemistry/crystalview" target="_blank">@chemistry/crystalview</a></dt>
+                        <dd>Simple molecular viewer for crystal structures</dd>
                     </dl>
                     <dl>
-                        <dt><a href="https://github.com/chemistry/chem-js-lib/tree/master/packages/space-groups" target="_blank">@chemistry/space-groups</a></dt>
-                        <dd>List of Spacegroups in JSON</dd>
+                        <dt><a href="https://github.com/chemistry/molpad" target="_blank">@chemistry/molpad</a></dt>
+                        <dd>Molecule editor used to draw molecule for search</dd>
+                    </dl>
+
+                    <dl>
+                        <dt><a href="https://github.com/chemistry/chemical-libraries" target="_blank">@chemistry/(math,elements,spacegroups)</a></dt>
+                        <dd>Set of common functionality / chemical constants that support creation of software for chemistry</dd>
                     </dl>
                 </div>
             </div>

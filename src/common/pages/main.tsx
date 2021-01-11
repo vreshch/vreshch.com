@@ -64,8 +64,8 @@ export const IndexPage = () => {
                         <dt>Current Projects:</dt>
                         <dd>
                             <ul>
-                                <li><a href="http://crystallography-online.com/" target="_blank">crystallography-online.com</a></li>
-                                <li><a href="http://diffractwd.com/" target="_blank">diffractwd.com</a></li>
+                                <li><a href="https://crystallography.io/" target="_blank">crystallography.io</a></li>
+                                <li><a href="https://diffractwd.com/" target="_blank">diffractwd.com</a></li>
                             </ul>
                         </dd>
                     </dl>

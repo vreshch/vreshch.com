@@ -8,12 +8,10 @@ export const ProjectsPage = () => {
                 <div className="app-text">
                     <p>
                         Currently I am supporting 2 projects, both are in active development phase;
-                        Currently I am actively working to move project crystallography-online.com to React+NodeJS+Mongo, and planning
-                        to move diffractw.com to React+ NodeJS + Electron;
                     </p>
                     <div className="row">
                         <div className="col-md-6">
-                            <a href="http://crystallography-online.com" target="_blank">
+                            <a href="https://crystallography.io" target="_blank">
                                 <img
                                     src="/crystallography_online.jpg"
                                     width="397"
@@ -21,7 +19,7 @@ export const ProjectsPage = () => {
                                     className="img-fluid"
                                     alt="diffractw.com"
                                 /><br />
-                                crystallography-online.com
+                                crystallography.io
                             </a>
                         </div>
                         <div className="col-md-6">
