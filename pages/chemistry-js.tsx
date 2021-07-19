@@ -1,15 +1,18 @@
 import * as React from "react";
+import Head from 'next/head';
 
-// tslint:disable:max-line-length
-export const ChemistryJSPage = () => {
+export default function ChemistryJSPage() {
     return (
             <div>
+                <Head>
+                    <title>Vreshch Volodymyr - Chemistry</title>
+                </Head>
                 <h1>@chemistry </h1>
                 <hr />
                 <div className="app-text">
                     <p>Set of open source projects related to Chemistry/Crystallography released under MIT license on <a href="https://github.com/chemistry" target="_blank">github</a></p>
                     <dl>
-                        <dt><a href="https://github.com/chemistry/crystallography.io" target="_blank">@chemistry/crystallography.io</a></dt>
+                        <dt><a href="https://github.com/chemistry/crystallography.io" target="_blank" rel="noreferrer">@chemistry/crystallography.io</a></dt>
                         <dd>Alternative web interface for COD database website available at: <a href="http://crystallography.io/" target="_blank">http://crystallography.io/</a></dd>
                     </dl>
                     <dl>

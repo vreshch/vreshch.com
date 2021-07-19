@@ -3,15 +3,18 @@
         <loc>http://vreshch.com/</loc>
     </sitemap>
     <sitemap>
-        <loc>http://vreshch.com/cv.html</loc>
+        <loc>http://vreshch.com/cv</loc>
     </sitemap>
     <sitemap>
-        <loc>http://vreshch.com/interests.html</loc>
+        <loc>http://vreshch.com/interests</loc>
     </sitemap>
     <sitemap>
-        <loc>http://vreshch.com/projects.html</loc>
+        <loc>http://vreshch.com/chemistry-js</loc>
     </sitemap>
     <sitemap>
-        <loc>http://vreshch.com/contacts.html</loc>
+        <loc>http://vreshch.com/projects</loc>
+    </sitemap>
+    <sitemap>
+        <loc>http://vreshch.com/contacts</loc>
     </sitemap>
 </sitemapindex>

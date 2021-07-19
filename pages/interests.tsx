@@ -1,8 +1,12 @@
+import Head from "next/head";
 import * as React from "react";
 
-export const InterestsPage = () => {
+export default function InterestsPage() {
         return (
             <div>
+                <Head>
+                    <title>Vreshch Volodymyr - Interests</title>
+                </Head>
                 <h1>Interests</h1>
                 <hr />
                 <div className="app-text">
