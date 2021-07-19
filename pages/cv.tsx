@@ -1,8 +1,12 @@
+import Head from "next/head";
 import * as React from "react";
 
-export const CVPage = () => {
+export default function CVPage() {
         return (
             <div>
+                <Head>
+                    <title>Vreshch Volodymyr - CV</title>
+                </Head>
                 <h1>Curriculum Vitae</h1>
                 <hr />
                 <div className="app-text">

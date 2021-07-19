@@ -1,13 +1,18 @@
 import * as React from "react";
+import Image from 'next/image'
+import Head from "next/head";
 
-export const ContactsPage = () => {
+export default function ContactsPage() {
         return (
             <div>
+                <Head>
+                    <title>Vreshch Volodymyr - Contacts</title>
+                </Head>
                 <h1>Contacts</h1>
                 <hr />
                 <div className="app-text">
                     <div className="pull-left app-text-thumbnail">
-                        <img className="img-thumbnail" alt="Volodymyr Vreshch" width="200" height="200" src="/nphoto.jpg" />
+                        <Image className="img-thumbnail" alt="Volodymyr Vreshch" width={200} height={200} src="/nphoto.jpg" />
                     </div>
                     <p>Homepage: <a href="http://vreshch.com/" target="_blank">vreshch.com</a></p>
                     <p>Email: vreshch@mail.com</p>

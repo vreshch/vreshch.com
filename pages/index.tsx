@@ -1,15 +1,19 @@
+import Head from "next/head";
 import * as React from "react";
 
-export const IndexPage = () => {
+export default function IndexPage() {
         return (
             <div>
+                <Head>
+                    <title>Vreshch Volodymyr Homepage</title>
+                </Head>
                 <h1>Home</h1>
                 <hr />
                 <div className="app-text">
                     <p>
                         Welcome to my personal website.
                         Here you can find some general
-                        information about my backgound, supported projects and contacts
+                        information about my background, supported projects and contacts
                       </p>
                     <dl>
                         <dt>Personal Information</dt>
@@ -17,7 +21,6 @@ export const IndexPage = () => {
                         Lead Software Engineer – EPAM Systems
                         </dd>
                     </dl>
-
                     <dl>
                         <dt>Career path</dt>
                         <dd>
@@ -47,7 +50,7 @@ export const IndexPage = () => {
                             </ul>
                         </dd>
                         <dd>
-                            <b>06.2012-07.2015</b>, FullStack Web Developer, <b>White Studio & Jeny-Art</b>
+                            <b>06.2012-07.2015</b>, FullStack Web Developer, <b>White Studio</b>
                             <ul>
                                 <li>HTML5, CSS3, LESS, JavaScript</li>
                                 <li>PHP, MySQL</li>
@@ -73,3 +76,8 @@ export const IndexPage = () => {
             </div>
         );
 };
+
+export async function getServerSideProps() {
+    await new Promise(setTimeout);
+    return { props: { } }
+}

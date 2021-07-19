@@ -1,13 +1,18 @@
-# create a file named Dockerfile
-FROM node:14.4.0-alpine3.12
-RUN apk add --no-cache curl
-RUN mkdir /app
+FROM node:16.5.0-alpine3.11 as builder
 WORKDIR /app
-COPY package.json /app
-COPY package-lock.json /app
-RUN npm install
 COPY . /app
+RUN npm install
 RUN npm run build
+
+FROM node:16.5.0-alpine3.11 as runner
+WORKDIR /app
+ENV NODE_ENV production
+
+COPY next-env.d.ts next.config.js package.json package-lock.json ./
+RUN npm install --production
+
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/.next ./.next
+
 EXPOSE 8080
-HEALTHCHECK --interval=5s --timeout=3s CMD curl --fail http://localhost:8010/hc || exit 1
-CMD ["node", "dist/backend/run.js"]
+CMD ["npm", "start"]
