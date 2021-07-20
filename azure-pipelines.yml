@@ -1,0 +1,32 @@
+# Docs: https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+   
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  # Container registry service connection established during pipeline creation
+  dockerRegistryServiceConnection: 'd410d41f-dbb8-4af3-bdc2-d56352157c23'
+  imageRepository: 'vreshch-web'
+  containerRegistry: 'vreshchcom.azurecr.io'
+  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build and push stage
+  jobs:
+  - job: Build
+    displayName: Build
+    steps:
+    - task: Docker@2
+      displayName: Build and push an image to container registry
+      inputs:
+        command: buildAndPush
+        repository: $(imageRepository)
+        dockerfile: $(dockerfilePath)
+        containerRegistry: $(dockerRegistryServiceConnection)
+        tags: |
+          $(tag)
