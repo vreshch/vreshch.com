@@ -8,6 +8,7 @@ Personal Website vreshch.com, contains CV, interests, Contacts;
 * Rect & Typescript
 * Next JS as Framework
 * Shipped with Docker
+* Terraform for Infrastructure
 
 ## Quick Start
 * Start local development
@@ -30,11 +31,44 @@ npm run lint
 ## Docker commands
 * Build Docker file locally
 ```bash
-docker build -t vreshch.com .
+docker build -t vreshch/vreshch.com .
 ```
 * Start Docker file
 ```bash
 docker run --network=host vreshch.com
+```
+* Push docker to registry
+```bash
+docker login & docker push vreshch/vreshch.com
+```
+## Creating infrastructure
+* Install gcloud according to [instructions](https://cloud.google.com/sdk/docs/install)
+* Auth with gcloud sdk
+```bash
+gcloud auth application-default login
+```
+* Create Goolge Cloud project (use your own PROJECT_ID & PROJECT_NAME)
+```bash
+gcloud projects create "PROJECT_ID" --name="PROJECT_NAME"
+```
+* Modify environment variables
+```bash
+code terraform.tfvars
+```
+* Verify your domain
+https://developers.google.com/search
+
+* Initialize terraform
+```bash
+terraform init
+```
+* Plan Terraform changes
+```bash
+terraform plan
+```
+* Deploy Terraform changes
+```bash
+terraform apply
 ```
 
 ## Contacts
