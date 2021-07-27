@@ -31,7 +31,7 @@ npm run lint
 ## Docker commands
 * Build Docker file locally
 ```bash
-docker build -t vreshch/vreshch.com .
+docker build -t vreshch.com .
 ```
 * Start Docker file
 ```bash
@@ -39,7 +39,7 @@ docker run --network=host vreshch.com
 ```
 * Push docker to registry
 ```bash
-docker login & docker push vreshch/vreshch.com
+docker login & docker push vreshch.com
 ```
 ## Creating infrastructure
 * Install gcloud according to [instructions](https://cloud.google.com/sdk/docs/install)

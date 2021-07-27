@@ -1,6 +1,6 @@
 variable "project_id" {}
 variable "domain" {}
-variable "app_name" {
+variable "service_name" {
     default = "website"
 }
 variable "region" {
@@ -32,8 +32,9 @@ resource "google_project_service" "run_api" {
 
 # Create the Cloud Run service
 resource "google_cloud_run_service" "run_service" {
-    name = var.app_name
+    name = var.service_name
     location = var.region
+    autogenerate_revision_name = true
 
     metadata {
         namespace = var.project_id
@@ -42,7 +43,7 @@ resource "google_cloud_run_service" "run_service" {
     template {
         spec {
             containers {
-                image = var.image
+                image = data.external.image_digest.result.image
             }
         }
     }
@@ -76,6 +77,12 @@ resource "google_cloud_run_domain_mapping" "run_service" {
         route_name = google_cloud_run_service.run_service.name
     }
 }
+
+# WORKAROUND
+data "external" "image_digest" {
+  program = ["bash", "get_latest_tag.sh", var.project_id, var.service_name]
+}
+# END WORKAROUND
 
 # Display the service URL
 output "service_url" {

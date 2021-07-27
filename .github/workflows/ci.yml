@@ -33,5 +33,15 @@ jobs:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
 
-    - name: Use gcloud CLI
-      run: gcloud info
+    - name: Configure Docker
+      run: docker info && gcloud auth configure-docker
+
+    - name: Build Docker
+      run: docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/vreshch-com:latest .
+
+    - name: Push Docker image
+      run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/vreshch-com:latest .
+
+    - name: Update Infrastructure
+      run: terraform init && terraform apply -auto-approve -lock=false
+
