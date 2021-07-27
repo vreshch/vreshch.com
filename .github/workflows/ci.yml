@@ -25,7 +25,6 @@ jobs:
     - name: Build
       run: npm run build
 
-  deploy:
     - name: Set up Cloud SDK
       uses: google-github-actions/setup-gcloud@master
       with:
