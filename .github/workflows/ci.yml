@@ -42,5 +42,5 @@ jobs:
       run: docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/vreshch-com:latest
 
     - name: Update Infrastructure
-      run: terraform init && terraform apply -auto-approve -lock=false
+      run: terraform init && terraform plan && terraform apply -auto-approve -lock=false
 

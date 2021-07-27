@@ -8,3 +8,4 @@ terraform.tf
 terraform.tfstate
 terraform.tfstate.backup
 .terraform.lock.hcl
+get_latest_tag.sh

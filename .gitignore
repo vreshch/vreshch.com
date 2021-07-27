@@ -35,5 +35,4 @@ yarn-error.log*
 
 # terraform
 .terraform
-terraform.tfstate.backup
 .terraform.lock.hcl
