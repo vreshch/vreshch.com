@@ -12,7 +12,7 @@ export default function ContactsPage() {
                 <hr />
                 <div className="app-text">
                     <div className="pull-left app-text-thumbnail">
-                        <Image className="img-thumbnail" alt="Volodymyr Vreshch" width={200} height={200} src="/nphoto.jpg" />
+                        <Image className="img-thumbnail" alt="Volodymyr Vreshch" width={200} height={200} src="/mphoto.jpeg" />
                     </div>
                     <p>Homepage: <a href="http://vreshch.com/" target="_blank">vreshch.com</a></p>
                     <p>Email: vreshch@mail.com</p>

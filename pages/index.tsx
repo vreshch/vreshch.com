@@ -12,34 +12,27 @@ export default function IndexPage() {
                 <div className="app-text">
                     <p>
                         Welcome to my personal website.
-                        Here you can find some general
-                        information about my background, supported projects and contacts
+                        Here you can find some general information about my background, supported projects and contacts
                       </p>
                     <dl>
                         <dt>Personal Information</dt>
                         <dd>Volodymyr D. Vreshch<br />
-                        Lead Software Engineer – EPAM Systems
+                        Senior Software Engineer @ Microsoft
                         </dd>
                     </dl>
                     <dl>
                         <dt>Career path</dt>
                         <dd>
-                            <b>06.2018</b>, Lead Software Engineer, <b>EPAM Systems</b>
+                            <b>07.2021-</b>, Senior Software Engineer, <b>Microsoft</b>
                             <ul>
-                                <li>JavaScript, Angular 4.x, React, NodeJS, ...</li>
+                                <li>Frontend Developer</li>
                             </ul>
                         </dd>
                         <dd>
-                            <b>07.2017</b>, Senior Software Engineer, <b>EPAM Systems</b>
+                            <b>07.2016-07.2021</b>, Lead Software Engineer, <b>EPAM Systems</b>
                             <ul>
-                                <li>JavaScript, Angular 4.x</li>
-                            </ul>
-                        </dd>
-                        <dd>
-                            <b>07.2016</b>, Software Engineer, <b>EPAM Systems</b>
-                            <ul>
-                                <li>JavaScript, Angular 1.x</li>
-                                <li>Angular 2.x, React</li>
+                                <li>TypeScript, React, Angular 2+</li>
+                                <li>NodeJS, Cloud</li>
                             </ul>
                         </dd>
                         <dd>
@@ -50,13 +43,6 @@ export default function IndexPage() {
                             </ul>
                         </dd>
                         <dd>
-                            <b>06.2012-07.2015</b>, FullStack Web Developer, <b>White Studio</b>
-                            <ul>
-                                <li>HTML5, CSS3, LESS, JavaScript</li>
-                                <li>PHP, MySQL</li>
-                            </ul>
-                        </dd>
-                        <dd>
                             <b>2009-2012</b> <i>Post-Doc.</i>, USA (Albany, NY), France (Rennes 1, Toulouse)
                         </dd>
                         <dd>
@@ -64,7 +50,7 @@ export default function IndexPage() {
                         </dd>
                     </dl>
                     <dl>
-                        <dt>Current Projects:</dt>
+                        <dt>Supported Projects:</dt>
                         <dd>
                             <ul>
                                 <li><a href="https://crystallography.io/" target="_blank">crystallography.io</a></li>

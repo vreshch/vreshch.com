@@ -13,11 +13,11 @@ export default function InterestsPage() {
                     <dd>
                         <ul>
                             <li>Cheminformatics; program development for Chemistry & Crystallography</li>
-                            <li>JavaScript (ES6): Single Page Applications (Angular 2.x, React)</li>
+                            <li>JavaScript (ES6): Single Page Applications (Ract, Angular 2.x)</li>
                             <li>Backend development NodeJS + Express + MongoDB</li>
                             <li>Application of different Algorithms in Chemistry</li>
                             <li>Applied Crystallography</li>
-                            <li>Analysis of BigData</li>
+                            <li>Data Science, Big Data</li>
                         </ul>
                     </dd>
                 </div>

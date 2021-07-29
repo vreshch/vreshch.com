@@ -13,20 +13,19 @@ export default function CVPage() {
                     <dl>
                         <dt>Programming</dt>
                         <p>
-                            In general, more than 6 year of experience in developing of websites of
-                            different difficulties, including GUI JavaScript development of enterprise solutions.
+                            In general, more than 7+ year of experience in developing of websites of
+                            different difficulties, including enterprise products with millions of users
                             Main expertise includes:
                         </p>
-
                         <dd>
                             <ul>
-                                <li>Angular (1.5,2.x,4.x), Backbone, React</li>
-                                <li>JavaScript: Writing cross browser code, ES6 standards; DOM & BOM</li>
-                                <li>HTML5, CSS3 (W3C standards) LESS, responsive design</li>
-                                <li>Backend with NodeJS & PHP; Mysql, MongoDB, PM2, Docker, Express</li>
-                                <li>TDD, testing with Karma, Qunit, Jasmine, end2end testing with Protractor</li>
-                                <li>Common developer tools: GIT, NPM, Webpack, Grunt, Bower, Gulp, etc.</li>
-                                <li>CI & Code Review: Gerrit, Jenkins, GitLab</li>
+                                <li>React, NodeJS, Angular 2+, Backbone</li>
+                                <li>JavaScript, ES6, BOM, DOM</li>
+                                <li>Google Cloud, AWS, Azure</li>
+                                <li>Express, HAPI, MongoDB</li>
+                                <li>HTML5 & CSS3, LESS, SVG, Canvas</li>
+                                <li>Python, Data Science</li>
+                                <li>TDD, Jest, CI/CD</li>
                             </ul>
                         </dd>
                     </dl>
