@@ -15,7 +15,7 @@ export default function ContactsPage() {
                         <Image className="img-thumbnail" alt="Volodymyr Vreshch" width={200} height={200} src="/mphoto.jpeg" />
                     </div>
                     <p>Homepage: <a href="http://vreshch.com/" target="_blank">vreshch.com</a></p>
-                    <p>Email: vreshch@mail.com</p>
+                    <p>Email: vreshch@gmail.com</p>
                     <p>Skype: vreshch.work</p>
                     <p>Tel: +38(096)337-87-**</p>
                     <p>Linkden: <a href="https://www.linkedin.com/in/vreshch-volodymyr-3969498a" target="_blank">Volodymyr Vreshch</a></p>
