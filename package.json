@@ -1,36 +1,40 @@
 {
-  "name": "vreshch.com",
-  "version": "4.0.0",
+  "name": "aswa-react-template",
+  "version": "0.1.0",
   "private": true,
-  "description": "Personal Website vreshch.com 4.0",
-  "author": {
-    "name": "Volodymyr Vreshch",
-    "email": "vreshch@gmail.com",
-    "url": "http://vreshch.com"
-  },
-  "homepage": "http://vreshch.com",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vreshch/vreshch.com.git"
-  },
-  "license": "MIT",
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start -p 8080",
-    "lint": "next lint"
-  },
   "dependencies": {
-    "bootstrap": "4.5.0",
-    "classnames": "2.3.1",
-    "next": "11.0.1",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "@testing-library/jest-dom": "^5.12.0",
+    "@testing-library/react": "^11.2.6",
+    "@testing-library/user-event": "^13.1.8",
+    "@types/jest": "^26.0.23",
+    "@types/node": "^15.0.2",
+    "@types/react": "^17.0.5",
+    "@types/react-dom": "^17.0.4",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-scripts": "^4.0.3",
+    "typescript": "^4.2.4"
   },
-  "devDependencies": {
-    "@types/react": "17.0.15",
-    "eslint": "7.31.0",
-    "eslint-config-next": "11.0.1",
-    "typescript": "4.3.5"
-  }
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:7071"
 }
