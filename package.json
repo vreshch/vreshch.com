@@ -1,7 +1,19 @@
 {
-  "name": "aswa-react-template",
-  "version": "0.1.0",
+  "name": "vreshch.com",
+  "version": "5.0.0",
   "private": true,
+  "description": "Personal Website vreshch.com 5.0",
+  "author": {
+      "name": "Volodymyr Vreshch",
+      "email": "vreshch@gmail.com",
+      "url": "http://vreshch.com"
+  },
+  "homepage": "http://vreshch.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vreshch/vreshch.com.git"
+  },
+  "license": "MIT",
   "dependencies": {
     "@testing-library/jest-dom": "^5.12.0",
     "@testing-library/react": "^11.2.6",

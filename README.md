@@ -41,4 +41,4 @@ npm run lint
 * [Website](http://vreshch.com)
 * [LinkedIn](https://www.linkedin.com/in/vreshch/)
 * [GitHub](https://github.com/vreshch)
-* [Email]<vreshch@gmail.com>
+* [Email](vreshch@gmail.com)
