@@ -7,7 +7,7 @@ export function ContactsPage() {
                 <hr />
                 <div className="app-text">
                     <div className="pull-left app-text-thumbnail">
-                        <img className="img-thumbnail" alt="Volodymyr Vreshch" width={200} height={200} src="/mphoto.jpeg" />
+                        <img className="img-thumbnail" alt="Volodymyr Vreshch" width={200} height={200} src="/images/mphoto.jpeg" />
                     </div>
                     <p>Homepage: <a href="http://vreshch.com/" target="_blank" rel="noreferrer">vreshch.com</a></p>
                     <p>Email: vreshch@gmail.com</p>
