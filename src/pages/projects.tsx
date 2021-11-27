@@ -13,7 +13,7 @@ export function ProjectsPage() {
                         <div className="col-md-6">
                             <a href="https://crystallography.io" target="_blank" rel="noreferrer">
                                 <img
-                                    src="/crystallography_online.jpg"
+                                    src="/images/crystallography_online.jpg"
                                     width={397}
                                     height={284}
                                     className="img-fluid"
@@ -24,7 +24,7 @@ export function ProjectsPage() {
                         </div>
                         <div className="col-md-6">
                             <a href="http://diffractwd.com" target="_blank" rel="noreferrer">
-                                <img src="/diffractwd.jpg" width={397} height={284} className="img-fluid" alt="diffractwd.com" /><br />
+                                <img src="/images/diffractwd.jpg" width={397} height={284} className="img-fluid" alt="diffractwd.com" /><br />
                                 diffractw.com
                             </a>
                         </div>
