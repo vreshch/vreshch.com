@@ -25,7 +25,7 @@ const Sidebar = ()=> {
                 <button className="navbar-toggler" onClick={()=> setClosed(!closed)} >☰</button>
             </div>
             <div className="jcw-sidebar-wrap">
-                <NavLink to="/" className={(isActive ) => `jcw-sidebar-item ${isActive ? 'active' : ''}`} >Home</NavLink>
+                <NavLink exact to="/" className={(isActive ) => `jcw-sidebar-item ${isActive ? 'active' : ''}`} >Home</NavLink>
                 <NavLink to="/cv" className={(isActive) => `jcw-sidebar-item ${isActive ? 'active' : ''}`} >Curriculum Vitae</NavLink>
                 <NavLink to="/interests" className={(isActive) => `jcw-sidebar-item ${isActive ? 'active' : ''}`} >Interests</NavLink>
                 <NavLink to="/projects" className={(isActive) => `jcw-sidebar-item ${isActive ? 'active' : ''}`} >Projects</NavLink>
