@@ -9,16 +9,16 @@ export function CVPage() {
                     <dl>
                         <dt>Programming</dt>
                         <p>
-                            In general, more than 7+ year of experience in developing of websites of
+                            In general, more than 8+ year of experience in developing of websites of
                             different difficulties, including enterprise products with millions of users
                             Main expertise includes:
                         </p>
                         <dd>
                             <ul>
-                                <li>React, NodeJS, Angular 2+, Backbone</li>
-                                <li>JavaScript, ES6, BOM, DOM</li>
-                                <li>Google Cloud, AWS, Azure</li>
-                                <li>Express, HAPI, MongoDB</li>
+                                <li>React, NodeJS, C#</li>
+                                <li>JavaScript, ES6, Browser API</li>
+                                <li>Azure, Google Cloud, AWS</li>
+                                <li>Express, MongoDB, CosmosDB</li>
                                 <li>HTML5 & CSS3, LESS, SVG, Canvas</li>
                                 <li>Python, Data Science</li>
                                 <li>TDD, Jest, CI/CD</li>
