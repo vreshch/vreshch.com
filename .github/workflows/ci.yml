@@ -1,0 +1,50 @@
+name: CI
+
+on: [push]
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+            - name: Use Node.js ${{ matrix.node-version }}
+
+              uses: actions/setup-node@v4
+              with:
+                  node-version: "14"
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Lint
+              run: npm run lint
+
+            - name: Build
+              run: npm run build
+
+            - name: Set up Cloud SDK
+              uses: "google-github-actions/auth@v2"
+              with:
+                  credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+
+            - name: Set up Cloud SDK
+              uses: google-github-actions/setup-gcloud@v2
+
+            - name: "Use gcloud CLI"
+              run: "gcloud info"
+
+            - name: "Use gcloud CLI"
+              run: 'gcloud auth list --filter=status:ACTIVE --format="value(account)"'
+
+            - name: Configure Docker
+              run: docker info && gcloud auth configure-docker europe-west3-docker.pkg.dev
+
+            - name: Build Docker
+              run: docker build -t ${{ secrets.GCP_ARTIFACTORY_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/vreshch/vreshch-com:latest .
+
+            - name: Push Docker image
+              run: docker push ${{ secrets.GCP_ARTIFACTORY_REGISTRY }}/${{ secrets.GCP_PROJECT_ID }}/vreshch/vreshch-com:latest
+
+            - name: Update Infrastructure
+              run: terraform init && terraform plan && terraform apply -auto-approve -lock=false

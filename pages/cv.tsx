@@ -1,15 +1,18 @@
-import * as React from "react";
+import Head from 'next/head';
 
-export function CVPage() {
-        return (
+export default function CVPage() {
+    return (
             <div>
+                <Head>
+                    <title>Curriculum Vitae</title>
+                </Head>
                 <h1>Curriculum Vitae</h1>
                 <hr />
                 <div className="app-text">
                     <dl>
                         <dt>Programming</dt>
                         <p>
-                            In general, more than 8+ year of experience in developing of websites of
+                            In general, more than 10+ year of experience in developing of websites of
                             different difficulties, including enterprise products with millions of users
                             Main expertise includes:
                         </p>

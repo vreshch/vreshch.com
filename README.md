@@ -8,32 +8,70 @@ Personal Website vreshch.com, contains CV, interests, Contacts;
 ## Technologies Used
 
 * Rect & Typescript
-* Deployed to [Azure Static Web Apps](https://azure.microsoft.com/en-us/services/app-service/static/)
+* Next JS as Framework
+* Shipped with Docker
+* Terraform for Infrastructure
 
-## Quick Start
+## Docker commands
 
-* Start local development
+* Build Docker file locally
 
 ```bash
-npm run dev
+docker build -t europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch/vreshch-com:latest .
 ```
 
-* Build project
+* Start Docker file
 
 ```bash
-npm run build
+docker run --network=host europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch/vreshch-com:latest
 ```
 
-* Start project
+* Push docker to registry
 
 ```bash
-npm start
+docker login & docker push europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch/vreshch-com:latest
+
+
+## Creating infrastructure
+
+* Install gcloud according to [instructions](https://cloud.google.com/sdk/docs/install)
+* Auth with gcloud sdk
+
+```bash
+gcloud auth application-default login
 ```
 
-* Run linter
+* Create Google Cloud project (use your own PROJECT_ID & PROJECT_NAME)
 
 ```bash
-npm run lint
+gcloud projects create "PROJECT_ID" --name="PROJECT_NAME"
+```
+
+* Modify environment variables
+
+```bash
+code terraform.tfvars
+```
+
+* Verify your domain
+https://developers.google.com/search
+
+* Initialize terraform
+
+```bash
+    sterraform init
+```
+
+* Plan Terraform changes
+
+```bash
+    terraform plan
+```
+
+* Deploy Terraform changes
+
+```bash
+    terraform apply
 ```
 
 ## Contacts

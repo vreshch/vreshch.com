@@ -1,0 +1,11 @@
+.next
+node_modules
+npm-debug.log
+TODO
+terraform.tfvars
+terraform.tf
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+.terraform.lock.hcl
+get_latest_tag.sh

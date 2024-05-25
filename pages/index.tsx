@@ -1,12 +1,15 @@
-import * as React from "react";
+import Head from 'next/head';
 
-export function IndexPage() {
-        return (
-            <div>
-                <h1>Home</h1>
-                <hr />
-                <div className="app-text">
-                    <p>
+export default function MainPage() {
+    return (
+        <div>
+            <Head>
+                <title>Volodymyr Vreshch - Home</title>
+            </Head>
+            <h1>Home</h1>
+            <hr />
+            <div className="app-text">
+            <p>
                         Welcome to my personal website.
                         Here you can find some general information about my background, supported projects and contacts
                       </p>
@@ -54,7 +57,7 @@ export function IndexPage() {
                             </ul>
                         </dd>
                     </dl>
-                </div>
             </div>
-        );
-};
+        </div>
+    )
+}

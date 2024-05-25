@@ -1,11 +1,14 @@
-import * as React from "react";
+import Head from 'next/head';
 
-export function ChemistryJSPage() {
+export default function ChemistryJSPage() {
     return (
-            <div>
-                <h1>@chemistry </h1>
-                <hr />
-                <div className="app-text">
+        <div>
+            <Head>
+                <title>@chemistry </title>
+            </Head>
+            <h1>@chemistry</h1>
+            <hr />
+            <div className="app-text">
                     <p>Set of open source projects related to Chemistry/Crystallography released under MIT license on <a href="https://github.com/chemistry" target="_blank" rel="noreferrer">github</a></p>
                     <dl>
                         <dt><a href="https://github.com/chemistry/crystallography.io" target="_blank" rel="noreferrer">@chemistry/crystallography.io</a></dt>
@@ -24,7 +27,7 @@ export function ChemistryJSPage() {
                         <dt><a href="https://github.com/chemistry/chemical-libraries" target="_blank" rel="noreferrer">@chemistry/(math,elements,spacegroups)</a></dt>
                         <dd>Set of common functionality / chemical constants that support creation of software for chemistry</dd>
                     </dl>
-                </div>
             </div>
-        );
+        </div>
+    );
 };
