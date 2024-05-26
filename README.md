@@ -30,7 +30,7 @@ docker run --network=host europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch
 
 ```bash
 docker login & docker push europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch/vreshch-com:latest
-
+```
 
 ## Creating infrastructure
 

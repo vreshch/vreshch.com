@@ -1,10 +1,10 @@
-FROM node:16.5.0-alpine3.11 as builder
+FROM node:22.2.0-alpine3.19 as builder
 WORKDIR /app
 COPY . /app
 RUN npm install
 RUN npm run build
 
-FROM node:16.5.0-alpine3.11 as runner
+FROM node:22.2.0-alpine3.19 as runner
 WORKDIR /app
 ENV NODE_ENV production
 

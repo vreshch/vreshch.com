@@ -1,26 +1,23 @@
 import React, { useState, Children } from 'react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { withRouter } from 'next/router';
 import type { AppProps } from 'next/app';
 import classNames from 'classnames';
 import '../styles/globals.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import { usePathname } from 'next/navigation';
 
 
-const ActiveLink = withRouter( (({ router, children, ...props }: any) => {
-    const child = Children.only(children);
-
-    let className = child.props.className || '';
-    if (router.pathname === props.href && props.activeClassName) {
-      className = `${className} ${props.activeClassName}`.trim();
+const ActiveLink = ({...props}: any) => {
+    const pathname = usePathname();
+    let className = props.className || '';
+    if (pathname === props.href && props.activeClassName) {
+        className = `${className} ${props.activeClassName}`.trim();
     }
-
     delete props.activeClassName;
 
-    return <Link {...props}>{React.cloneElement(child, { className })}</Link>;
-}));
-
+    return <Link {...props} className={className}></Link>;
+}
 
 const Sidebar = ()=> {
     const [closed, setClosed] = useState(true);
@@ -36,12 +33,12 @@ const Sidebar = ()=> {
                 <button className="navbar-toggler" onClick={()=> setClosed(!closed)} >☰</button>
             </div>
             <div className="jcw-sidebar-wrap">
-                <ActiveLink exact={true} href="/" activeClassName="active"><a className="jcw-sidebar-item">Home</a></ActiveLink>
-                <ActiveLink href="/cv" activeClassName="active"><a className="jcw-sidebar-item">Curriculum Vitae</a></ActiveLink>
-                <ActiveLink href="/interests" activeClassName="active"><a className="jcw-sidebar-item">Interests</a></ActiveLink>
-                <ActiveLink href="/projects" activeClassName="active"><a className="jcw-sidebar-item">Projects</a></ActiveLink>
-                <ActiveLink href="/chemistry-js" activeClassName="active"><a className="jcw-sidebar-item">Chemistry JS</a></ActiveLink>
-                <ActiveLink href="/contacts" activeClassName="active"><a className="jcw-sidebar-item">Contacts</a></ActiveLink>
+                <ActiveLink href="/" className="jcw-sidebar-item" activeClassName="active">Home</ActiveLink>
+                <ActiveLink href="/cv" className="jcw-sidebar-item" activeClassName="active">Curriculum Vitae</ActiveLink>
+                <ActiveLink href="/interests" className="jcw-sidebar-item" activeClassName="active">Interests</ActiveLink>
+                <ActiveLink href="/projects" className="jcw-sidebar-item" activeClassName="active">Projects</ActiveLink>
+                <ActiveLink href="/chemistry-js" className="jcw-sidebar-item" activeClassName="active">Chemistry JS</ActiveLink>
+                <ActiveLink href="/contacts" className="jcw-sidebar-item" activeClassName="active">Contacts</ActiveLink>
             </div>
         </div>
     )
