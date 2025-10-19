@@ -89,6 +89,9 @@ jobs:
 
       - name: 📤 Copy deployment files to server
         run: |
+          echo "📦 Ensuring remote directory exists..."
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} "mkdir -p /opt/vreshch-com && chown root:root /opt/vreshch-com && chmod 755 /opt/vreshch-com"
+
           echo "📦 Copying docker-compose.yml..."
           scp -i ~/.ssh/deploy_key docker-compose.yml root@${{ secrets.SERVER_HOST }}:/opt/vreshch-com/
           
