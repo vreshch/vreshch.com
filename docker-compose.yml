@@ -22,10 +22,14 @@ services:
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
         
-        # HTTP Router (redirect to HTTPS)
+        # HTTP Router (redirect to HTTPS, but allow ACME challenges)
         - traefik.http.routers.vreshch-http.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
         - traefik.http.routers.vreshch-http.entrypoints=http
-        - traefik.http.routers.vreshch-http.middlewares=https-redirect@file
+        - traefik.http.routers.vreshch-http.middlewares=https-redirect
+        
+        # Create HTTPS redirect middleware that allows ACME challenges
+        - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
+        - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
         
         # HTTPS Router
         - traefik.http.routers.vreshch-https.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
