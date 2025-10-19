@@ -166,6 +166,8 @@ jobs:
             const imageTag = '${{ needs.build-and-push.outputs.image-tag }}';
             const commitSha = '${{ github.sha }}';
             const commitMessage = `${{ github.event.head_commit.message }}` || 'Manual deployment';
+            const eventName = '${{ github.event_name }}';
+            const triggerType = eventName === 'workflow_dispatch' ? 'Manual' : 'Automatic (push)';
             
             let status = '✅ SUCCESS';
             let emoji = '🎉';
@@ -183,7 +185,7 @@ jobs:
             **Commit:** \`${commitSha.substring(0, 8)}\`
             **Message:** ${commitMessage}
             **Branch:** master
-            **Trigger:** ${{ github.event_name === 'workflow_dispatch' ? 'Manual' : 'Automatic (push)' }}
+            **Trigger:** ${triggerType}
             
             **Pipeline Results:**
             - 🐳 Build & Push: ${buildResult === 'success' ? '✅' : '❌'} ${buildResult}
@@ -191,8 +193,8 @@ jobs:
             
             **Details:**
             - **Image Tag:** \`${imageTag}\`
-            - **Registry:** ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-            - **Server:** 128.140.118.245 (vreshch.com)
+            - **Registry:** ghcr.io/vreshch/vreshch.com
+            - **Server:** vreshch.com
             - **Deployment URL:** https://vreshch.com
             
             **Quick Actions:**
