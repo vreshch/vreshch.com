@@ -1,0 +1,221 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Image tag to deploy (leave empty for latest)'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: vreshch/vreshch.com
+
+jobs:
+  build-and-push:
+    name: 🐳 Build & Push Docker Image
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      image-tag: ${{ steps.set-tag.outputs.tag }}
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🏷️ Determine image tag
+        id: set-tag
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.tag }}" ]; then
+            echo "tag=${{ inputs.tag }}" >> $GITHUB_OUTPUT
+            echo "📌 Using custom tag: ${{ inputs.tag }}"
+          else
+            echo "tag=${{ github.sha }}" >> $GITHUB_OUTPUT
+            echo "📌 Using commit SHA: ${{ github.sha }}"
+          fi
+
+      - name: 🔐 Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐳 Build and push Docker image
+        run: |
+          IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          TAG="${{ steps.set-tag.outputs.tag }}"
+          
+          echo "🏗️ Building image..."
+          docker build -t ${IMAGE}:${TAG} -t ${IMAGE}:latest .
+          
+          echo "📤 Pushing image..."
+          docker push ${IMAGE}:${TAG}
+          docker push ${IMAGE}:latest
+          
+          echo "✅ Image pushed successfully!"
+          echo "📦 Image: ${IMAGE}:${TAG}"
+          echo "📦 Image: ${IMAGE}:latest"
+
+  deploy:
+    name: 🚀 Deploy to Server
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment: production
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: 📤 Copy deployment files to server
+        run: |
+          echo "📦 Copying docker-compose.yml..."
+          scp -i ~/.ssh/deploy_key docker-compose.yml root@${{ secrets.SERVER_HOST }}:/opt/vreshch-com/
+          
+          echo "📦 Copying deployment script..."
+          scp -i ~/.ssh/deploy_key scripts/deploy.sh root@${{ secrets.SERVER_HOST }}:/opt/vreshch-com/
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} "chmod +x /opt/vreshch-com/deploy.sh"
+
+      - name: 🚀 Deploy application
+        id: deploy
+        run: |
+          IMAGE_TAG="${{ needs.build-and-push.outputs.image-tag }}"
+          
+          echo "🚀 Deploying to production..."
+          echo "📦 Image tag: ${IMAGE_TAG}"
+          
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} << EOF
+            set -e
+            cd /opt/vreshch-com
+            
+            # Update image tag in docker-compose
+            sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}|g" docker-compose.yml
+            
+            # Deploy to Docker Swarm
+            echo "🐳 Deploying stack..."
+            docker stack deploy -c docker-compose.yml vreshch --with-registry-auth
+            
+            # Wait for deployment
+            echo "⏳ Waiting for service to be ready..."
+            sleep 15
+            
+            # Check service status
+            echo "✅ Service status:"
+            docker service ps vreshch_web --no-trunc --format "table {{.Name}}\t{{.CurrentState}}\t{{.Error}}"
+            
+            # Save deployed version
+            echo "${IMAGE_TAG}" > .deployed-version
+            echo "✅ Deployment complete!"
+          EOF
+
+      - name: ✅ Verify deployment
+        run: |
+          echo "🔍 Verifying deployment..."
+          
+          # Wait a bit more for service to be fully ready
+          sleep 10
+          
+          # Check if website is accessible
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -L https://vreshch.com || echo "000")
+          
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+            echo "✅ Website is accessible (HTTP $HTTP_CODE)"
+            echo "deployment-status=success" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️ Website returned HTTP $HTTP_CODE"
+            echo "deployment-status=warning" >> $GITHUB_OUTPUT
+          fi
+          
+          echo "🌐 Production URL: https://vreshch.com"
+
+      - name: 🧹 Cleanup
+        if: always()
+        run: |
+          rm -f ~/.ssh/deploy_key
+          echo "🧹 Cleanup complete"
+
+  deployment-summary:
+    name: 📋 Deployment Summary
+    needs: [build-and-push, deploy]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📊 Generate summary
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const buildResult = '${{ needs.build-and-push.result }}';
+            const deployResult = '${{ needs.deploy.result }}';
+            const imageTag = '${{ needs.build-and-push.outputs.image-tag }}';
+            const commitSha = '${{ github.sha }}';
+            const commitMessage = `${{ github.event.head_commit.message }}` || 'Manual deployment';
+            
+            let status = '✅ SUCCESS';
+            let emoji = '🎉';
+            
+            if (buildResult === 'failure') {
+              status = '❌ FAILED - Build';
+              emoji = '🔨';
+            } else if (deployResult === 'failure') {
+              status = '❌ FAILED - Deployment';
+              emoji = '🚨';
+            }
+            
+            const summary = `${emoji} **Deployment ${status}**
+            
+            **Commit:** \`${commitSha.substring(0, 8)}\`
+            **Message:** ${commitMessage}
+            **Branch:** master
+            **Trigger:** ${{ github.event_name === 'workflow_dispatch' ? 'Manual' : 'Automatic (push)' }}
+            
+            **Pipeline Results:**
+            - 🐳 Build & Push: ${buildResult === 'success' ? '✅' : '❌'} ${buildResult}
+            - 🚀 Deployment: ${deployResult === 'success' ? '✅' : '❌'} ${deployResult}
+            
+            **Details:**
+            - **Image Tag:** \`${imageTag}\`
+            - **Registry:** ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+            - **Server:** 128.140.118.245 (vreshch.com)
+            - **Deployment URL:** https://vreshch.com
+            
+            **Quick Actions:**
+            - 📋 [Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            - 🌐 [Visit Website](https://vreshch.com)
+            - 📦 [Registry](https://github.com/${{ github.repository }}/pkgs/container/vreshch.com)
+            
+            ---
+            ⏰ Generated at: \`${new Date().toISOString()}\``;
+            
+            console.log(summary);
+            
+            // Create commit status
+            try {
+              await github.rest.repos.createCommitStatus({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                sha: commitSha,
+                state: deployResult === 'success' ? 'success' : 'failure',
+                target_url: `https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}`,
+                description: `Deployment ${status}`,
+                context: 'deployment/production'
+              });
+            } catch (error) {
+              console.log('Could not create commit status:', error.message);
+            }
