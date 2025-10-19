@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  web:
+    image: ghcr.io/vreshch/vreshch.com:latest
+    restart: unless-stopped
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 1
+      update_config:
+        order: start-first
+        failure_action: rollback
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      labels:
+        # Enable Traefik
+        - traefik.enable=true
+        - traefik.docker.network=traefik-public
+        - traefik.constraint-label=traefik-public
+        
+        # HTTP Router (redirect to HTTPS)
+        - traefik.http.routers.vreshch-http.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
+        - traefik.http.routers.vreshch-http.entrypoints=http
+        - traefik.http.routers.vreshch-http.middlewares=https-redirect@file
+        
+        # HTTPS Router
+        - traefik.http.routers.vreshch-https.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
+        - traefik.http.routers.vreshch-https.entrypoints=https
+        - traefik.http.routers.vreshch-https.tls=true
+        - traefik.http.routers.vreshch-https.tls.certresolver=letsencrypt
+        
+        # Service configuration
+        - traefik.http.services.vreshch.loadbalancer.server.port=8080
+      
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 256M
+        reservations:
+          cpus: '0.25'
+          memory: 128M
+    
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  traefik-public:
+    external: true

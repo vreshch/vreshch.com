@@ -40,3 +40,14 @@ yarn-error.log*
 terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
+
+# deployment
+.deployed-version
+deploy_key
+*.pem
+*.key
+
+# documentation (except setup-github.md)
+/docs/*
+!/docs/setup-github.md
+/example/*

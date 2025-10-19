@@ -1,0 +1,90 @@
+name: PR Validation
+
+on:
+  pull_request:
+    branches: [master]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  validate:
+    name: 🔍 Validate Pull Request
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🔎 Lint code
+        run: npm run lint
+
+      - name: 🏗️ Build project
+        run: npm run build
+
+      - name: 🐳 Validate Dockerfile
+        run: docker build -t vreshch-com:pr-${{ github.event.pull_request.number }} .
+
+      - name: 📊 Comment on PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const status = '${{ job.status }}' === 'success' ? '✅ PASSED' : '❌ FAILED';
+            const emoji = '${{ job.status }}' === 'success' ? '🎉' : '💥';
+            
+            const body = `${emoji} **PR Validation ${status}**
+            
+            **Commit:** \`${{ github.sha }}\`
+            **Branch:** \`${{ github.head_ref }}\`
+            
+            **Checks:**
+            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Dependencies installed
+            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Linting passed
+            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Build successful
+            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Docker image validated
+            
+            ${status === '✅ PASSED' ? '**Ready to merge!** ✨' : '**Please fix issues before merging.**'}
+            
+            ---
+            🔗 [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            ⏰ Generated at: \`${new Date().toISOString()}\``;
+
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.data.find(comment => 
+              comment.user.login === 'github-actions[bot]' && 
+              comment.body.includes('PR Validation')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

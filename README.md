@@ -12,66 +12,75 @@ Personal Website vreshch.com, contains CV, interests, Contacts;
 * Shipped with Docker
 * Terraform for Infrastructure
 
-## Docker commands
+## 🚀 Deployment
 
-* Build Docker file locally
+**Automated CI/CD:** Deploys automatically on merge to `master`
+
+### Quick Start
+
+1. **Create PR** → Auto-validation runs
+2. **Merge to master** → Auto-deploys to production
+3. **Visit** → https://vreshch.com
+
+### Manual Deployment
 
 ```bash
-docker build -t europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch/vreshch-com:latest .
+# SSH to server
+ssh root@vreshch.com
+
+# Deploy latest version
+cd /opt/vreshch-com && ./deploy.sh latest
+
+# Or deploy specific version
+./deploy.sh <commit-sha>
 ```
 
-* Start Docker file
+### CI/CD Pipelines
 
+**Pull Request Validation** (`.github/workflows/pr-validation.yml`)
+- ✅ Lint code
+- ✅ Build project  
+- ✅ Validate Docker
+- ⏱️ ~2-3 minutes
+
+**Production Deployment** (`.github/workflows/deploy.yml`)
+- 🐳 Build & push Docker image to GHCR
+- 🚀 SSH deploy to server
+- ✅ Health verification
+- ⏱️ ~5-7 minutes
+
+### Infrastructure
+
+- **Server:** vreshch.com
+- **Stack:** Docker Swarm
+- **Proxy:** Traefik (auto SSL via Let's Encrypt)
+- **Registry:** GitHub Container Registry (ghcr.io)
+- **Details:** https://github.com/vreshch/infrastructure
+
+### Setup
+
+See [GitHub Setup Guide](docs/setup-github.md) for required environment variables and secrets.
+
+## Docker Commands
+
+**Local Development:**
 ```bash
-docker run --network=host europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch/vreshch-com:latest
+# Build image
+docker build -t vreshch-com:local .
+
+# Run locally
+docker run -p 8080:8080 vreshch-com:local
+
+# Access at http://localhost:8080
 ```
 
-* Push docker to registry
-
+**Production Images:**
 ```bash
-docker login & docker push europe-west3-docker.pkg.dev/vreshch-com-320817/vreshch/vreshch-com:latest
-```
+# Pull from registry
+docker pull ghcr.io/vreshch/vreshch.com:latest
 
-## Creating infrastructure
-
-* Install gcloud according to [instructions](https://cloud.google.com/sdk/docs/install)
-* Auth with gcloud sdk
-
-```bash
-gcloud auth application-default login
-```
-
-* Create Google Cloud project (use your own PROJECT_ID & PROJECT_NAME)
-
-```bash
-gcloud projects create "PROJECT_ID" --name="PROJECT_NAME"
-```
-
-* Modify environment variables
-
-```bash
-code terraform.tfvars
-```
-
-* Verify your domain
-https://developers.google.com/search
-
-* Initialize terraform
-
-```bash
-    sterraform init
-```
-
-* Plan Terraform changes
-
-```bash
-    terraform plan
-```
-
-* Deploy Terraform changes
-
-```bash
-    terraform apply
+# Run production image
+docker run -p 8080:8080 ghcr.io/vreshch/vreshch.com:latest
 ```
 
 ## Contacts
