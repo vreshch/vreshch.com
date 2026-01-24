@@ -1,4 +1,4 @@
-# Personal CV Website: [vreshch.com](http://vreshch.com)
+# Personal Website: [vreshch.com](http://vreshch.com)
 
 [![Deployment](https://github.com/vreshch/vreshch.com/actions/workflows/deploy.yml/badge.svg?branch=master)](https://github.com/vreshch/vreshch.com/actions/workflows/deploy.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-gren.svg)](https://opensource.org/licenses/MIT)
