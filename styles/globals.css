@@ -212,11 +212,6 @@ a:hover {
     min-height: 400px !important;
 }
 
-.app-text {
-    text-align: left;
-    line-height: 1.7;
-}
-
 /* ===== IMPROVEMENT #3: Visual Career Timeline ===== */
 .timeline {
     position: relative;
