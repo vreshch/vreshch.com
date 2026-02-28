@@ -51,3 +51,4 @@ deploy_key
 /docs/*
 !/docs/setup-github.md
 /example/*
+test-results/
