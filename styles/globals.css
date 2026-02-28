@@ -1,198 +1,197 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== IMPROVEMENT #8: Typography & Spacing ===== */
+
 * {
     box-sizing: border-box;
 }
+
 html,
 body {
     padding: 0;
     margin: 0;
-    overflow-y:scroll;
-    font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-        Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+    overflow-y: scroll;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #334155;
+    background-color: #ffffff;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 a {
-    color: inherit;
+    color: #475569;
     text-decoration: none;
+    transition: color 0.2s ease;
+}
+a:hover {
+    color: #1e293b;
 }
 
-hr {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    border: 0;
-    border-top: 1px solid rgba(0,0,0,.1);
-}
-
-.navbar-toggler::focus{
-    box-shadow: 0 0 0 2px;
-}
-
-.app h1 {
-    font-size: 1.8rem ;
-}
-
-.app h2 {
-    font-size: 1.6rem;
-}
-
-.app h3 {
-    font-size: 1.2rem;
-    font-weight: bold;
-}
-
-.app  .pull-left {
-    float: left !important;
-}
-
-.app  .pull-right {
-    float: right !important;
-}
+/* ===== IMPROVEMENT #1: Modern Minimal Hero/Header ===== */
 .app-logo {
     position: relative;
-    margin-top: 20px;
-    min-height: 120px;
-
-    background: rgb(74,151,204); /* Old browsers */
-    background: -moz-linear-gradient(top, rgba(43,104,146,1) 0%, rgba(74,151,204,1) 100%); /* FF3.6-15 */
-    background: -webkit-linear-gradient(top, rgba(43,104,146,1) 0%,rgba(74,151,204,1) 100%); /* Chrome10-25,Safari5.1-6 */
-    background: linear-gradient(to bottom, rgba(43,104,146,1) 0%,rgba(74,151,204,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2B6892', endColorstr='#4a97cc',GradientType=0 );
+    margin-top: 24px;
+    padding: 32px;
+    min-height: 100px;
+    background: #1e293b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .app-logo-img {
-    height: 120px;
-    width: 100%;
+    height: 80px;
+    width: 80px;
     background-image: url('../public/logo.png');
     background-repeat: no-repeat;
-    background-position: right;
+    background-position: center;
+    background-size: contain;
+    opacity: 0.9;
+    flex-shrink: 0;
 }
 
 .app-logo-title {
-    position: absolute;
-    color: white;
-    font-size: 1.2rem;
-    left: 30px;
-    top: 30px;
+    color: #f8fafc;
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin: 0;
 }
 
 .app-logo-subtitle {
-    position: absolute;
-    color: #373a3c;
-    top: 70px;
-    left: 30px;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin: 4px 0 0 0;
 }
 
-.app-wrap {
-    min-height: 140px;
-    margin-top: 20px !important;
+/* ===== IMPROVEMENT #8 cont.: Heading styles ===== */
+.app h1 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
 }
 
-.app-content {
-    position: relative;
-    min-height: 400px !important;
+.app h2 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    color: #334155;
 }
 
-.app-index-img {
-    float: right;
-    margin-top: 10px;
-    margin-left: 20px;
+.app h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #475569;
 }
 
-.app-text {
-    text-align: justify;
+/* Page header divider */
+.page-divider {
+    height: 2px;
+    background: linear-gradient(to right, #cbd5e1, transparent);
+    border: none;
+    margin: 0.75rem 0 1.5rem 0;
 }
 
-.app-text-download-row {
-    display: block;
-    margin-top: 15px;
-}
-.app-text-download-row a {
-    line-height: 48px;
-    min-height: 48px;
-    vertical-align: middle;
-}
-.app-text-download-text {
-    display: inline-block;
-    margin-left: 0.5rem;
-}
-.app-text-download-icon {
-    position: relative;
-    left: 1px;
-    vertical-align: middle;
-    margin-left: 15px;
-    margin-right: 20px;
-}
-
-.app-text-license {
-    text-align: justify;
-}
-
-.app-row {
-    margin-bottom: 15px;
-}
-
-.app dd {
-    margin-left: 1.0rem;
-}
-.app dt {
-    color: #182c60;
-    font-weight: bold;
-    line-height: 1.5;
-    margin: 5px 0 20px 0;
-}
-
-.app dt {
-    margin-bottom: 1.0rem;
-    font-size: 1.2rem;
-}
-
-.app dl {
-    margin-left: 0;
-    margin-bottom: 1rem;
-}
-
-.app footer {
-    margin-bottom: 25px;
-}
-
-.app-text-thumbnail {
-    margin-right: 20px;
-}
-
-/* SideBar */
-
+/* ===== IMPROVEMENT #2: Redesigned Sidebar Navigation ===== */
 .jcw-sidebar {
     padding-left: 0;
-    margin-bottom: 15px;
+    margin-bottom: 16px;
 }
 
 .jcw-sidebar-item {
     position: relative;
     display: block;
-    padding: .45rem 1.0rem;
-    margin: .2rem 0;
-    border-left: 3px solid #FFFFFF;
+    padding: 10px 16px;
+    margin: 2px 0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #64748b;
     text-decoration: none;
+    transition: all 0.2s ease;
+    border-left: none;
 }
-.jcw-sidebar-item:hover, .jcw-sidebar-item:active, .jcw-sidebar-item:focus, .jcw-sidebar-item.active {
+
+.jcw-sidebar-item:hover {
     text-decoration: none;
-    border-left: 3px solid #0275d8;
-    background: #f5f5f5;
+    background: #f1f5f9;
+    color: #1e293b;
 }
+
+.jcw-sidebar-item.active {
+    text-decoration: none;
+    background: #f1f5f9;
+    color: #1e293b;
+    font-weight: 600;
+    border-left: none;
+}
+
+.jcw-sidebar-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 60%;
+    background: #475569;
+    border-radius: 0 2px 2px 0;
+}
+
+/* ===== IMPROVEMENT #10: Improved Mobile Menu ===== */
 .jcw-sidebar-mobile-nav {
     position: relative;
     display: block;
-    padding: .45rem 1.0rem;
-    margin: .2rem 0;
+    padding: 8px 12px;
+    margin: 4px 0;
+}
+
+.jcw-sidebar-mobile-nav .navbar-toggler {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #475569;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    justify-content: center;
+}
+
+.jcw-sidebar-mobile-nav .navbar-toggler:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
+.jcw-sidebar-mobile-nav .navbar-toggler:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px #cbd5e1;
 }
 
 @media(max-width: 767px) {
     .jcw-sidebar.closed .jcw-sidebar-wrap {
         max-height: 0px;
+        opacity: 0;
     }
     .jcw-sidebar-wrap {
-        transition: max-height 0.6s;
+        transition: max-height 0.4s ease, opacity 0.3s ease;
         max-height: 550px;
+        opacity: 1;
         overflow: hidden;
+        margin-top: 8px;
     }
 }
 
@@ -201,3 +200,367 @@ hr {
         display: none;
     }
 }
+
+/* ===== Layout ===== */
+.app-wrap {
+    min-height: 140px;
+    margin-top: 24px !important;
+}
+
+.app-content {
+    position: relative;
+    min-height: 400px !important;
+}
+
+.app-text {
+    text-align: left;
+    line-height: 1.7;
+}
+
+/* ===== IMPROVEMENT #3: Visual Career Timeline ===== */
+.timeline {
+    position: relative;
+    padding-left: 28px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: #e2e8f0;
+}
+
+.timeline-item {
+    position: relative;
+    padding-bottom: 24px;
+}
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 6px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #475569;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px #cbd5e1;
+}
+
+.timeline-item:first-child::before {
+    background: #1e293b;
+    box-shadow: 0 0 0 2px #64748b;
+}
+
+.timeline-date {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.timeline-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.timeline-company {
+    font-weight: 600;
+    color: #475569;
+}
+
+.timeline-details {
+    font-size: 0.875rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* ===== IMPROVEMENT #4: Skills Tags/Badges ===== */
+.skill-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    margin: 4px;
+    background: #f1f5f9;
+    color: #334155;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+    transition: all 0.2s ease;
+}
+
+.skill-tag:hover {
+    background: #e2e8f0;
+    border-color: #cbd5e1;
+}
+
+.skill-category {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748b;
+    margin-bottom: 12px;
+    margin-top: 20px;
+}
+
+/* ===== IMPROVEMENT #5: Modern Project Cards ===== */
+.project-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: block;
+}
+
+.project-card:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+}
+
+.project-card-image {
+    overflow: hidden;
+    background: #f8fafc;
+}
+
+.project-card-image img {
+    transition: transform 0.3s ease;
+}
+
+.project-card:hover .project-card-image img {
+    transform: scale(1.02);
+}
+
+.project-card-body {
+    padding: 16px;
+}
+
+.project-card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.project-card-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* ===== IMPROVEMENT #6: Clean Contact Card ===== */
+.contact-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    transition: background 0.2s ease;
+}
+
+.contact-card:hover {
+    background: #f8fafc;
+}
+
+.contact-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.contact-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #94a3b8;
+}
+
+.contact-value {
+    font-size: 0.9rem;
+    color: #334155;
+    font-weight: 500;
+}
+
+.contact-photo {
+    border-radius: 12px;
+    border: 3px solid #f1f5f9;
+}
+
+/* ===== IMPROVEMENT #7: Interests Grid ===== */
+.interest-card {
+    padding: 20px;
+    background: #f8fafc;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.interest-card:hover {
+    background: #f1f5f9;
+    border-color: #e2e8f0;
+}
+
+.interest-icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.interest-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.interest-desc {
+    font-size: 0.8rem;
+    color: #64748b;
+    line-height: 1.5;
+}
+
+/* ===== IMPROVEMENT #9: Modern Footer ===== */
+.app-footer {
+    margin-top: 48px;
+    padding: 24px 0;
+    border-top: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.app-footer-copy {
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.app-footer-links {
+    display: flex;
+    gap: 16px;
+}
+
+.app-footer-link {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    transition: color 0.2s ease;
+}
+
+.app-footer-link:hover {
+    color: #475569;
+}
+
+/* ===== Chemistry JS page ===== */
+.chem-project {
+    padding: 16px 20px;
+    border: 1px solid #f1f5f9;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    transition: all 0.2s ease;
+}
+
+.chem-project:hover {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+}
+
+.chem-project-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.chem-project-title a {
+    color: #1e293b;
+    text-decoration: none;
+}
+
+.chem-project-title a:hover {
+    color: #475569;
+}
+
+.chem-project-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+/* ===== Section label ===== */
+.section-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* Info card (used on homepage) */
+.info-card {
+    padding: 20px 24px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border: 1px solid #f1f5f9;
+}
+
+.info-card-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.info-card-value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.info-card-sub {
+    font-size: 0.85rem;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* Supported projects links */
+.project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: #f1f5f9;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #475569;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+}
+
+.project-link:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+}
+
