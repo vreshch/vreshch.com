@@ -41,6 +41,12 @@ terraform.tfstate
 terraform.tfstate.backup
 terraform.tfvars
 
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
 # deployment
 .deployed-version
 deploy_key
