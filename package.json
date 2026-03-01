@@ -1,37 +1,55 @@
 {
-    "name": "vreshch.com",
-    "version": "5.0.0",
-    "private": true,
-    "description": "Personal Website vreshch.com 5.0",
-    "author": {
-        "name": "Volodymyr Vreshch",
-        "email": "vreshch@gmail.com",
-        "url": "http://vreshch.com"
-    },
-    "homepage": "http://vreshch.com",
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/vreshch/vreshch.com.git"
-    },
-    "license": "MIT",
-    "scripts": {
-        "dev": "next dev",
-        "build": "next build",
-        "start": "next start -p 8080",
-        "lint": "next lint"
-    },
-    "dependencies": {
-        "bootstrap": "5.3.3",
-        "classnames": "2.5.1",
-        "next": "14.2.35",
-        "react": "18.3.1",
-        "react-dom": "18.3.1"
-    },
-    "devDependencies": {
-        "@types/node": "18.17.0",
-        "@types/react": "18.3.1",
-        "eslint": "8.56.0",
-        "eslint-config-next": "14.2.3",
-        "typescript": "5.4.5"
-    }
+  "name": "vreshch.com",
+  "version": "6.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Personal Website vreshch.com 6.0",
+  "author": {
+    "name": "Volodymyr Vreshch",
+    "email": "vreshch@gmail.com",
+    "url": "http://vreshch.com"
+  },
+  "homepage": "http://vreshch.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vreshch/vreshch.com.git"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start -p 3000",
+    "lint": "next lint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "next": "^15.3.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "sharp": "^0.34.1",
+    "tailwind-merge": "^3.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/postcss": "^4.1.8",
+    "@types/node": "^22.15.21",
+    "@types/react": "^19.1.4",
+    "@typescript-eslint/eslint-plugin": "^8.33.1",
+    "@typescript-eslint/parser": "^8.33.1",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.27.0",
+    "eslint-config-next": "^15.3.3",
+    "eslint-config-prettier": "^10.1.5",
+    "postcss": "^8.5.4",
+    "prettier": "^3.5.3",
+    "tailwindcss": "^4.1.8",
+    "typescript": "^5.8.3"
+  }
 }
