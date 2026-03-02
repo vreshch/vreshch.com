@@ -39,7 +39,7 @@ export function Sidebar() {
             key={href}
             href={href}
             className={clsx(
-              'block border-l-3 px-4 py-2 my-0.5',
+              'block border-l-3 px-4 py-2 my-0.5 text-sidebar-link hover:text-sidebar-link-hover',
               pathname === href
                 ? 'border-l-sidebar-border bg-sidebar-hover'
                 : 'border-l-white hover:border-l-sidebar-border hover:bg-sidebar-hover'
