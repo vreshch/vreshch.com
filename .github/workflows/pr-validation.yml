@@ -44,20 +44,20 @@ jobs:
           script: |
             const status = '${{ job.status }}' === 'success' ? '✅ PASSED' : '❌ FAILED';
             const emoji = '${{ job.status }}' === 'success' ? '🎉' : '💥';
-            
+
             const body = `${emoji} **PR Validation ${status}**
-            
+
             **Commit:** \`${{ github.sha }}\`
             **Branch:** \`${{ github.head_ref }}\`
-            
+
             **Checks:**
             - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Dependencies installed
             - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Linting passed
             - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Build successful
             - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Docker image validated
-            
+
             ${status === '✅ PASSED' ? '**Ready to merge!** ✨' : '**Please fix issues before merging.**'}
-            
+
             ---
             🔗 [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             ⏰ Generated at: \`${new Date().toISOString()}\``;
