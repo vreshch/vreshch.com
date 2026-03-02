@@ -22,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 :: Homepage ::
               </h3>
             </div>
-            <div className="mt-5 flex flex-col md:flex-row">
+            <div className="mt-5 flex flex-col md:flex-row md:gap-6">
               <div className="w-full md:w-1/4">
                 <Sidebar />
               </div>
