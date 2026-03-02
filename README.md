@@ -7,14 +7,16 @@ Personal Website vreshch.com, contains CV, interests, Contacts;
 
 ## Technologies Used
 
-* Rect & Typescript
-* Next JS as Framework
+- Rect & Typescript
+- Next JS as Framework
 
 ## 🚀 Deployment
+
 - **Automated CI/CD:** Deploys automatically on merge to `master`
 - **Infrastructure Details:** https://github.com/vreshch/infrastructure
 
 ### Quick Start
+
 1. **Create PR** → Auto-validation runs
 2. **Merge to master** → Auto-deploys to production
 3. **Visit** → https://vreshch.com
@@ -22,6 +24,7 @@ Personal Website vreshch.com, contains CV, interests, Contacts;
 ## Docker Commands
 
 **Local Development:**
+
 ```bash
 # Build image
 docker build -t vreshch-com:local .
@@ -33,6 +36,7 @@ docker run -p 8080:8080 vreshch-com:local
 ```
 
 **Production Images:**
+
 ```bash
 # Pull from registry
 docker pull ghcr.io/vreshch/vreshch.com:latest
@@ -43,7 +47,7 @@ docker run -p 8080:8080 ghcr.io/vreshch/vreshch.com:latest
 
 ## Contacts
 
-* [Website](http://vreshch.com)
-* [LinkedIn](https://www.linkedin.com/in/vreshch/)
-* [GitHub](https://github.com/vreshch)
-* [Email](vreshch@gmail.com)
+- [Website](http://vreshch.com)
+- [LinkedIn](https://www.linkedin.com/in/vreshch/)
+- [GitHub](https://github.com/vreshch)
+- [Email](vreshch@gmail.com)

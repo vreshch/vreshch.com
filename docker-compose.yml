@@ -21,25 +21,25 @@ services:
         - traefik.enable=true
         - traefik.docker.network=traefik-public
         - traefik.constraint-label=traefik-public
-        
+
         # HTTP Router (redirect to HTTPS, but allow ACME challenges)
         - traefik.http.routers.vreshch-http.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
         - traefik.http.routers.vreshch-http.entrypoints=http
         - traefik.http.routers.vreshch-http.middlewares=https-redirect
-        
+
         # Create HTTPS redirect middleware that allows ACME challenges
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
         - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
-        
+
         # HTTPS Router
         - traefik.http.routers.vreshch-https.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
         - traefik.http.routers.vreshch-https.entrypoints=https
         - traefik.http.routers.vreshch-https.tls=true
         - traefik.http.routers.vreshch-https.tls.certresolver=letsencrypt
-        
+
         # Service configuration
         - traefik.http.services.vreshch.loadbalancer.server.port=3000
-      
+
       resources:
         limits:
           cpus: '0.5'
@@ -47,9 +47,9 @@ services:
         reservations:
           cpus: '0.25'
           memory: 128M
-    
+
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:3000/"]
+      test: ['CMD', 'wget', '--quiet', '--tries=1', '--spider', 'http://127.0.0.1:3000/']
       interval: 30s
       timeout: 10s
       retries: 3

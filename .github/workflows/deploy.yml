@@ -53,14 +53,14 @@ jobs:
         run: |
           IMAGE="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
           TAG="${{ steps.set-tag.outputs.tag }}"
-          
+
           echo "🏗️ Building image..."
           docker build -t ${IMAGE}:${TAG} -t ${IMAGE}:latest .
-          
+
           echo "📤 Pushing image..."
           docker push ${IMAGE}:${TAG}
           docker push ${IMAGE}:latest
-          
+
           echo "✅ Image pushed successfully!"
           echo "📦 Image: ${IMAGE}:${TAG}"
           echo "📦 Image: ${IMAGE}:latest"
@@ -82,7 +82,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-          
+
           # Test SSH connection
           echo "Testing SSH connection..."
           ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no root@${{ secrets.SERVER_HOST }} "echo 'SSH connection successful'"
@@ -94,7 +94,7 @@ jobs:
 
           echo "📦 Copying docker-compose.yml..."
           scp -i ~/.ssh/deploy_key docker-compose.yml root@${{ secrets.SERVER_HOST }}:/opt/vreshch-com/
-          
+
           echo "📦 Copying deployment script..."
           scp -i ~/.ssh/deploy_key scripts/deploy.sh root@${{ secrets.SERVER_HOST }}:/opt/vreshch-com/
           ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} "chmod +x /opt/vreshch-com/deploy.sh"
@@ -103,10 +103,10 @@ jobs:
         id: deploy
         run: |
           IMAGE_TAG="${{ needs.build-and-push.outputs.image-tag }}"
-          
+
           echo "🚀 Deploying to production..."
           echo "📦 Image tag: ${IMAGE_TAG}"
-          
+
           ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} << EOF
             set -e
             cd /opt/vreshch-com
@@ -134,13 +134,13 @@ jobs:
       - name: ✅ Verify deployment
         run: |
           echo "🔍 Verifying deployment..."
-          
+
           # Wait a bit more for service to be fully ready
           sleep 10
-          
+
           # Check if website is accessible
           HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -L https://vreshch.com || echo "000")
-          
+
           if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
             echo "✅ Website is accessible (HTTP $HTTP_CODE)"
             echo "deployment-status=success" >> $GITHUB_OUTPUT
@@ -148,7 +148,7 @@ jobs:
             echo "⚠️ Website returned HTTP $HTTP_CODE"
             echo "deployment-status=warning" >> $GITHUB_OUTPUT
           fi
-          
+
           echo "🌐 Production URL: https://vreshch.com"
 
       - name: 🧹 Cleanup
@@ -175,10 +175,10 @@ jobs:
             const commitMessage = `${{ github.event.head_commit.message }}` || 'Manual deployment';
             const eventName = '${{ github.event_name }}';
             const triggerType = eventName === 'workflow_dispatch' ? 'Manual' : 'Automatic (push)';
-            
+
             let status = '✅ SUCCESS';
             let emoji = '🎉';
-            
+
             if (buildResult === 'failure') {
               status = '❌ FAILED - Build';
               emoji = '🔨';
@@ -186,34 +186,34 @@ jobs:
               status = '❌ FAILED - Deployment';
               emoji = '🚨';
             }
-            
+
             const summary = `${emoji} **Deployment ${status}**
-            
+
             **Commit:** \`${commitSha.substring(0, 8)}\`
             **Message:** ${commitMessage}
             **Branch:** master
             **Trigger:** ${triggerType}
-            
+
             **Pipeline Results:**
             - 🐳 Build & Push: ${buildResult === 'success' ? '✅' : '❌'} ${buildResult}
             - 🚀 Deployment: ${deployResult === 'success' ? '✅' : '❌'} ${deployResult}
-            
+
             **Details:**
             - **Image Tag:** \`${imageTag}\`
             - **Registry:** ghcr.io/vreshch/vreshch.com
             - **Server:** vreshch.com
             - **Deployment URL:** https://vreshch.com
-            
+
             **Quick Actions:**
             - 📋 [Workflow Run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             - 🌐 [Visit Website](https://vreshch.com)
             - 📦 [Registry](https://github.com/${{ github.repository }}/pkgs/container/vreshch.com)
-            
+
             ---
             ⏰ Generated at: \`${new Date().toISOString()}\``;
-            
+
             console.log(summary);
-            
+
             // Create commit status
             try {
               await github.rest.repos.createCommitStatus({
