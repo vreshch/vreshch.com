@@ -6,9 +6,8 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
-  actions: read
 
 jobs:
   validate:
@@ -100,62 +99,84 @@ jobs:
             --diff-dir /tmp/screenshot-diffs \
             --highlight-dir /tmp/screenshot-highlights
 
-      - name: Stage per-image artifacts
+      - name: Ensure ci-assets release exists
         if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          gh release view ci-assets 2>/dev/null || \
+            gh release create ci-assets --title "CI Assets" --notes "Automated visual regression assets" --prerelease
+
+      - name: Upload images to release assets
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUM="${{ github.event.pull_request.number }}"
+          RUN_ID="${{ github.run_id }}"
+          REPO="${{ github.repository }}"
+          PREFIX="pr${PR_NUM}-run${RUN_ID}"
+
+          # Delete old assets for this PR
+          gh release view ci-assets --json assets --jq ".assets[].name" 2>/dev/null | \
+            grep "^pr${PR_NUM}-" | while read -r old; do
+              gh release delete-asset ci-assets "$old" --yes 2>/dev/null || true
+            done
+
+          # Read changed files
           CHANGED=$(node -e "
             const r = JSON.parse(require('fs').readFileSync('/tmp/comparison.json','utf-8'));
             r.images.filter(i => i.status === 'changed').forEach(i => console.log(i.name));
           ")
 
-          mkdir -p /tmp/per-image
-          echo "$CHANGED" | while IFS= read -r name; do
-            [ -z "$name" ] && continue
-            slug="${name%.png}"
+          mkdir -p /tmp/upload-staging
+          URLS=""
 
-            # Each image gets its own subfolder for upload
-            mkdir -p "/tmp/per-image/before-${slug}"
-            mkdir -p "/tmp/per-image/after-${slug}"
-            mkdir -p "/tmp/per-image/highlight-${slug}"
+          if [ -n "$CHANGED" ]; then
+            while IFS= read -r name; do
+              [ -z "$name" ] && continue
+              BEFORE_URL=""
+              AFTER_URL=""
+              HIGHLIGHT_URL=""
 
-            cp "/tmp/screenshots-base/$name" "/tmp/per-image/before-${slug}/$name" 2>/dev/null || true
-            cp "/tmp/screenshots-current/$name" "/tmp/per-image/after-${slug}/$name" 2>/dev/null || true
-            cp "/tmp/screenshot-highlights/highlight-$name" "/tmp/per-image/highlight-${slug}/highlight-$name" 2>/dev/null || true
-          done
+              # Upload before (copy with prefixed name, then upload)
+              if [ -f "/tmp/screenshots-base/$name" ]; then
+                ASSET="${PREFIX}-before-${name}"
+                cp "/tmp/screenshots-base/$name" "/tmp/upload-staging/${ASSET}"
+                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
+                BEFORE_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
+              fi
 
-          # Write manifest of artifact names to upload
-          ls /tmp/per-image/ > /tmp/per-image-manifest.txt
-          echo "Staged per-image artifacts:"
-          cat /tmp/per-image-manifest.txt
+              # Upload after
+              if [ -f "/tmp/screenshots-current/$name" ]; then
+                ASSET="${PREFIX}-after-${name}"
+                cp "/tmp/screenshots-current/$name" "/tmp/upload-staging/${ASSET}"
+                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
+                AFTER_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
+              fi
 
-      - name: Upload per-image artifacts
-        if: always()
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-            const { DefaultArtifactClient } = require('@actions/artifact');
+              # Upload highlight (smart diff)
+              if [ -f "/tmp/screenshot-highlights/highlight-$name" ]; then
+                ASSET="${PREFIX}-highlight-${name}"
+                cp "/tmp/screenshot-highlights/highlight-$name" "/tmp/upload-staging/${ASSET}"
+                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
+                HIGHLIGHT_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
+              fi
 
-            const manifest = fs.readFileSync('/tmp/per-image-manifest.txt', 'utf-8')
-              .trim().split('\n').filter(Boolean);
+              URLS="${URLS}${name}|${BEFORE_URL}|${AFTER_URL}|${HIGHLIGHT_URL}\n"
+            done <<< "$CHANGED"
+          fi
 
-            const client = new DefaultArtifactClient();
+          rm -rf /tmp/upload-staging
+          echo -e "$URLS" > /tmp/image-urls.txt
+          echo "Uploaded assets:"
+          cat /tmp/image-urls.txt
 
-            for (const name of manifest) {
-              const dir = `/tmp/per-image/${name}`;
-              const files = fs.readdirSync(dir).map(f => path.join(dir, f));
-              if (files.length === 0) continue;
+          # Verify asset names
+          echo "=== Release assets ==="
+          gh release view ci-assets --json assets --jq '.assets[].name' | grep "^pr${PR_NUM}-" | sort
 
-              try {
-                const { id } = await client.uploadArtifact(name, files, dir, { retentionDays: 14 });
-                console.log(`Uploaded ${name} -> artifact ID ${id}`);
-              } catch (e) {
-                console.log(`Failed to upload ${name}: ${e.message}`);
-              }
-            }
-
-      - name: Upload all screenshots (combined)
+      - name: Upload all screenshots (combined artifact)
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -181,7 +202,6 @@ jobs:
             const prNumber = ${{ github.event.pull_request.number }};
             const runId = '${{ github.run_id }}';
             const repo = '${{ github.repository }}';
-            const [owner, repoName] = repo.split('/');
 
             const statusIcon = jobStatus === 'success' ? '✅' : '❌';
             const e2eIcon = e2eStatus === 'success' ? '✅' : '⚠️';
@@ -192,26 +212,16 @@ jobs:
               report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
             } catch {}
 
-            // Fetch artifact IDs from API
-            const artifactIds = {};
+            // Read image URLs from release assets upload
+            const urlMap = new Map();
             try {
-              const artifacts = await github.rest.actions.listArtifactsForRepo({
-                owner, repo: repoName, per_page: 100,
-              });
-              for (const a of artifacts.data.artifacts) {
-                if (a.workflow_run?.id === Number(runId)) {
-                  artifactIds[a.name] = a.id;
-                }
+              const lines = fs.readFileSync('/tmp/image-urls.txt', 'utf-8').trim().split('\n');
+              for (const line of lines) {
+                if (!line.trim()) continue;
+                const [name, before, after, highlight] = line.split('|');
+                if (name) urlMap.set(name, { before, after, highlight });
               }
-            } catch (e) {
-              console.log('Failed to fetch artifacts:', e.message);
-            }
-
-            // Build artifact URL helper
-            const artifactUrl = (name) => {
-              const id = artifactIds[name];
-              return id ? `https://github.com/${repo}/actions/runs/${runId}/artifacts/${id}` : '';
-            };
+            } catch {}
 
             const { summary } = report;
             const changedImages = report.images.filter(i => i.status === 'changed');
@@ -229,7 +239,7 @@ jobs:
               `| 🎭 E2E Tests | ${e2eIcon} |`,
             ].join('\n');
 
-            // Visual section
+            // Visual section with embedded images
             let visualSection = '';
 
             if (changedImages.length > 0) {
@@ -244,23 +254,19 @@ jobs:
                 const pageName = img.name.replace('.png', '').replace(/-/g, ' ');
                 const pct = img.changedPercent !== undefined ? ` — ${img.changedPercent}% changed` : '';
                 const pixels = img.changedPixels !== undefined ? ` (${img.changedPixels.toLocaleString()} px)` : '';
-
-                const slug = img.name.replace('.png', '');
-                const beforeUrl = artifactUrl(`before-${slug}`);
-                const afterUrl = artifactUrl(`after-${slug}`);
-                const highlightUrl = artifactUrl(`highlight-${slug}`);
+                const urls = urlMap.get(img.name);
 
                 visualSection += `<details>\n`;
                 visualSection += `<summary>📸 <strong>${pageName}</strong>${pct}${pixels}</summary>\n\n`;
 
-                if (beforeUrl && afterUrl && highlightUrl) {
+                if (urls?.before && urls?.after && urls?.highlight) {
                   visualSection += `| 🔙 Before | 🔜 After | 🔬 Smart Diff |\n`;
                   visualSection += `|-----------|----------|---------------|\n`;
-                  visualSection += `| <img src="${beforeUrl}" width="280" /> | <img src="${afterUrl}" width="280" /> | <img src="${highlightUrl}" width="280" /> |\n\n`;
-                } else if (beforeUrl && afterUrl) {
+                  visualSection += `| <img src="${urls.before}" width="280" /> | <img src="${urls.after}" width="280" /> | <img src="${urls.highlight}" width="280" /> |\n\n`;
+                } else if (urls?.before && urls?.after) {
                   visualSection += `| 🔙 Before | 🔜 After |\n`;
                   visualSection += `|-----------|----------|\n`;
-                  visualSection += `| <img src="${beforeUrl}" width="400" /> | <img src="${afterUrl}" width="400" /> |\n\n`;
+                  visualSection += `| <img src="${urls.before}" width="400" /> | <img src="${urls.after}" width="400" /> |\n\n`;
                 } else {
                   visualSection += `> ⬇️ Download **all-screenshots** artifact to review.\n\n`;
                 }
