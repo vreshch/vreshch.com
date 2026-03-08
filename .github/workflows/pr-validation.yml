@@ -100,75 +100,63 @@ jobs:
             --diff-dir /tmp/screenshot-diffs \
             --highlight-dir /tmp/screenshot-highlights
 
-      - name: Upload individual image artifacts
+      - name: Upload per-image artifacts and build URL map
         if: always()
-        run: |
-          # Read changed files from comparison report
-          CHANGED=$(node -e "
-            const r = JSON.parse(require('fs').readFileSync('/tmp/comparison.json','utf-8'));
-            r.images.filter(i => i.status === 'changed').forEach(i => console.log(i.name));
-          ")
+        uses: actions/github-script@v7
+        id: upload_images
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const artifact = require('@actions/artifact');
 
-          # Stage each changed image into its own directory for upload
-          mkdir -p /tmp/artifacts
-          echo "$CHANGED" | while IFS= read -r name; do
-            [ -z "$name" ] && continue
-            slug="${name%.png}"
+            const report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
+            const changed = report.images.filter(i => i.status === 'changed');
+            const client = new artifact.DefaultArtifactClient();
+            const urlMap = {};
 
-            mkdir -p "/tmp/artifacts/${slug}/before"
-            mkdir -p "/tmp/artifacts/${slug}/after"
-            mkdir -p "/tmp/artifacts/${slug}/highlight"
+            for (const img of changed) {
+              const slug = img.name.replace('.png', '');
 
-            cp "/tmp/screenshots-base/$name" "/tmp/artifacts/${slug}/before/$name" 2>/dev/null || true
-            cp "/tmp/screenshots-current/$name" "/tmp/artifacts/${slug}/after/$name" 2>/dev/null || true
-            cp "/tmp/screenshot-highlights/highlight-$name" "/tmp/artifacts/${slug}/highlight/highlight-$name" 2>/dev/null || true
-          done
+              // Upload before
+              const beforePath = `/tmp/screenshots-base/${img.name}`;
+              if (fs.existsSync(beforePath)) {
+                const name = `before-${slug}`;
+                const { id } = await client.uploadArtifact(name, [beforePath], '/tmp/screenshots-base', { retentionDays: 14 });
+                urlMap[`before:${img.name}`] = id;
+              }
 
-          echo "Staged artifacts:"
-          find /tmp/artifacts -name "*.png" | sort
+              // Upload after
+              const afterPath = `/tmp/screenshots-current/${img.name}`;
+              if (fs.existsSync(afterPath)) {
+                const name = `after-${slug}`;
+                const { id } = await client.uploadArtifact(name, [afterPath], '/tmp/screenshots-current', { retentionDays: 14 });
+                urlMap[`after:${img.name}`] = id;
+              }
 
-      - name: Upload before screenshots
+              // Upload highlight
+              const highlightPath = `/tmp/screenshot-highlights/highlight-${img.name}`;
+              if (fs.existsSync(highlightPath)) {
+                const name = `highlight-${slug}`;
+                const { id } = await client.uploadArtifact(name, [highlightPath], '/tmp/screenshot-highlights', { retentionDays: 14 });
+                urlMap[`highlight:${img.name}`] = id;
+              }
+            }
+
+            fs.writeFileSync('/tmp/artifact-ids.json', JSON.stringify(urlMap, null, 2));
+            console.log('Uploaded artifacts:', JSON.stringify(urlMap, null, 2));
+
+      - name: Upload all screenshots (combined)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: screenshots-before
-          path: /tmp/screenshots-base/
-          retention-days: 14
-          if-no-files-found: ignore
-
-      - name: Upload after screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-after
-          path: /tmp/screenshots-current/
-          retention-days: 14
-          if-no-files-found: ignore
-
-      - name: Upload smart diff highlights
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-highlights
-          path: /tmp/screenshot-highlights/
-          retention-days: 14
-          if-no-files-found: ignore
-
-      - name: Upload raw diffs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots-diffs
-          path: /tmp/screenshot-diffs/
-          retention-days: 14
-          if-no-files-found: ignore
-
-      - name: Upload comparison report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: comparison-report
-          path: /tmp/comparison.json
+          name: all-screenshots
+          path: |
+            /tmp/screenshots-base/
+            /tmp/screenshots-current/
+            /tmp/screenshot-diffs/
+            /tmp/screenshot-highlights/
+            /tmp/comparison.json
           retention-days: 14
           if-no-files-found: ignore
 
@@ -195,26 +183,15 @@ jobs:
               report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
             } catch {}
 
-            // Get artifact URLs via API
-            const artifactMap = new Map();
+            // Read artifact IDs
+            let artifactIds = {};
             try {
-              const artifacts = await github.rest.actions.listArtifactsForRepo({
-                owner, repo: repoName,
-                per_page: 20,
-              });
-              for (const a of artifacts.data.artifacts) {
-                if (a.workflow_run?.id === Number(runId)) {
-                  artifactMap.set(a.name, `https://github.com/${repo}/actions/runs/${runId}/artifacts/${a.id}`);
-                }
-              }
-            } catch (e) {
-              console.log('Failed to fetch artifacts:', e.message);
-            }
+              artifactIds = JSON.parse(fs.readFileSync('/tmp/artifact-ids.json', 'utf-8'));
+            } catch {}
 
-            const beforeArtifactUrl = artifactMap.get('screenshots-before') || '';
-            const afterArtifactUrl = artifactMap.get('screenshots-after') || '';
-            const highlightsArtifactUrl = artifactMap.get('screenshots-highlights') || '';
-            const diffsArtifactUrl = artifactMap.get('screenshots-diffs') || '';
+            // Build artifact URL helper
+            const artifactUrl = (id) =>
+              `https://github.com/${repo}/actions/runs/${runId}/artifacts/${id}`;
 
             const { summary } = report;
             const changedImages = report.images.filter(i => i.status === 'changed');
@@ -243,34 +220,32 @@ jobs:
               if (summary.removed > 0) visualSection += `| 🗑️ Removed | ${summary.removed} |\n`;
               visualSection += `| ✅ Unchanged | ${summary.unchanged} |\n\n`;
 
-              // Artifact download links
-              const links = [];
-              if (beforeArtifactUrl) links.push(`[🔙 Before](${beforeArtifactUrl})`);
-              if (afterArtifactUrl) links.push(`[🔜 After](${afterArtifactUrl})`);
-              if (highlightsArtifactUrl) links.push(`[🔬 Smart Diff](${highlightsArtifactUrl})`);
-              if (diffsArtifactUrl) links.push(`[📊 Raw Diff](${diffsArtifactUrl})`);
-              if (links.length > 0) {
-                visualSection += `> ⬇️ Download: ${links.join(' · ')}\n\n`;
-              }
-
               for (const img of changedImages) {
                 const pageName = img.name.replace('.png', '').replace(/-/g, ' ');
                 const pct = img.changedPercent !== undefined ? ` — ${img.changedPercent}% changed` : '';
                 const pixels = img.changedPixels !== undefined ? ` (${img.changedPixels.toLocaleString()} px)` : '';
 
+                const beforeId = artifactIds[`before:${img.name}`];
+                const afterId = artifactIds[`after:${img.name}`];
+                const highlightId = artifactIds[`highlight:${img.name}`];
+
+                const beforeUrl = beforeId ? artifactUrl(beforeId) : '';
+                const afterUrl = afterId ? artifactUrl(afterId) : '';
+                const highlightUrl = highlightId ? artifactUrl(highlightId) : '';
+
                 visualSection += `<details>\n`;
                 visualSection += `<summary>📸 <strong>${pageName}</strong>${pct}${pixels}</summary>\n\n`;
 
-                const hasHighlight = !img.resized && img.highlightPath;
-
-                if (hasHighlight) {
+                if (beforeUrl && afterUrl && highlightUrl) {
                   visualSection += `| 🔙 Before | 🔜 After | 🔬 Smart Diff |\n`;
                   visualSection += `|-----------|----------|---------------|\n`;
-                  visualSection += `| <img src="${beforeArtifactUrl}" alt="before-${img.name}" width="280" /> | <img src="${afterArtifactUrl}" alt="after-${img.name}" width="280" /> | <img src="${highlightsArtifactUrl}" alt="highlight-${img.name}" width="280" /> |\n\n`;
-                } else {
+                  visualSection += `| <img src="${beforeUrl}" width="280" /> | <img src="${afterUrl}" width="280" /> | <img src="${highlightUrl}" width="280" /> |\n\n`;
+                } else if (beforeUrl && afterUrl) {
                   visualSection += `| 🔙 Before | 🔜 After |\n`;
                   visualSection += `|-----------|----------|\n`;
-                  visualSection += `| <img src="${beforeArtifactUrl}" alt="before-${img.name}" width="400" /> | <img src="${afterArtifactUrl}" alt="after-${img.name}" width="400" /> |\n\n`;
+                  visualSection += `| <img src="${beforeUrl}" width="400" /> | <img src="${afterUrl}" width="400" /> |\n\n`;
+                } else {
+                  visualSection += `> ⬇️ Download **all-screenshots** artifact to review.\n\n`;
                 }
 
                 visualSection += `</details>\n\n`;
