@@ -11,56 +11,181 @@ permissions:
 
 jobs:
   validate:
-    name: 🔍 Validate Pull Request
+    name: Validate Pull Request
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout PR code
         uses: actions/checkout@v4
 
-      - name: 🔧 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🔎 Lint code
+      - name: Lint code
         run: npm run lint
 
-      - name: 🏗️ Build project
+      - name: Build project
         run: npm run build
 
-      - name: 🐳 Validate Dockerfile
+      - name: Validate Dockerfile
         run: docker build -t vreshch-com:pr-${{ github.event.pull_request.number }} .
 
-      - name: 📊 Comment on PR
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Checkout base branch screenshots
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: base-branch
+
+      - name: Copy base screenshots as baselines
+        run: |
+          if [ -d "base-branch/e2e/screenshots" ]; then
+            cp base-branch/e2e/screenshots/*.png e2e/screenshots/ 2>/dev/null || true
+            echo "Copied base branch screenshots as baselines"
+            ls -la e2e/screenshots/
+          else
+            echo "No base screenshots found — first run will generate baselines"
+          fi
+
+      - name: Run E2E tests (visual warnings only)
+        id: e2e
+        continue-on-error: true
+        env:
+          CI: true
+          VISUAL_MODE: warning
+        run: npx playwright test 2>&1 | tee e2e-output.txt
+
+      - name: Update screenshots from test results
+        if: always()
+        run: |
+          # Playwright stores actual screenshots in test-results on mismatch
+          mkdir -p e2e/screenshots-after
+          mkdir -p e2e/screenshots-before
+          mkdir -p e2e/screenshots-diff
+
+          # Copy current (after) screenshots
+          if [ -d "test-results" ]; then
+            find test-results -name "*-actual.png" | while read f; do
+              name=$(basename "$f" | sed 's/-actual\.png/.png/')
+              cp "$f" "e2e/screenshots-after/$name"
+            done
+
+            find test-results -name "*-expected.png" | while read f; do
+              name=$(basename "$f" | sed 's/-expected\.png/.png/')
+              cp "$f" "e2e/screenshots-before/$name"
+            done
+
+            find test-results -name "*-diff.png" | while read f; do
+              name=$(basename "$f" | sed 's/-diff\.png/.png/')
+              cp "$f" "e2e/screenshots-diff/$name"
+            done
+          fi
+
+          # List what changed
+          echo "=== Screenshots with diffs ==="
+          ls e2e/screenshots-diff/ 2>/dev/null || echo "No diffs detected"
+
+      - name: Upload screenshot artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-screenshots
+          path: |
+            e2e/screenshots-before/
+            e2e/screenshots-after/
+            e2e/screenshots-diff/
+            test-results/
+          retention-days: 14
+
+      - name: Comment on PR with results
         if: always()
         uses: actions/github-script@v7
         with:
           script: |
-            const status = '${{ job.status }}' === 'success' ? '✅ PASSED' : '❌ FAILED';
-            const emoji = '${{ job.status }}' === 'success' ? '🎉' : '💥';
+            const fs = require('fs');
+            const path = require('path');
 
-            const body = `${emoji} **PR Validation ${status}**
+            const jobStatus = '${{ job.status }}';
+            const e2eStatus = '${{ steps.e2e.outcome }}';
+            const statusEmoji = jobStatus === 'success' ? '✅' : '❌';
+            const e2eEmoji = e2eStatus === 'success' ? '✅' : '⚠️';
+
+            // Collect diff screenshots
+            const diffDir = 'e2e/screenshots-diff';
+            let diffFiles = [];
+            try {
+              diffFiles = fs.readdirSync(diffDir).filter(f => f.endsWith('.png'));
+            } catch {}
+
+            const beforeDir = 'e2e/screenshots-before';
+            let beforeFiles = [];
+            try {
+              beforeFiles = fs.readdirSync(beforeDir).filter(f => f.endsWith('.png'));
+            } catch {}
+
+            // Build visual changes section
+            let visualSection = '';
+            if (diffFiles.length > 0) {
+              visualSection = `\n### Visual Changes Detected\n\n`;
+              visualSection += `| Page | Status |\n|------|--------|\n`;
+              for (const file of diffFiles) {
+                const pageName = file.replace('.png', '').replace(/-/g, ' ');
+                visualSection += `| ${pageName} | Changed |\n`;
+              }
+              visualSection += `\n> Download the **visual-regression-screenshots** artifact to review before/after/diff images.\n`;
+            } else if (beforeFiles.length === 0) {
+              visualSection = `\n### Visual Regression\n\nNo visual changes detected — all pages match baselines.\n`;
+            } else {
+              visualSection = `\n### Visual Regression\n\nNo visual changes detected.\n`;
+            }
+
+            const pages = ['home', 'cv', 'interests', 'projects', 'chemistry-js', 'contacts'];
+            const screenshotList = pages.map(p => {
+              const hasDesktopDiff = diffFiles.includes(`${p}-desktop.png`);
+              const hasMobileDiff = diffFiles.includes(`${p}-mobile.png`);
+              const icon = hasDesktopDiff || hasMobileDiff ? 'Changed' : 'OK';
+              const details = [];
+              if (hasDesktopDiff) details.push('desktop changed');
+              if (hasMobileDiff) details.push('mobile changed');
+              const suffix = details.length > 0 ? ` (${details.join(', ')})` : '';
+              return `| ${p} | ${icon}${suffix} |`;
+            }).join('\n');
+
+            const body = `## PR Validation ${statusEmoji}
 
             **Commit:** \`${{ github.sha }}\`
             **Branch:** \`${{ github.head_ref }}\`
 
-            **Checks:**
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Dependencies installed
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Linting passed
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Build successful
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Docker image validated
+            ### Checks
+            | Step | Status |
+            |------|--------|
+            | Dependencies | ${statusEmoji} |
+            | Linting | ${statusEmoji} |
+            | Build | ${statusEmoji} |
+            | Docker | ${statusEmoji} |
+            | E2E Tests | ${e2eEmoji} |
 
-            ${status === '✅ PASSED' ? '**Ready to merge!** ✨' : '**Please fix issues before merging.**'}
+            ${visualSection}
+
+            ### Page Screenshot Status
+            | Page | Status |
+            |------|--------|
+            ${screenshotList}
+
+            ${jobStatus === 'success' && e2eStatus === 'success' ? '**Ready to merge!**' : '**Review visual changes before merging.**'}
 
             ---
-            🔗 [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            ⏰ Generated at: \`${new Date().toISOString()}\``;
+            [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Download screenshots](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)
+            Generated: \`${new Date().toISOString()}\``.replace(/^            /gm, '');
 
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -68,8 +193,8 @@ jobs:
               issue_number: context.issue.number,
             });
 
-            const botComment = comments.data.find(comment => 
-              comment.user.login === 'github-actions[bot]' && 
+            const botComment = comments.data.find(comment =>
+              comment.user.login === 'github-actions[bot]' &&
               comment.body.includes('PR Validation')
             );
 
