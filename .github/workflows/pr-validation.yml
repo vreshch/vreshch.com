@@ -121,9 +121,10 @@ jobs:
           REPO="${{ github.repository }}"
           PREFIX="pr${PR_NUM}-run${RUN_ID}"
 
-          # Delete old assets for this PR
+          # Delete old assets for this PR (from previous runs)
           gh release view ci-assets --json assets --jq ".assets[].name" 2>/dev/null | \
-            grep "^pr${PR_NUM}-" | while read old; do
+            grep "^pr${PR_NUM}-" | while read -r old; do
+              echo "Deleting old asset: $old"
               gh release delete-asset ci-assets "$old" --yes 2>/dev/null || true
             done
 
@@ -131,12 +132,15 @@ jobs:
           echo "{}" > "$URLS_FILE"
 
           upload_asset() {
-            local file="$1"
+            local src_file="$1"
             local asset_name="$2"
-            local result
-            result=$(gh release upload ci-assets "$file#${asset_name}" --clobber 2>&1) || true
-            local url="https://github.com/${REPO}/releases/download/ci-assets/${asset_name}"
-            echo "$url"
+            # gh release upload uses the FILENAME as the asset name
+            # so we must rename the file to match the desired asset name
+            local tmp_file="/tmp/upload-staging/${asset_name}"
+            mkdir -p /tmp/upload-staging
+            cp "$src_file" "$tmp_file"
+            gh release upload ci-assets "$tmp_file" --clobber 2>/dev/null || true
+            echo "https://github.com/${REPO}/releases/download/ci-assets/${asset_name}"
           }
 
           # Read comparison report
@@ -148,6 +152,10 @@ jobs:
           URLS=""
           if [ -n "$CHANGED_FILES" ]; then
             while IFS= read -r name; do
+              BEFORE_URL=""
+              AFTER_URL=""
+              HIGHLIGHT_URL=""
+
               # Upload before
               if [ -f "/tmp/screenshots-base/$name" ]; then
                 BEFORE_URL=$(upload_asset "/tmp/screenshots-base/$name" "${PREFIX}-before-${name}")
@@ -161,10 +169,11 @@ jobs:
                 HIGHLIGHT_URL=$(upload_asset "/tmp/screenshot-highlights/highlight-$name" "${PREFIX}-highlight-${name}")
               fi
 
-              URLS="${URLS}${name}|${BEFORE_URL:-}|${AFTER_URL:-}|${HIGHLIGHT_URL:-}\n"
+              URLS="${URLS}${name}|${BEFORE_URL}|${AFTER_URL}|${HIGHLIGHT_URL}\n"
             done <<< "$CHANGED_FILES"
           fi
 
+          rm -rf /tmp/upload-staging
           echo -e "$URLS" > /tmp/image-urls.txt
           echo "Uploaded assets:"
           cat /tmp/image-urls.txt
