@@ -100,45 +100,60 @@ jobs:
             --diff-dir /tmp/screenshot-diffs \
             --highlight-dir /tmp/screenshot-highlights
 
-      - name: Upload per-image artifacts and build URL map
+      - name: Stage per-image artifacts
         if: always()
         run: |
-          npm install --no-save @actions/artifact 2>/dev/null
+          CHANGED=$(node -e "
+            const r = JSON.parse(require('fs').readFileSync('/tmp/comparison.json','utf-8'));
+            r.images.filter(i => i.status === 'changed').forEach(i => console.log(i.name));
+          ")
 
-          node --input-type=module <<'SCRIPT'
-          import { readFileSync, writeFileSync, existsSync } from 'fs';
-          import { DefaultArtifactClient } from '@actions/artifact';
+          mkdir -p /tmp/per-image
+          echo "$CHANGED" | while IFS= read -r name; do
+            [ -z "$name" ] && continue
+            slug="${name%.png}"
 
-          const report = JSON.parse(readFileSync('/tmp/comparison.json', 'utf-8'));
-          const changed = report.images.filter(i => i.status === 'changed');
-          const client = new DefaultArtifactClient();
-          const urlMap = {};
+            # Each image gets its own subfolder for upload
+            mkdir -p "/tmp/per-image/before-${slug}"
+            mkdir -p "/tmp/per-image/after-${slug}"
+            mkdir -p "/tmp/per-image/highlight-${slug}"
 
-          for (const img of changed) {
-            const slug = img.name.replace('.png', '');
+            cp "/tmp/screenshots-base/$name" "/tmp/per-image/before-${slug}/$name" 2>/dev/null || true
+            cp "/tmp/screenshots-current/$name" "/tmp/per-image/after-${slug}/$name" 2>/dev/null || true
+            cp "/tmp/screenshot-highlights/highlight-$name" "/tmp/per-image/highlight-${slug}/highlight-$name" 2>/dev/null || true
+          done
 
-            const beforePath = `/tmp/screenshots-base/${img.name}`;
-            if (existsSync(beforePath)) {
-              const { id } = await client.uploadArtifact(`before-${slug}`, [beforePath], '/tmp/screenshots-base', { retentionDays: 14 });
-              urlMap[`before:${img.name}`] = id;
+          # Write manifest of artifact names to upload
+          ls /tmp/per-image/ > /tmp/per-image-manifest.txt
+          echo "Staged per-image artifacts:"
+          cat /tmp/per-image-manifest.txt
+
+      - name: Upload per-image artifacts
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const { DefaultArtifactClient } = require('@actions/artifact');
+
+            const manifest = fs.readFileSync('/tmp/per-image-manifest.txt', 'utf-8')
+              .trim().split('\n').filter(Boolean);
+
+            const client = new DefaultArtifactClient();
+
+            for (const name of manifest) {
+              const dir = `/tmp/per-image/${name}`;
+              const files = fs.readdirSync(dir).map(f => path.join(dir, f));
+              if (files.length === 0) continue;
+
+              try {
+                const { id } = await client.uploadArtifact(name, files, dir, { retentionDays: 14 });
+                console.log(`Uploaded ${name} -> artifact ID ${id}`);
+              } catch (e) {
+                console.log(`Failed to upload ${name}: ${e.message}`);
+              }
             }
-
-            const afterPath = `/tmp/screenshots-current/${img.name}`;
-            if (existsSync(afterPath)) {
-              const { id } = await client.uploadArtifact(`after-${slug}`, [afterPath], '/tmp/screenshots-current', { retentionDays: 14 });
-              urlMap[`after:${img.name}`] = id;
-            }
-
-            const highlightPath = `/tmp/screenshot-highlights/highlight-${img.name}`;
-            if (existsSync(highlightPath)) {
-              const { id } = await client.uploadArtifact(`highlight-${slug}`, [highlightPath], '/tmp/screenshot-highlights', { retentionDays: 14 });
-              urlMap[`highlight:${img.name}`] = id;
-            }
-          }
-
-          writeFileSync('/tmp/artifact-ids.json', JSON.stringify(urlMap, null, 2));
-          console.log('Uploaded artifacts:', JSON.stringify(urlMap, null, 2));
-          SCRIPT
 
       - name: Upload all screenshots (combined)
         if: always()
@@ -177,15 +192,26 @@ jobs:
               report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
             } catch {}
 
-            // Read artifact IDs
-            let artifactIds = {};
+            // Fetch artifact IDs from API
+            const artifactIds = {};
             try {
-              artifactIds = JSON.parse(fs.readFileSync('/tmp/artifact-ids.json', 'utf-8'));
-            } catch {}
+              const artifacts = await github.rest.actions.listArtifactsForRepo({
+                owner, repo: repoName, per_page: 100,
+              });
+              for (const a of artifacts.data.artifacts) {
+                if (a.workflow_run?.id === Number(runId)) {
+                  artifactIds[a.name] = a.id;
+                }
+              }
+            } catch (e) {
+              console.log('Failed to fetch artifacts:', e.message);
+            }
 
             // Build artifact URL helper
-            const artifactUrl = (id) =>
-              `https://github.com/${repo}/actions/runs/${runId}/artifacts/${id}`;
+            const artifactUrl = (name) => {
+              const id = artifactIds[name];
+              return id ? `https://github.com/${repo}/actions/runs/${runId}/artifacts/${id}` : '';
+            };
 
             const { summary } = report;
             const changedImages = report.images.filter(i => i.status === 'changed');
@@ -219,13 +245,10 @@ jobs:
                 const pct = img.changedPercent !== undefined ? ` — ${img.changedPercent}% changed` : '';
                 const pixels = img.changedPixels !== undefined ? ` (${img.changedPixels.toLocaleString()} px)` : '';
 
-                const beforeId = artifactIds[`before:${img.name}`];
-                const afterId = artifactIds[`after:${img.name}`];
-                const highlightId = artifactIds[`highlight:${img.name}`];
-
-                const beforeUrl = beforeId ? artifactUrl(beforeId) : '';
-                const afterUrl = afterId ? artifactUrl(afterId) : '';
-                const highlightUrl = highlightId ? artifactUrl(highlightId) : '';
+                const slug = img.name.replace('.png', '');
+                const beforeUrl = artifactUrl(`before-${slug}`);
+                const afterUrl = artifactUrl(`after-${slug}`);
+                const highlightUrl = artifactUrl(`highlight-${slug}`);
 
                 visualSection += `<details>\n`;
                 visualSection += `<summary>📸 <strong>${pageName}</strong>${pct}${pixels}</summary>\n\n`;
