@@ -7,6 +7,7 @@ export const metadata: Metadata = {
   description: 'Personal homepage - Volodymyr D. Vreshch',
   keywords: 'Personal homepage, Volodymyr D. Vreshch, Vreshch V.D.',
   authors: [{ name: 'Volodymyr D. Vreshch' }],
+  icons: { icon: '/favicon.ico' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

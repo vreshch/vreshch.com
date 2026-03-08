@@ -6,61 +6,328 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
   validate:
-    name: 🔍 Validate Pull Request
+    name: Validate Pull Request
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
-      - name: 📥 Checkout code
+      - name: Checkout PR code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: 🔧 Setup Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: 'npm'
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: npm ci
 
-      - name: 🔎 Lint code
+      - name: Lint code
         run: npm run lint
 
-      - name: 🏗️ Build project
+      - name: Build project
         run: npm run build
 
-      - name: 🐳 Validate Dockerfile
+      - name: Validate Dockerfile
         run: docker build -t vreshch-com:pr-${{ github.event.pull_request.number }} .
 
-      - name: 📊 Comment on PR
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Extract base branch screenshots
+        run: |
+          mkdir -p /tmp/screenshots-base
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          git show "${BASE_SHA}":e2e/screenshots/ 2>/dev/null | \
+            grep '\.png$' | while read f; do
+              git show "${BASE_SHA}:e2e/screenshots/${f}" > "/tmp/screenshots-base/${f}" 2>/dev/null || true
+            done
+          echo "Base screenshots:"
+          ls /tmp/screenshots-base/ 2>/dev/null || echo "None found"
+
+      - name: Copy base screenshots as baselines
+        run: |
+          if ls /tmp/screenshots-base/*.png 1>/dev/null 2>&1; then
+            cp /tmp/screenshots-base/*.png e2e/screenshots/
+            echo "Copied base branch screenshots as baselines"
+          else
+            echo "No base screenshots found — first run will generate baselines"
+          fi
+
+      - name: Run E2E tests (visual warnings only)
+        id: e2e
+        continue-on-error: true
+        env:
+          CI: true
+          VISUAL_MODE: warning
+        run: npx playwright test 2>&1 | tee e2e-output.txt
+
+      - name: Collect current screenshots
+        if: always()
+        run: |
+          mkdir -p /tmp/screenshots-current
+          if [ -d "test-results" ]; then
+            find test-results -name "*-actual.png" | while read f; do
+              name=$(basename "$f" | sed 's/-actual\.png/.png/')
+              cp "$f" "/tmp/screenshots-current/$name"
+            done
+          fi
+          for f in e2e/screenshots/*.png; do
+            name=$(basename "$f")
+            if [ ! -f "/tmp/screenshots-current/$name" ]; then
+              cp "$f" "/tmp/screenshots-current/$name"
+            fi
+          done
+          echo "Current screenshots:"
+          ls /tmp/screenshots-current/
+
+      - name: Run smart diff comparison
+        if: always()
+        run: |
+          node scripts/compare-screenshots.js \
+            /tmp/screenshots-base \
+            /tmp/screenshots-current \
+            --output /tmp/comparison.json \
+            --diff-dir /tmp/screenshot-diffs \
+            --highlight-dir /tmp/screenshot-highlights
+
+      - name: Ensure ci-assets release exists
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release view ci-assets 2>/dev/null || \
+            gh release create ci-assets --title "CI Assets" --notes "Automated visual regression assets" --prerelease
+
+      - name: Upload images to release assets
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          PR_NUM="${{ github.event.pull_request.number }}"
+          RUN_ID="${{ github.run_id }}"
+          REPO="${{ github.repository }}"
+          PREFIX="pr${PR_NUM}-run${RUN_ID}"
+
+          # Delete old assets for this PR
+          gh release view ci-assets --json assets --jq ".assets[].name" 2>/dev/null | \
+            grep "^pr${PR_NUM}-" | while read -r old; do
+              gh release delete-asset ci-assets "$old" --yes 2>/dev/null || true
+            done
+
+          # Read changed files
+          CHANGED=$(node -e "
+            const r = JSON.parse(require('fs').readFileSync('/tmp/comparison.json','utf-8'));
+            r.images.filter(i => i.status === 'changed').forEach(i => console.log(i.name));
+          ")
+
+          mkdir -p /tmp/upload-staging
+          URLS=""
+
+          if [ -n "$CHANGED" ]; then
+            while IFS= read -r name; do
+              [ -z "$name" ] && continue
+              BEFORE_URL=""
+              AFTER_URL=""
+              HIGHLIGHT_URL=""
+
+              # Upload before (copy with prefixed name, then upload)
+              if [ -f "/tmp/screenshots-base/$name" ]; then
+                ASSET="${PREFIX}-before-${name}"
+                cp "/tmp/screenshots-base/$name" "/tmp/upload-staging/${ASSET}"
+                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
+                BEFORE_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
+              fi
+
+              # Upload after
+              if [ -f "/tmp/screenshots-current/$name" ]; then
+                ASSET="${PREFIX}-after-${name}"
+                cp "/tmp/screenshots-current/$name" "/tmp/upload-staging/${ASSET}"
+                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
+                AFTER_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
+              fi
+
+              # Upload highlight (smart diff)
+              if [ -f "/tmp/screenshot-highlights/highlight-$name" ]; then
+                ASSET="${PREFIX}-highlight-${name}"
+                cp "/tmp/screenshot-highlights/highlight-$name" "/tmp/upload-staging/${ASSET}"
+                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
+                HIGHLIGHT_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
+              fi
+
+              URLS="${URLS}${name}|${BEFORE_URL}|${AFTER_URL}|${HIGHLIGHT_URL}\n"
+            done <<< "$CHANGED"
+          fi
+
+          rm -rf /tmp/upload-staging
+          echo -e "$URLS" > /tmp/image-urls.txt
+          echo "Uploaded assets:"
+          cat /tmp/image-urls.txt
+
+          # Verify asset names
+          echo "=== Release assets ==="
+          gh release view ci-assets --json assets --jq '.assets[].name' | grep "^pr${PR_NUM}-" | sort
+
+      - name: Upload all screenshots (combined artifact)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: all-screenshots
+          path: |
+            /tmp/screenshots-base/
+            /tmp/screenshots-current/
+            /tmp/screenshot-diffs/
+            /tmp/screenshot-highlights/
+            /tmp/comparison.json
+          retention-days: 14
+          if-no-files-found: ignore
+
+      - name: Comment on PR with results
         if: always()
         uses: actions/github-script@v7
         with:
           script: |
-            const status = '${{ job.status }}' === 'success' ? '✅ PASSED' : '❌ FAILED';
-            const emoji = '${{ job.status }}' === 'success' ? '🎉' : '💥';
+            const fs = require('fs');
 
-            const body = `${emoji} **PR Validation ${status}**
+            const jobStatus = '${{ job.status }}';
+            const e2eStatus = '${{ steps.e2e.outcome }}';
+            const prNumber = ${{ github.event.pull_request.number }};
+            const runId = '${{ github.run_id }}';
+            const repo = '${{ github.repository }}';
 
-            **Commit:** \`${{ github.sha }}\`
-            **Branch:** \`${{ github.head_ref }}\`
+            const statusIcon = jobStatus === 'success' ? '✅' : '❌';
+            const e2eIcon = e2eStatus === 'success' ? '✅' : '⚠️';
 
-            **Checks:**
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Dependencies installed
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Linting passed
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Build successful
-            - ${'${{ job.status }}' === 'success' ? '✅' : '❌'} Docker image validated
+            // Read comparison report
+            let report = { images: [], summary: { total: 0, changed: 0, added: 0, removed: 0, unchanged: 0 } };
+            try {
+              report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
+            } catch {}
 
-            ${status === '✅ PASSED' ? '**Ready to merge!** ✨' : '**Please fix issues before merging.**'}
+            // Read image URLs from release assets upload
+            const urlMap = new Map();
+            try {
+              const lines = fs.readFileSync('/tmp/image-urls.txt', 'utf-8').trim().split('\n');
+              for (const line of lines) {
+                if (!line.trim()) continue;
+                const [name, before, after, highlight] = line.split('|');
+                if (name) urlMap.set(name, { before, after, highlight });
+              }
+            } catch {}
 
-            ---
-            🔗 [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            ⏰ Generated at: \`${new Date().toISOString()}\``;
+            const { summary } = report;
+            const changedImages = report.images.filter(i => i.status === 'changed');
+            const addedImages = report.images.filter(i => i.status === 'added');
+            const removedImages = report.images.filter(i => i.status === 'removed');
+
+            // Checks table
+            const checksTable = [
+              `| Step | Status |`,
+              `|------|--------|`,
+              `| 📦 Dependencies | ${statusIcon} |`,
+              `| 🔍 Linting | ${statusIcon} |`,
+              `| 🏗️ Build | ${statusIcon} |`,
+              `| 🐳 Docker | ${statusIcon} |`,
+              `| 🎭 E2E Tests | ${e2eIcon} |`,
+            ].join('\n');
+
+            // Visual section with embedded images
+            let visualSection = '';
+
+            if (changedImages.length > 0) {
+              visualSection += `\n### 🔄 Visual Changes (${changedImages.length} of ${summary.total} screenshots)\n\n`;
+              visualSection += `| 📊 | Count |\n|-----|-------|\n`;
+              visualSection += `| 🔄 Changed | ${summary.changed} |\n`;
+              if (summary.added > 0) visualSection += `| 🆕 Added | ${summary.added} |\n`;
+              if (summary.removed > 0) visualSection += `| 🗑️ Removed | ${summary.removed} |\n`;
+              visualSection += `| ✅ Unchanged | ${summary.unchanged} |\n\n`;
+
+              for (const img of changedImages) {
+                const pageName = img.name.replace('.png', '').replace(/-/g, ' ');
+                const pct = img.changedPercent !== undefined ? ` — ${img.changedPercent}% changed` : '';
+                const pixels = img.changedPixels !== undefined ? ` (${img.changedPixels.toLocaleString()} px)` : '';
+                const urls = urlMap.get(img.name);
+
+                visualSection += `<details>\n`;
+                visualSection += `<summary>📸 <strong>${pageName}</strong>${pct}${pixels}</summary>\n\n`;
+
+                if (urls?.before && urls?.after && urls?.highlight) {
+                  visualSection += `| 🔙 Before | 🔜 After | 🔬 Smart Diff |\n`;
+                  visualSection += `|-----------|----------|---------------|\n`;
+                  visualSection += `| <img src="${urls.before}" width="280" /> | <img src="${urls.after}" width="280" /> | <img src="${urls.highlight}" width="280" /> |\n\n`;
+                } else if (urls?.before && urls?.after) {
+                  visualSection += `| 🔙 Before | 🔜 After |\n`;
+                  visualSection += `|-----------|----------|\n`;
+                  visualSection += `| <img src="${urls.before}" width="400" /> | <img src="${urls.after}" width="400" /> |\n\n`;
+                } else {
+                  visualSection += `> ⬇️ Download **all-screenshots** artifact to review.\n\n`;
+                }
+
+                visualSection += `</details>\n\n`;
+              }
+
+              if (addedImages.length > 0) {
+                visualSection += `#### 🆕 Added Screenshots\n`;
+                for (const img of addedImages) {
+                  visualSection += `- \`${img.name}\`\n`;
+                }
+                visualSection += '\n';
+              }
+
+              if (removedImages.length > 0) {
+                visualSection += `#### 🗑️ Removed Screenshots\n`;
+                for (const img of removedImages) {
+                  visualSection += `- \`${img.name}\`\n`;
+                }
+                visualSection += '\n';
+              }
+            } else {
+              visualSection += `\n### ✅ Visual Regression\n\n`;
+              visualSection += `All ${summary.total} screenshots match baselines — no visual changes detected.\n\n`;
+            }
+
+            // Page status table
+            const pages = ['home', 'cv', 'interests', 'projects', 'chemistry-js', 'contacts'];
+            const pageRows = pages.map(p => {
+              const desktopImg = report.images.find(i => i.name === `${p}-desktop.png`);
+              const mobileImg = report.images.find(i => i.name === `${p}-mobile.png`);
+              const desktopIcon = !desktopImg ? '➖' : desktopImg.status === 'changed' ? '🔄' : '✅';
+              const mobileIcon = !mobileImg ? '➖' : mobileImg.status === 'changed' ? '🔄' : '✅';
+              return `| ${p} | ${desktopIcon} | ${mobileIcon} |`;
+            }).join('\n');
+
+            const mergeStatus = jobStatus === 'success' && e2eStatus === 'success'
+              ? '🚀 **Ready to merge!**'
+              : '⚠️ **Review changes before merging.**';
+
+            const body = [
+              `## 🔍 PR Validation ${statusIcon}`,
+              ``,
+              `> **Commit:** \`${{ github.sha }}\` | **Branch:** \`${{ github.head_ref }}\``,
+              ``,
+              `### 📋 Checks`,
+              checksTable,
+              ``,
+              visualSection,
+              `### 📸 Page Status`,
+              `| Page | 🖥️ Desktop | 📱 Mobile |`,
+              `|------|-----------|----------|`,
+              pageRows,
+              ``,
+              mergeStatus,
+              ``,
+              `---`,
+              `🔗 [Workflow run](https://github.com/${repo}/actions/runs/${runId}) · ⬇️ [Download all screenshots](https://github.com/${repo}/actions/runs/${runId}#artifacts)`,
+              `⏰ \`${new Date().toISOString()}\``,
+            ].join('\n');
 
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -68,8 +335,8 @@ jobs:
               issue_number: context.issue.number,
             });
 
-            const botComment = comments.data.find(comment => 
-              comment.user.login === 'github-actions[bot]' && 
+            const botComment = comments.data.find(comment =>
+              comment.user.login === 'github-actions[bot]' &&
               comment.body.includes('PR Validation')
             );
 
