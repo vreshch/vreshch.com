@@ -3,9 +3,14 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { clsx } from 'clsx';
+import { cn } from '@/lib/cn';
 
-const navItems = [
+export interface NavItem {
+  href: string;
+  label: string;
+}
+
+export const navItems: NavItem[] = [
   { href: '/', label: 'Home' },
   { href: '/cv', label: 'Curriculum Vitae' },
   { href: '/interests', label: 'Interests' },
@@ -29,7 +34,7 @@ export function Sidebar() {
         </button>
       </div>
       <div
-        className={clsx(
+        className={cn(
           'overflow-hidden transition-all duration-500 md:max-h-none md:overflow-visible',
           closed ? 'max-h-0' : 'max-h-[550px]'
         )}
@@ -38,7 +43,7 @@ export function Sidebar() {
           <Link
             key={href}
             href={href}
-            className={clsx(
+            className={cn(
               'block border-l-3 px-4 py-2 my-0.5 text-primary',
               pathname === href
                 ? 'border-l-sidebar-border bg-sidebar-hover font-semibold'
