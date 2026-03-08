@@ -6,7 +6,7 @@ on:
     types: [opened, synchronize, reopened]
 
 permissions:
-  contents: read
+  contents: write
   pull-requests: write
 
 jobs:
@@ -64,15 +64,13 @@ jobs:
           VISUAL_MODE: warning
         run: npx playwright test 2>&1 | tee e2e-output.txt
 
-      - name: Update screenshots from test results
+      - name: Collect screenshot diffs
         if: always()
         run: |
-          # Playwright stores actual screenshots in test-results on mismatch
           mkdir -p e2e/screenshots-after
           mkdir -p e2e/screenshots-before
           mkdir -p e2e/screenshots-diff
 
-          # Copy current (after) screenshots
           if [ -d "test-results" ]; then
             find test-results -name "*-actual.png" | while read f; do
               name=$(basename "$f" | sed 's/-actual\.png/.png/')
@@ -90,9 +88,35 @@ jobs:
             done
           fi
 
-          # List what changed
           echo "=== Screenshots with diffs ==="
           ls e2e/screenshots-diff/ 2>/dev/null || echo "No diffs detected"
+
+      - name: Push diff images to temp branch
+        if: always()
+        run: |
+          DIFF_BRANCH="visual-diff/pr-${{ github.event.pull_request.number }}"
+          HAS_DIFFS=$(ls e2e/screenshots-diff/*.png 2>/dev/null | wc -l)
+
+          if [ "$HAS_DIFFS" -gt 0 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+
+            git checkout --orphan "$DIFF_BRANCH"
+            git rm -rf . > /dev/null 2>&1 || true
+
+            mkdir -p before after diff
+            cp e2e/screenshots-before/*.png before/ 2>/dev/null || true
+            cp e2e/screenshots-after/*.png after/ 2>/dev/null || true
+            cp e2e/screenshots-diff/*.png diff/ 2>/dev/null || true
+
+            git add before/ after/ diff/
+            git commit -m "Visual regression screenshots for PR #${{ github.event.pull_request.number }}" --no-verify
+            git push origin "$DIFF_BRANCH" --force
+            echo "DIFF_BRANCH=$DIFF_BRANCH" >> $GITHUB_ENV
+            echo "HAS_IMAGES=true" >> $GITHUB_ENV
+          else
+            echo "HAS_IMAGES=false" >> $GITHUB_ENV
+          fi
 
       - name: Upload screenshot artifacts
         if: always()
@@ -112,80 +136,104 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const path = require('path');
 
             const jobStatus = '${{ job.status }}';
             const e2eStatus = '${{ steps.e2e.outcome }}';
-            const statusEmoji = jobStatus === 'success' ? '✅' : '❌';
-            const e2eEmoji = e2eStatus === 'success' ? '✅' : '⚠️';
+            const hasImages = '${{ env.HAS_IMAGES }}' === 'true';
+            const prNumber = ${{ github.event.pull_request.number }};
+            const repo = '${{ github.repository }}';
+            const diffBranch = `visual-diff/pr-${prNumber}`;
+            const rawBase = `https://raw.githubusercontent.com/${repo}/${diffBranch}`;
 
-            // Collect diff screenshots
+            const statusIcon = jobStatus === 'success' ? '✅' : '❌';
+            const e2eIcon = e2eStatus === 'success' ? '✅' : '⚠️';
+
+            // Collect diff files
             const diffDir = 'e2e/screenshots-diff';
             let diffFiles = [];
             try {
               diffFiles = fs.readdirSync(diffDir).filter(f => f.endsWith('.png'));
             } catch {}
 
-            const beforeDir = 'e2e/screenshots-before';
-            let beforeFiles = [];
-            try {
-              beforeFiles = fs.readdirSync(beforeDir).filter(f => f.endsWith('.png'));
-            } catch {}
+            // Build checks table
+            const checksTable = [
+              `| Step | Status |`,
+              `|------|--------|`,
+              `| 📦 Dependencies | ${statusIcon} |`,
+              `| 🔍 Linting | ${statusIcon} |`,
+              `| 🏗️ Build | ${statusIcon} |`,
+              `| 🐳 Docker | ${statusIcon} |`,
+              `| 🎭 E2E Tests | ${e2eIcon} |`,
+            ].join('\n');
 
-            // Build visual changes section
+            // Build visual diff section with embedded images
             let visualSection = '';
-            if (diffFiles.length > 0) {
-              visualSection = `\n### Visual Changes Detected\n\n`;
-              visualSection += `| Page | Status |\n|------|--------|\n`;
+
+            if (diffFiles.length > 0 && hasImages) {
+              visualSection += `\n### 🔄 Visual Changes Detected (${diffFiles.length} screenshot${diffFiles.length > 1 ? 's' : ''})\n\n`;
+
               for (const file of diffFiles) {
                 const pageName = file.replace('.png', '').replace(/-/g, ' ');
-                visualSection += `| ${pageName} | Changed |\n`;
+                const beforeUrl = `${rawBase}/before/${file}`;
+                const afterUrl = `${rawBase}/after/${file}`;
+                const diffUrl = `${rawBase}/diff/${file}`;
+
+                visualSection += `<details>\n`;
+                visualSection += `<summary>📸 <strong>${pageName}</strong></summary>\n\n`;
+                visualSection += `| Before | After | Diff |\n`;
+                visualSection += `|--------|-------|------|\n`;
+                visualSection += `| <img src="${beforeUrl}" width="300" /> | <img src="${afterUrl}" width="300" /> | <img src="${diffUrl}" width="300" /> |\n\n`;
+                visualSection += `</details>\n\n`;
               }
-              visualSection += `\n> Download the **visual-regression-screenshots** artifact to review before/after/diff images.\n`;
-            } else if (beforeFiles.length === 0) {
-              visualSection = `\n### Visual Regression\n\nNo visual changes detected — all pages match baselines.\n`;
+            } else if (diffFiles.length > 0) {
+              visualSection += `\n### 🔄 Visual Changes Detected\n\n`;
+              visualSection += `> ⬇️ Download the **visual-regression-screenshots** artifact to review before/after/diff images.\n\n`;
+              for (const file of diffFiles) {
+                const pageName = file.replace('.png', '').replace(/-/g, ' ');
+                visualSection += `- 🔄 **${pageName}**\n`;
+              }
             } else {
-              visualSection = `\n### Visual Regression\n\nNo visual changes detected.\n`;
+              visualSection += `\n### ✅ Visual Regression\n\nAll pages match baselines — no visual changes detected.\n`;
             }
 
+            // Page status table
             const pages = ['home', 'cv', 'interests', 'projects', 'chemistry-js', 'contacts'];
-            const screenshotList = pages.map(p => {
-              const hasDesktopDiff = diffFiles.includes(`${p}-desktop.png`);
-              const hasMobileDiff = diffFiles.includes(`${p}-mobile.png`);
-              const icon = hasDesktopDiff || hasMobileDiff ? 'Changed' : 'OK';
-              const details = [];
-              if (hasDesktopDiff) details.push('desktop changed');
-              if (hasMobileDiff) details.push('mobile changed');
-              const suffix = details.length > 0 ? ` (${details.join(', ')})` : '';
-              return `| ${p} | ${icon}${suffix} |`;
+            const pageRows = pages.map(p => {
+              const hasDesktop = diffFiles.includes(`${p}-desktop.png`);
+              const hasMobile = diffFiles.includes(`${p}-mobile.png`);
+              const icon = hasDesktop || hasMobile ? '🔄' : '✅';
+              const parts = [];
+              if (hasDesktop) parts.push('🖥️ desktop');
+              if (hasMobile) parts.push('📱 mobile');
+              const detail = parts.length > 0 ? parts.join(', ') : 'no changes';
+              return `| ${icon} ${p} | ${detail} |`;
             }).join('\n');
 
-            const body = `## PR Validation ${statusEmoji}
+            const mergeStatus = jobStatus === 'success' && e2eStatus === 'success'
+              ? '🚀 **Ready to merge!**'
+              : '⚠️ **Review changes before merging.**';
 
-            **Commit:** \`${{ github.sha }}\`
-            **Branch:** \`${{ github.head_ref }}\`
-
-            ### Checks
-            | Step | Status |
-            |------|--------|
-            | Dependencies | ${statusEmoji} |
-            | Linting | ${statusEmoji} |
-            | Build | ${statusEmoji} |
-            | Docker | ${statusEmoji} |
-            | E2E Tests | ${e2eEmoji} |
-
-            ${visualSection}
-
-            ### Page Screenshot Status
-            | Page | Status |
-            |------|--------|
-            ${screenshotList}
-
-            ${jobStatus === 'success' && e2eStatus === 'success' ? '**Ready to merge!**' : '**Review visual changes before merging.**'}
-
-            ---
-            [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) | [Download screenshots](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}#artifacts)
-            Generated: \`${new Date().toISOString()}\``.replace(/^            /gm, '');
+            const body = [
+              `## 🔍 PR Validation ${statusIcon}`,
+              ``,
+              `**Commit:** \`${{ github.sha }}\``,
+              `**Branch:** \`${{ github.head_ref }}\``,
+              ``,
+              `### 📋 Checks`,
+              checksTable,
+              ``,
+              visualSection,
+              `### 📸 Page Screenshot Status`,
+              `| Page | Viewports |`,
+              `|------|-----------|`,
+              pageRows,
+              ``,
+              mergeStatus,
+              ``,
+              `---`,
+              `🔗 [View workflow run](https://github.com/${repo}/actions/runs/${{ github.run_id }}) | ⬇️ [Download screenshots](https://github.com/${repo}/actions/runs/${{ github.run_id }}#artifacts)`,
+              `⏰ Generated: \`${new Date().toISOString()}\``,
+            ].join('\n');
 
             const comments = await github.rest.issues.listComments({
               owner: context.repo.owner,
@@ -213,3 +261,9 @@ jobs:
                 body: body
               });
             }
+
+      - name: Cleanup diff branch (on PR close)
+        if: github.event.action == 'closed'
+        continue-on-error: true
+        run: |
+          git push origin --delete "visual-diff/pr-${{ github.event.pull_request.number }}" 2>/dev/null || true
