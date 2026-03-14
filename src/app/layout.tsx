@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     siteName: 'Volodymyr Vreshch',
     locale: 'en_US',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Volodymyr Vreshch' }],
   },
   twitter: {
     card: 'summary',
