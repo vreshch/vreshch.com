@@ -16,11 +16,11 @@ export default function HomePage() {
           <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
             <div className="flex-1">
               <h1 className="mb-6 text-3xl font-medium leading-snug text-heading dark:text-dark-text md:text-5xl md:leading-tight">
-                Building quality software and exploring the world of chemistry.
+                Building quality software that matters — for millions.
               </h1>
               <p className="mb-10 max-w-lg text-lg leading-relaxed text-muted dark:text-dark-text-secondary md:text-xl">
-                Senior Software Engineer at Microsoft with 10+ years of experience. Background in
-                crystallography and cheminformatics.
+                Senior Software Engineer at Microsoft with 10+ years of experience. Passionate about
+                empowering teams, optimizing development flows, and shipping impactful software.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
