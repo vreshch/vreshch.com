@@ -14,14 +14,14 @@ export default function InterestsPage() {
         description="Skills, professional experience, and areas of research."
       />
 
-      <div className="mx-auto max-w-6xl px-6 py-14 md:py-16">
+      <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
         {/* Interests */}
-        <section className="mb-14">
-          <h2 className="mb-6 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
-            Interests
-          </h2>
+        <section className="mb-16">
           <Card>
-            <ul className="space-y-2 text-sm text-body dark:text-dark-text">
+            <h2 className="mb-6 text-xl font-medium text-heading dark:text-dark-text">
+              Areas of Interest
+            </h2>
+            <ul className="space-y-3 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
               {[
                 'Cheminformatics; program development for Chemistry & Crystallography',
                 'JavaScript (ES6): Single Page Applications (React, Angular 2.x)',
@@ -30,8 +30,8 @@ export default function InterestsPage() {
                 'Applied Crystallography',
                 'Data Science, Big Data',
               ].map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-muted dark:bg-dark-text-secondary" />
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-muted/50 dark:bg-dark-text-secondary/50" />
                   {item}
                 </li>
               ))}
@@ -40,15 +40,15 @@ export default function InterestsPage() {
         </section>
 
         {/* Programming */}
-        <section className="mb-14">
-          <h2 className="mb-6 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
             Programming
           </h2>
-          <p className="mb-4 text-sm leading-relaxed text-body dark:text-dark-text">
+          <p className="mb-6 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
             More than 10+ years of experience in developing websites of different complexities,
-            including enterprise products with millions of users. Main expertise includes:
+            including enterprise products with millions of users.
           </p>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[
               'React, NodeJS, C#',
               'JavaScript, ES6, Browser API',
@@ -58,7 +58,7 @@ export default function InterestsPage() {
               'Python, Data Science',
               'TDD, Jest, CI/CD',
             ].map((skill) => (
-              <Card key={skill} padding="tight">
+              <Card key={skill} padding="compact">
                 <p className="text-sm font-medium text-heading dark:text-dark-text">{skill}</p>
               </Card>
             ))}
@@ -67,11 +67,9 @@ export default function InterestsPage() {
 
         {/* Chemistry */}
         <section>
-          <h2 className="mb-6 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
-            Chemistry
-          </h2>
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Chemistry</h2>
           <Card>
-            <ul className="space-y-2 text-sm text-body dark:text-dark-text">
+            <ul className="space-y-3 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
               {[
                 'Planning and project management',
                 'Synthesis of inorganic and coordination compounds',
@@ -82,8 +80,8 @@ export default function InterestsPage() {
                 'Crystallization',
                 'X-Ray crystal structure determination (structure solution & refinement)',
               ].map((item) => (
-                <li key={item} className="flex items-start gap-2">
-                  <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-muted dark:bg-dark-text-secondary" />
+                <li key={item} className="flex items-start gap-3">
+                  <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-muted/50 dark:bg-dark-text-secondary/50" />
                   {item}
                 </li>
               ))}

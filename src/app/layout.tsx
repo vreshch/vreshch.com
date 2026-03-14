@@ -32,12 +32,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
       </head>
-      <body className="flex min-h-screen flex-col bg-[#f0f4f8] dark:bg-dark-bg">
+      <body className="flex min-h-screen flex-col bg-white dark:bg-dark-bg">
         <Navigation />
         <main className="flex-1">{children}</main>
-        <footer className="border-t border-primary/20 bg-primary py-8 dark:border-dark-border dark:bg-dark-surface">
-          <div className="mx-auto max-w-6xl px-6 text-sm text-white/70 dark:text-dark-text-secondary">
-            &copy; {new Date().getFullYear()} Volodymyr D. Vreshch
+        <footer className="py-12">
+          <div className="mx-auto max-w-5xl px-6">
+            <div className="border-t border-border/30 pt-8 dark:border-dark-border">
+              <p className="text-sm text-muted dark:text-dark-text-secondary">
+                &copy; {new Date().getFullYear()} Volodymyr D. Vreshch. All rights reserved.
+              </p>
+            </div>
           </div>
         </footer>
       </body>

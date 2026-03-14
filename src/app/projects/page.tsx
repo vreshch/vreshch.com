@@ -40,15 +40,15 @@ export default function ProjectsPage() {
         description="Active projects and open source chemistry libraries."
       />
 
-      <div className="mx-auto max-w-6xl px-6 py-14 md:py-16">
+      <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
         {/* Active Projects */}
-        <section className="mb-14">
-          <h2 className="mb-6 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
             Active Projects
           </h2>
           <div className="grid gap-6 md:grid-cols-2">
             <a href="https://crystallography.io" target="_blank" rel="noreferrer">
-              <Card hover="border" padding="none" className="group overflow-hidden">
+              <Card hover="lift" padding="none" className="overflow-hidden">
                 <Image
                   src="/images/crystallography_online.jpg"
                   width={397}
@@ -56,8 +56,8 @@ export default function ProjectsPage() {
                   className="h-auto w-full"
                   alt="crystallography.io"
                 />
-                <div className="p-5">
-                  <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
+                <div className="p-6">
+                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
                     crystallography.io
                   </h3>
                   <p className="text-sm text-muted dark:text-dark-text-secondary">
@@ -67,7 +67,7 @@ export default function ProjectsPage() {
               </Card>
             </a>
             <a href="https://diffractwd.com" target="_blank" rel="noreferrer">
-              <Card hover="border" padding="none" className="group overflow-hidden">
+              <Card hover="lift" padding="none" className="overflow-hidden">
                 <Image
                   src="/images/diffractwd.jpg"
                   width={397}
@@ -75,8 +75,8 @@ export default function ProjectsPage() {
                   className="h-auto w-full"
                   alt="diffractwd.com"
                 />
-                <div className="p-5">
-                  <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
+                <div className="p-6">
+                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
                     diffractwd.com
                   </h3>
                   <p className="text-sm text-muted dark:text-dark-text-secondary">
@@ -90,30 +90,30 @@ export default function ProjectsPage() {
 
         {/* Open Source Libraries */}
         <section>
-          <h2 className="mb-4 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
+          <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text">
             @chemistry
           </h2>
-          <p className="mb-6 text-sm text-body dark:text-dark-text">
+          <p className="mb-6 text-sm text-muted dark:text-dark-text-secondary md:text-base">
             Open source projects related to Chemistry &amp; Crystallography, released on{' '}
             <a
               href="https://github.com/chemistry"
               target="_blank"
               rel="noreferrer"
-              className="font-medium text-accent hover:underline dark:text-accent-light"
+              className="font-medium text-heading underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:text-dark-text dark:decoration-dark-border dark:hover:decoration-dark-text"
             >
               GitHub
             </a>{' '}
             under MIT license.
           </p>
-          <div className="space-y-4">
+          <div className="space-y-3">
             {libraries.map((lib) => (
               <Card key={lib.name} hover="lift">
-                <h3 className="mb-2 text-base font-semibold text-heading dark:text-dark-text">
+                <h3 className="mb-2 text-base font-medium text-heading dark:text-dark-text">
                   <a
                     href={lib.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="transition-colors hover:text-accent dark:hover:text-accent-light"
+                    className="underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:decoration-dark-border dark:hover:decoration-dark-text"
                   >
                     {lib.name}
                   </a>
@@ -127,7 +127,7 @@ export default function ProjectsPage() {
                         href={lib.link.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-medium text-accent hover:underline dark:text-accent-light"
+                        className="font-medium text-heading underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:text-dark-text dark:decoration-dark-border dark:hover:decoration-dark-text"
                       >
                         {lib.link.label}
                       </a>

@@ -25,7 +25,7 @@ export function ThemeToggle() {
   return (
     <button
       onClick={toggle}
-      className="group cursor-pointer rounded-lg p-2 text-muted transition-colors duration-200 hover:bg-surface-hover hover:text-heading dark:text-dark-text-secondary dark:hover:bg-dark-surface dark:hover:text-dark-text"
+      className="cursor-pointer rounded-full p-2 text-muted transition-colors duration-200 hover:text-heading dark:text-dark-text-secondary dark:hover:text-dark-text"
       aria-label="Toggle theme"
     >
       <div className="relative h-5 w-5 overflow-hidden">

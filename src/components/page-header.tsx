@@ -1,9 +1,11 @@
 export function PageHeader({ title, description }: { title: string; description: string }) {
   return (
-    <section className="bg-gradient-to-br from-primary to-primary-light py-12 md:py-16">
-      <div className="mx-auto max-w-6xl px-6">
-        <h1 className="mb-2 text-3xl font-bold tracking-tight text-white">{title}</h1>
-        <p className="text-base text-white/70">{description}</p>
+    <section className="pb-8 pt-16 md:pb-12 md:pt-24">
+      <div className="mx-auto max-w-5xl px-6">
+        <h1 className="mb-3 text-3xl font-medium text-heading dark:text-dark-text md:text-4xl">
+          {title}
+        </h1>
+        <p className="text-lg text-muted dark:text-dark-text-secondary md:text-xl">{description}</p>
       </div>
     </section>
   );

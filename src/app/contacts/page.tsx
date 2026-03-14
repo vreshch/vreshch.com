@@ -25,22 +25,22 @@ export default function ContactsPage() {
     <div>
       <PageHeader title="Contacts" description="Get in touch." />
 
-      <div className="mx-auto max-w-6xl px-6 py-14 md:py-16">
-        <div className="grid gap-6 md:grid-cols-[auto_1fr]">
-          <div className="flex justify-center md:justify-start">
+      <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
+        <div className="flex flex-col items-center gap-10 md:flex-row md:items-start md:gap-16">
+          <div className="flex-shrink-0">
             <Image
-              className="rounded-xl border border-border dark:border-dark-border"
+              className="rounded-full"
               alt="Volodymyr Vreshch"
               width={200}
               height={200}
               src="/images/mphoto.jpeg"
             />
           </div>
-          <Card>
-            <div className="space-y-3">
+          <Card className="w-full flex-1">
+            <div className="space-y-4">
               {contacts.map((contact) => (
-                <div key={contact.label} className="flex items-baseline gap-3">
-                  <span className="w-20 flex-shrink-0 text-xs font-semibold uppercase tracking-widest text-muted dark:text-dark-text-secondary">
+                <div key={contact.label} className="flex items-baseline gap-4">
+                  <span className="w-20 flex-shrink-0 text-xs font-medium uppercase tracking-widest text-muted dark:text-dark-text-secondary">
                     {contact.label}
                   </span>
                   {contact.href ? (
@@ -48,12 +48,14 @@ export default function ContactsPage() {
                       href={contact.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-sm font-medium text-accent hover:underline dark:text-accent-light"
+                      className="text-sm font-medium text-heading underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:text-dark-text dark:decoration-dark-border dark:hover:decoration-dark-text"
                     >
                       {contact.value}
                     </a>
                   ) : (
-                    <span className="text-sm text-body dark:text-dark-text">{contact.value}</span>
+                    <span className="text-sm text-heading dark:text-dark-text">
+                      {contact.value}
+                    </span>
                   )}
                 </div>
               ))}

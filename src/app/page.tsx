@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Card } from '@/components/card';
 
@@ -10,115 +11,127 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary to-primary-light py-20 md:py-28">
-        <div className="mx-auto max-w-6xl px-6">
-          <h1 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
-            Volodymyr Vreshch
-          </h1>
-          <p className="mb-2 text-lg font-medium text-white/90">
-            Senior Software Engineer @ Microsoft
-          </p>
-          <p className="mb-10 max-w-lg text-base leading-relaxed text-white/70">
-            Full-stack developer with 10+ years of experience building enterprise products.
-            Background in chemistry, crystallography, and cheminformatics.
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <Link
-              href="/cv"
-              className="inline-block rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-primary shadow-md transition-all hover:bg-white/90 hover:shadow-lg"
-            >
-              View CV
-            </Link>
-            <Link
-              href="/contacts"
-              className="inline-block rounded-lg border-2 border-white px-8 py-3.5 text-sm font-semibold text-white transition-all hover:bg-white hover:text-primary"
-            >
-              Get in Touch
-            </Link>
+      <section className="pb-16 pt-20 md:pb-24 md:pt-32">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
+            <div className="flex-1">
+              <h1 className="mb-6 text-3xl font-medium leading-snug text-heading dark:text-dark-text md:text-5xl md:leading-tight">
+                Building quality software and exploring the world of chemistry.
+              </h1>
+              <p className="mb-10 max-w-lg text-lg leading-relaxed text-muted dark:text-dark-text-secondary md:text-xl">
+                Senior Software Engineer at Microsoft with 10+ years of experience. Background in
+                crystallography and cheminformatics.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <Link
+                  href="/interests"
+                  className="inline-block rounded-full bg-surface px-8 py-3.5 text-sm font-medium text-heading transition-colors hover:bg-surface-alt dark:bg-dark-surface-alt dark:text-dark-text dark:hover:bg-dark-surface"
+                >
+                  Learn more about me
+                </Link>
+                <Link
+                  href="/contacts"
+                  className="inline-block rounded-full bg-surface px-8 py-3.5 text-sm font-medium text-heading transition-colors hover:bg-surface-alt dark:bg-dark-surface-alt dark:text-dark-text dark:hover:bg-dark-surface"
+                >
+                  Get in touch
+                </Link>
+              </div>
+            </div>
+            <div className="flex-shrink-0">
+              <Image
+                src="/images/profile.jpeg"
+                alt="Volodymyr Vreshch"
+                width={280}
+                height={280}
+                className="rounded-full"
+                priority
+              />
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Career */}
-      <section className="py-16 dark:bg-dark-bg md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <h2 className="mb-8 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
-            Career Path
-          </h2>
-          <div className="space-y-4">
-            <Card hover="lift">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted dark:text-dark-text-secondary">
-                2021 — Present
+      {/* About */}
+      <section className="py-16 md:py-24">
+        <div className="mx-auto max-w-5xl px-6">
+          <Card className="md:p-12">
+            <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+              <div>
+                <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
+                  Career Path
+                </h2>
               </div>
-              <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
-                Senior Software Engineer, Microsoft
-              </h3>
-              <p className="text-sm text-muted dark:text-dark-text-secondary">Frontend Developer</p>
-            </Card>
-            <Card hover="lift">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted dark:text-dark-text-secondary">
-                2016 — 2021
+              <div className="space-y-6 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
+                <div>
+                  <p className="font-medium text-heading dark:text-dark-text">
+                    Senior Software Engineer, Microsoft
+                  </p>
+                  <p>2021 — Present. Frontend Developer.</p>
+                </div>
+                <div>
+                  <p className="font-medium text-heading dark:text-dark-text">
+                    Lead Software Engineer, EPAM Systems
+                  </p>
+                  <p>2016 — 2021. TypeScript, React, Angular 2+, NodeJS, Cloud.</p>
+                </div>
+                <div>
+                  <p className="font-medium text-heading dark:text-dark-text">
+                    Software Engineer, GlobalLogic
+                  </p>
+                  <p>2015 — 2016. JavaScript, Backbone, LESS, HTML, NodeJS.</p>
+                </div>
+                <div>
+                  <p className="font-medium text-heading dark:text-dark-text">
+                    Academic Research
+                  </p>
+                  <p>
+                    2008 — 2012. Post-Doc in USA &amp; France. Ph.D. in Inorganic Chemistry, Kyiv,
+                    Ukraine.
+                  </p>
+                </div>
               </div>
-              <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
-                Lead Software Engineer, EPAM Systems
-              </h3>
-              <p className="text-sm text-muted dark:text-dark-text-secondary">
-                TypeScript, React, Angular 2+, NodeJS, Cloud
-              </p>
-            </Card>
-            <Card hover="lift">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted dark:text-dark-text-secondary">
-                2015 — 2016
-              </div>
-              <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
-                Software Engineer, GlobalLogic
-              </h3>
-              <p className="text-sm text-muted dark:text-dark-text-secondary">
-                JavaScript, Backbone, LESS, HTML, NodeJS
-              </p>
-            </Card>
-            <Card hover="lift">
-              <div className="mb-1 text-xs font-semibold uppercase tracking-widest text-muted dark:text-dark-text-secondary">
-                2008 — 2012
-              </div>
-              <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
-                Academic Research
-              </h3>
-              <p className="text-sm text-muted dark:text-dark-text-secondary">
-                Post-Doc: USA (Albany, NY), France (Rennes 1, Toulouse). Ph.D. in Inorganic
-                Chemistry, Kyiv, Ukraine (2008)
-              </p>
-            </Card>
-          </div>
+            </div>
+          </Card>
         </div>
       </section>
 
       {/* Projects */}
-      <section className="border-y border-border bg-surface py-16 dark:border-dark-border dark:bg-dark-surface md:py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <h2 className="mb-8 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
-            Supported Projects
-          </h2>
-          <div className="grid gap-5 sm:grid-cols-2">
+      <section className="py-16 md:py-24">
+        <div className="mx-auto max-w-5xl px-6">
+          <div className="mb-12 flex items-baseline justify-between">
+            <h2 className="text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
+              Projects
+            </h2>
+            <Link
+              href="/projects"
+              className="flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-heading dark:text-dark-text-secondary dark:hover:text-dark-text"
+            >
+              See all projects
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </Link>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2">
             <a href="https://crystallography.io/" target="_blank" rel="noreferrer">
-              <Card hover="border" className="group">
-                <h3 className="mb-2 text-base font-semibold text-heading dark:text-dark-text">
+              <Card hover="lift">
+                <h3 className="mb-2 text-lg font-medium text-heading dark:text-dark-text">
                   crystallography.io
                 </h3>
-                <p className="text-sm text-muted dark:text-dark-text-secondary">
+                <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
                   Crystal Structure Search Application — search and analyze structures from the COD
-                  database
+                  database.
                 </p>
               </Card>
             </a>
             <a href="https://diffractwd.com/" target="_blank" rel="noreferrer">
-              <Card hover="border" className="group">
-                <h3 className="mb-2 text-base font-semibold text-heading dark:text-dark-text">
+              <Card hover="lift">
+                <h3 className="mb-2 text-lg font-medium text-heading dark:text-dark-text">
                   diffractwd.com
                 </h3>
-                <p className="text-sm text-muted dark:text-dark-text-secondary">
+                <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
                   Free open-source software for powder diffraction pattern manipulation, simulation,
-                  and visualization
+                  and visualization.
                 </p>
               </Card>
             </a>
