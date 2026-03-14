@@ -4,10 +4,8 @@ import { expectScreenshot, printWarningSummary } from './visual';
 
 const pages = [
   { path: '/', name: 'home' },
-  { path: '/cv', name: 'cv' },
   { path: '/interests', name: 'interests' },
   { path: '/projects', name: 'projects' },
-  { path: '/chemistry-js', name: 'chemistry-js' },
   { path: '/contacts', name: 'contacts' },
 ];
 
@@ -17,7 +15,7 @@ test.describe('desktop screenshots', () => {
   for (const { path, name } of pages) {
     test(`${name} page renders correctly`, async ({ page }) => {
       await page.goto(path, { waitUntil: 'networkidle' });
-      await expect(page).toHaveTitle(/Volodymyr Vreshch|Curriculum Vitae|@chemistry|Projects/);
+      await expect(page).toHaveTitle(/Volodymyr Vreshch|Interests|Projects|Contacts/);
       await expectScreenshot(page, `${name}-desktop.png`);
     });
   }
@@ -29,7 +27,7 @@ test.describe('mobile screenshots', () => {
   for (const { path, name } of pages) {
     test(`${name} page renders correctly on mobile`, async ({ page }) => {
       await page.goto(path, { waitUntil: 'networkidle' });
-      await expect(page).toHaveTitle(/Volodymyr Vreshch|Curriculum Vitae|@chemistry|Projects/);
+      await expect(page).toHaveTitle(/Volodymyr Vreshch|Interests|Projects|Contacts/);
       await expectScreenshot(page, `${name}-mobile.png`);
     });
   }
@@ -37,10 +35,12 @@ test.describe('mobile screenshots', () => {
 
 test.describe('redirects', () => {
   const redirects = [
-    { from: '/cv.html', to: '/cv' },
+    { from: '/cv', to: '/interests' },
+    { from: '/cv.html', to: '/interests' },
+    { from: '/chemistry-js', to: '/projects' },
+    { from: '/chemistry-js.html', to: '/projects' },
     { from: '/interests.html', to: '/interests' },
     { from: '/projects.html', to: '/projects' },
-    { from: '/chemistry-js.html', to: '/chemistry-js' },
     { from: '/contacts.html', to: '/contacts' },
     { from: '/support.html', to: '/support' },
   ];

@@ -22,6 +22,7 @@ export const metadata: Metadata = {
     siteName: 'Volodymyr Vreshch',
     locale: 'en_US',
     type: 'website',
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Volodymyr Vreshch' }],
   },
   twitter: {
     card: 'summary',
@@ -35,6 +36,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Volodymyr Vreshch',
+              url: 'https://vreshch.com',
+              jobTitle: 'Senior Software Engineer',
+              worksFor: { '@type': 'Organization', name: 'Microsoft' },
+              sameAs: [
+                'https://www.linkedin.com/in/vreshch',
+                'https://github.com/vreshch',
+                'https://www.facebook.com/vreshch',
+                'https://www.instagram.com/vreshch.v/',
+              ],
+              image: 'https://vreshch.com/images/profile.jpeg',
+              description:
+                'Building quality software that matters — for millions.',
+            }),
+          }}
+        />
         <script
           dangerouslySetInnerHTML={{
             __html: `
