@@ -59,7 +59,11 @@ jobs:
           TAG="${{ steps.set-tag.outputs.tag }}"
 
           echo "🏗️ Building image..."
-          docker build -t ${IMAGE}:${TAG} -t ${IMAGE}:latest .
+          docker build \
+            --build-arg COMMIT_SHA="${{ github.sha }}" \
+            --build-arg BRANCH="${{ github.ref_name }}" \
+            --build-arg BUILD_TIME="$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            -t ${IMAGE}:${TAG} -t ${IMAGE}:latest .
 
           echo "📤 Pushing image..."
           docker push ${IMAGE}:${TAG}
@@ -138,22 +142,19 @@ jobs:
       - name: ✅ Verify deployment
         run: |
           echo "🔍 Verifying deployment..."
-
-          # Wait a bit more for service to be fully ready
-          sleep 10
-
-          # Check if website is accessible
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -L https://vreshch.com || echo "000")
-
-          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
-            echo "✅ Website is accessible (HTTP $HTTP_CODE)"
-            echo "deployment-status=success" >> $GITHUB_OUTPUT
-          else
-            echo "⚠️ Website returned HTTP $HTTP_CODE"
-            echo "deployment-status=warning" >> $GITHUB_OUTPUT
-          fi
-
-          echo "🌐 Production URL: https://vreshch.com"
+          EXPECTED="${{ github.sha }}"
+          for i in $(seq 1 30); do
+            LIVE_COMMIT=$(curl -sf "https://vreshch.com/version.json" 2>/dev/null | jq -r '.commit // empty') || true
+            if [ "$LIVE_COMMIT" = "$EXPECTED" ]; then
+              echo "✅ Deployment verified! Live commit: $LIVE_COMMIT"
+              echo "deployment-status=success" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "⏳ Attempt $i/30 — got: ${LIVE_COMMIT:-no response}, want: ${EXPECTED:0:8}"
+            sleep 10
+          done
+          echo "⚠️ Could not verify deployment within 5 minutes"
+          echo "deployment-status=warning" >> $GITHUB_OUTPUT
 
       - name: 🧹 Cleanup
         if: always()

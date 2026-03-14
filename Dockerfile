@@ -3,6 +3,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+ARG COMMIT_SHA="" BRANCH="" BUILD_TIME=""
+RUN echo "{\"commit\":\"${COMMIT_SHA}\",\"branch\":\"${BRANCH}\",\"buildTime\":\"${BUILD_TIME}\"}" > public/version.json
 RUN npm run build
 
 FROM node:25-alpine AS runner
