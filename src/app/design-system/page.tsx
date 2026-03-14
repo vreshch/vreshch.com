@@ -77,6 +77,69 @@ function Row({ children }: { children: React.ReactNode }) {
   return <div className="flex flex-wrap items-center gap-4">{children}</div>;
 }
 
+/* ─── Logo ─── */
+
+function LogoSection() {
+  return (
+    <Section id="logo" title="App Icon" subtitle="Signal V — navy rounded square, white V stroke, amber broadcast arc (32×32 native).">
+      <div className="flex flex-wrap items-end gap-8">
+        <div className="text-center">
+          <div className="inline-block rounded-2xl border border-border bg-white p-4 shadow-sm dark:border-dark-border dark:bg-dark-surface">
+            <svg viewBox="0 0 32 32" className="h-[160px] w-[160px]">
+              <rect width="32" height="32" rx="7" fill="#1e3a5f" />
+              <path d="M8 6 L16 22 L24 6" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M10 27 A9 9 0 0 0 22 27" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+          </div>
+          <p className="mt-3 text-xs text-muted dark:text-dark-text-secondary">5× zoom (160px)</p>
+        </div>
+        {[64, 48, 32, 24, 16].map((size) => (
+          <div key={size} className="text-center">
+            <svg viewBox="0 0 32 32" style={{ width: size, height: size }}>
+              <rect width="32" height="32" rx="7" fill="#1e3a5f" />
+              <path d="M8 6 L16 22 L24 6" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M10 27 A9 9 0 0 0 22 27" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+            </svg>
+            <p className="mt-2 text-xs text-muted dark:text-dark-text-secondary">{size}px</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-8 grid gap-6 md:grid-cols-2">
+        <ShowcaseBox label="On light background">
+          <div className="flex items-center gap-4">
+            {[48, 32, 24].map((size) => (
+              <svg key={size} viewBox="0 0 32 32" style={{ width: size, height: size }}>
+                <rect width="32" height="32" rx="7" fill="white" stroke="#e5e7eb" strokeWidth="0.5" />
+                <path d="M8 6 L16 22 L24 6" fill="none" stroke="#1e3a5f" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10 27 A9 9 0 0 0 22 27" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+            ))}
+          </div>
+        </ShowcaseBox>
+        <DarkBox label="On dark + amber backgrounds">
+          <div className="flex items-center gap-4">
+            {[48, 32, 24].map((size) => (
+              <svg key={size} viewBox="0 0 32 32" style={{ width: size, height: size }}>
+                <rect width="32" height="32" rx="7" fill="#1e3a5f" />
+                <path d="M8 6 L16 22 L24 6" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10 27 A9 9 0 0 0 22 27" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+            ))}
+            {[48, 32, 24].map((size) => (
+              <svg key={`a-${size}`} viewBox="0 0 32 32" style={{ width: size, height: size }}>
+                <rect width="32" height="32" rx="7" fill="#f59e0b" />
+                <path d="M8 6 L16 22 L24 6" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M10 27 A9 9 0 0 0 22 27" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+            ))}
+          </div>
+        </DarkBox>
+      </div>
+    </Section>
+  );
+}
+
 /* ─── Colors ─── */
 
 function ColorsSection() {
@@ -416,6 +479,8 @@ export default function DesignSystemPage() {
         </div>
       </section>
 
+      <LogoSection />
+      <div className="mx-auto max-w-5xl border-t border-border/30 dark:border-dark-border" />
       <ColorsSection />
       <div className="mx-auto max-w-5xl border-t border-border/30 dark:border-dark-border" />
       <TypographySection />

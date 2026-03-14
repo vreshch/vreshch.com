@@ -6,11 +6,14 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/cn';
 import { ThemeToggle } from '@/components/theme-toggle';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 export const navItems = [
   { href: '/', label: 'Home' },
   { href: '/interests', label: 'Interests' },
   { href: '/projects', label: 'Projects' },
   { href: '/contacts', label: 'Contacts' },
+  ...(isDev ? [{ href: '/design-system', label: 'Design System' }] : []),
 ];
 
 export function Navigation() {

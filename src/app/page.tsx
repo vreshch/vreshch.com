@@ -11,7 +11,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Hero */}
-      <section className="pb-16 pt-20 md:pb-24 md:pt-32">
+      <section className="pb-8 pt-10 md:pb-12 md:pt-16">
         <div className="mx-auto max-w-5xl px-6">
           <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
             <div className="flex-1">
@@ -52,7 +52,7 @@ export default function HomePage() {
       </section>
 
       {/* About */}
-      <section className="py-16 md:py-24">
+      <section className="py-4 md:py-6">
         <div className="mx-auto max-w-5xl px-6">
           <Card className="md:p-12">
             <div className="grid gap-8 md:grid-cols-2 md:gap-12">
@@ -96,7 +96,7 @@ export default function HomePage() {
       </section>
 
       {/* Projects */}
-      <section className="py-16 md:py-24">
+      <section className="pb-4 pt-8 md:pb-6 md:pt-12">
         <div className="mx-auto max-w-5xl px-6">
           <div className="mb-12 flex items-baseline justify-between">
             <h2 className="text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
@@ -113,26 +113,42 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
-            <a href="https://crystallography.io/" target="_blank" rel="noreferrer">
-              <Card hover="lift">
-                <h3 className="mb-2 text-lg font-medium text-heading dark:text-dark-text">
-                  crystallography.io
-                </h3>
-                <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
-                  Crystal Structure Search Application — search and analyze structures from the COD
-                  database.
-                </p>
+            <a href="https://github.com/agentage/desktop" target="_blank" rel="noreferrer">
+              <Card hover="lift" padding="none" className="overflow-hidden">
+                <Image
+                  src="/images/agentage.jpg"
+                  width={397}
+                  height={284}
+                  className="h-auto w-full"
+                  alt="Agentage Desktop"
+                />
+                <div className="p-6">
+                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
+                    Agentage Desktop
+                  </h3>
+                  <p className="text-sm text-muted dark:text-dark-text-secondary">
+                    AI agent orchestration platform — manage, execute, and distribute agents
+                  </p>
+                </div>
               </Card>
             </a>
-            <a href="https://diffractwd.com/" target="_blank" rel="noreferrer">
-              <Card hover="lift">
-                <h3 className="mb-2 text-lg font-medium text-heading dark:text-dark-text">
-                  diffractwd.com
-                </h3>
-                <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
-                  Free open-source software for powder diffraction pattern manipulation, simulation,
-                  and visualization.
-                </p>
+            <a href="https://mcpxhub.io" target="_blank" rel="noreferrer">
+              <Card hover="lift" padding="none" className="overflow-hidden">
+                <Image
+                  src="/images/mcpxhub.jpg"
+                  width={397}
+                  height={284}
+                  className="h-auto w-full"
+                  alt="mcpxhub.io"
+                />
+                <div className="p-6">
+                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
+                    mcpxhub.io
+                  </h3>
+                  <p className="text-sm text-muted dark:text-dark-text-secondary">
+                    MCP Catalog Platform — discover and manage Model Context Protocol servers
+                  </p>
+                </div>
               </Card>
             </a>
           </div>

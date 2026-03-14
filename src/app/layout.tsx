@@ -4,13 +4,31 @@ import './globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Volodymyr Vreshch - Website',
+    default: 'Volodymyr Vreshch — Software Engineer',
     template: '%s | Volodymyr Vreshch',
   },
-  description: 'Personal homepage - Volodymyr D. Vreshch',
-  keywords: 'Personal homepage, Volodymyr D. Vreshch, Vreshch V.D.',
-  authors: [{ name: 'Volodymyr D. Vreshch' }],
-  icons: { icon: '/favicon.ico' },
+  description:
+    'Building quality software that matters — for millions. Senior Software Engineer at Microsoft.',
+  keywords:
+    'Volodymyr Vreshch, software engineer, AI agents, MCP, TypeScript, Microsoft, startup CTO, technical co-founder, engineering leadership, MVP development, build SaaS application, software consulting, product engineering, AI application development, startup engineering partner, scalable web applications, team building, engineering management',
+  authors: [{ name: 'Volodymyr Vreshch' }],
+  icons: { icon: '/icon.svg' },
+  metadataBase: new URL('https://vreshch.com'),
+  openGraph: {
+    title: 'Volodymyr Vreshch — Software Engineer',
+    description:
+      'Building quality software that matters — for millions. Senior Software Engineer at Microsoft.',
+    url: 'https://vreshch.com',
+    siteName: 'Volodymyr Vreshch',
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Volodymyr Vreshch — Software Engineer',
+    description:
+      'Building quality software that matters — for millions.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
