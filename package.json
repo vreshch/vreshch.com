@@ -47,22 +47,22 @@
     "@tailwindcss/postcss": "^4.1.8",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
-    "@types/node": "^22.15.21",
+    "@types/node": "^22.19.15",
     "@types/react": "^19.1.4",
     "@typescript-eslint/eslint-plugin": "^8.57.0",
     "@typescript-eslint/parser": "^8.57.0",
     "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.4.21",
-    "eslint": "^9.27.0",
+    "eslint": "^9.39.4",
     "eslint-config-next": "^15.3.3",
     "eslint-config-prettier": "^10.1.5",
     "jsdom": "^28.1.0",
     "pixelmatch": "^7.1.0",
     "pngjs": "^7.0.0",
-    "postcss": "^8.5.4",
+    "postcss": "^8.5.8",
     "prettier": "^3.5.3",
     "tailwindcss": "^4.1.8",
     "typescript": "^5.8.3",
-    "vitest": "^4.0.18"
+    "vitest": "^4.1.0"
   }
 }
