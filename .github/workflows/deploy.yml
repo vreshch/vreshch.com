@@ -33,7 +33,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🏷️ Determine image tag
         id: set-tag
@@ -78,7 +78,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: 🔧 Setup SSH
         run: |
