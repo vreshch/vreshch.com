@@ -1,45 +1,143 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
+import { Card } from '@/components/card';
+import { PageHeader } from '@/components/page-header';
 
 export const metadata: Metadata = {
   title: 'Projects',
 };
 
+const libraries = [
+  {
+    name: '@chemistry/crystallography.io',
+    url: 'https://github.com/chemistry/crystallography.io',
+    description: 'Alternative web interface for COD database website',
+    link: { label: 'crystallography.io', href: 'https://crystallography.io/' },
+  },
+  {
+    name: '@chemistry/crystalview',
+    url: 'https://github.com/chemistry/crystalview',
+    description: 'Simple molecular viewer for crystal structures',
+  },
+  {
+    name: '@chemistry/molpad',
+    url: 'https://github.com/chemistry/molpad',
+    description: 'Molecule editor used to draw molecule for search',
+  },
+  {
+    name: '@chemistry/(math, elements, spacegroups)',
+    url: 'https://github.com/chemistry/chemical-libraries',
+    description:
+      'Set of common functionality / chemical constants that support creation of software for chemistry',
+  },
+];
+
 export default function ProjectsPage() {
   return (
     <div>
-      <h1 className="text-3xl">Projects</h1>
-      <hr className="my-4 border-t border-black/10" />
-      <div className="text-justify">
-        <p>Currently I am supporting 2 projects, both are in active development phase;</p>
-        <div className="flex flex-col gap-4 md:flex-row">
-          <div className="w-full md:w-1/2">
+      <PageHeader
+        title="Projects"
+        description="Active projects and open source chemistry libraries."
+      />
+
+      <div className="mx-auto max-w-6xl px-6 py-14 md:py-16">
+        {/* Active Projects */}
+        <section className="mb-14">
+          <h2 className="mb-6 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
+            Active Projects
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2">
             <a href="https://crystallography.io" target="_blank" rel="noreferrer">
-              <Image
-                src="/images/crystallography_online.jpg"
-                width={397}
-                height={284}
-                className="h-auto w-full"
-                alt="crystallography.io"
-              />
-              <br />
-              crystallography.io
+              <Card hover="border" padding="none" className="group overflow-hidden">
+                <Image
+                  src="/images/crystallography_online.jpg"
+                  width={397}
+                  height={284}
+                  className="h-auto w-full"
+                  alt="crystallography.io"
+                />
+                <div className="p-5">
+                  <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
+                    crystallography.io
+                  </h3>
+                  <p className="text-sm text-muted dark:text-dark-text-secondary">
+                    Crystal Structure Search Application
+                  </p>
+                </div>
+              </Card>
+            </a>
+            <a href="https://diffractwd.com" target="_blank" rel="noreferrer">
+              <Card hover="border" padding="none" className="group overflow-hidden">
+                <Image
+                  src="/images/diffractwd.jpg"
+                  width={397}
+                  height={284}
+                  className="h-auto w-full"
+                  alt="diffractwd.com"
+                />
+                <div className="p-5">
+                  <h3 className="mb-1 text-base font-semibold text-heading dark:text-dark-text">
+                    diffractwd.com
+                  </h3>
+                  <p className="text-sm text-muted dark:text-dark-text-secondary">
+                    Free Powder Diffraction Software
+                  </p>
+                </div>
+              </Card>
             </a>
           </div>
-          <div className="w-full md:w-1/2">
-            <a href="http://diffractwd.com" target="_blank" rel="noreferrer">
-              <Image
-                src="/images/diffractwd.jpg"
-                width={397}
-                height={284}
-                className="h-auto w-full"
-                alt="diffractwd.com"
-              />
-              <br />
-              diffractwd.com
-            </a>
+        </section>
+
+        {/* Open Source Libraries */}
+        <section>
+          <h2 className="mb-4 text-2xl font-bold tracking-tight text-heading dark:text-dark-text">
+            @chemistry
+          </h2>
+          <p className="mb-6 text-sm text-body dark:text-dark-text">
+            Open source projects related to Chemistry &amp; Crystallography, released on{' '}
+            <a
+              href="https://github.com/chemistry"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-accent hover:underline dark:text-accent-light"
+            >
+              GitHub
+            </a>{' '}
+            under MIT license.
+          </p>
+          <div className="space-y-4">
+            {libraries.map((lib) => (
+              <Card key={lib.name} hover="lift">
+                <h3 className="mb-2 text-base font-semibold text-heading dark:text-dark-text">
+                  <a
+                    href={lib.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="transition-colors hover:text-accent dark:hover:text-accent-light"
+                  >
+                    {lib.name}
+                  </a>
+                </h3>
+                <p className="text-sm text-muted dark:text-dark-text-secondary">
+                  {lib.description}
+                  {lib.link && (
+                    <>
+                      {' — '}
+                      <a
+                        href={lib.link.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-medium text-accent hover:underline dark:text-accent-light"
+                      >
+                        {lib.link.label}
+                      </a>
+                    </>
+                  )}
+                </p>
+              </Card>
+            ))}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );
