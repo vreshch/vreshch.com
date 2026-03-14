@@ -7,8 +7,23 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: '/cv',
+        destination: '/interests',
+        permanent: true,
+      },
+      {
         source: '/cv.html',
-        destination: '/cv',
+        destination: '/interests',
+        permanent: true,
+      },
+      {
+        source: '/chemistry-js',
+        destination: '/projects',
+        permanent: true,
+      },
+      {
+        source: '/chemistry-js.html',
+        destination: '/projects',
         permanent: true,
       },
       {
@@ -19,11 +34,6 @@ const nextConfig: NextConfig = {
       {
         source: '/projects.html',
         destination: '/projects',
-        permanent: true,
-      },
-      {
-        source: '/chemistry-js.html',
-        destination: '/chemistry-js',
         permanent: true,
       },
       {

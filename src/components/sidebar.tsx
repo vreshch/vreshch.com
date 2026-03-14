@@ -27,7 +27,7 @@ export function Sidebar() {
     <nav className="mb-4 pl-0">
       <div className="block p-2 md:hidden">
         <button
-          className="cursor-pointer border-none bg-transparent text-xl"
+          className="cursor-pointer border-none bg-transparent text-xl dark:text-dark-text"
           onClick={() => setClosed(!closed)}
         >
           ☰
@@ -44,10 +44,10 @@ export function Sidebar() {
             key={href}
             href={href}
             className={cn(
-              'block border-l-3 px-4 py-2 my-0.5 text-primary',
+              'block border-l-3 px-4 py-2 my-0.5 text-primary dark:text-dark-text-secondary',
               pathname === href
-                ? 'border-l-sidebar-border bg-sidebar-hover font-semibold'
-                : 'border-l-white hover:border-l-sidebar-border hover:bg-sidebar-hover'
+                ? 'border-l-sidebar-border bg-sidebar-hover font-semibold dark:bg-dark-surface dark:text-dark-text'
+                : 'border-l-white hover:border-l-sidebar-border hover:bg-sidebar-hover dark:border-l-dark-bg dark:hover:border-l-sidebar-border dark:hover:bg-dark-surface'
             )}
           >
             {label}

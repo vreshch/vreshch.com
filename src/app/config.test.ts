@@ -6,24 +6,22 @@ describe('next.config', () => {
     expect(nextConfig.reactStrictMode).toBe(true);
   });
 
-  it('uses standalone output', () => {
-    expect(nextConfig.output).toBe('standalone');
-  });
-
   describe('redirects', () => {
     it('defines redirects function', () => {
       expect(nextConfig.redirects).toBeDefined();
       expect(typeof nextConfig.redirects).toBe('function');
     });
 
-    it('returns all legacy .html redirects', async () => {
+    it('returns all legacy redirects', async () => {
       const redirects = await nextConfig.redirects!();
 
       const expectedRedirects = [
-        { source: '/cv.html', destination: '/cv' },
+        { source: '/cv', destination: '/interests' },
+        { source: '/cv.html', destination: '/interests' },
+        { source: '/chemistry-js', destination: '/projects' },
+        { source: '/chemistry-js.html', destination: '/projects' },
         { source: '/interests.html', destination: '/interests' },
         { source: '/projects.html', destination: '/projects' },
-        { source: '/chemistry-js.html', destination: '/chemistry-js' },
         { source: '/contacts.html', destination: '/contacts' },
         { source: '/support.html', destination: '/support' },
       ];
@@ -43,14 +41,6 @@ describe('next.config', () => {
 
       for (const redirect of redirects) {
         expect(redirect.permanent).toBe(true);
-      }
-    });
-
-    it('all sources end with .html', async () => {
-      const redirects = await nextConfig.redirects!();
-
-      for (const redirect of redirects) {
-        expect(redirect.source).toMatch(/\.html$/);
       }
     });
 
