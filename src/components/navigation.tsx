@@ -49,7 +49,7 @@ export function Navigation() {
           Volodymyr Vreshch
         </Link>
 
-        <nav className="hidden items-center gap-2 md:flex">
+        <nav className="hidden items-center gap-1 md:flex">
           {navItems.map(({ href, label }) => {
             const isActive = pathname === href;
             return (
@@ -57,16 +57,21 @@ export function Navigation() {
                 key={href}
                 href={href}
                 className={cn(
-                  'rounded-full px-4 py-2 text-sm font-medium transition-colors duration-200',
+                  'group relative px-3 py-2 text-sm font-medium transition-colors duration-200',
                   isActive
                     ? 'text-heading dark:text-dark-text'
                     : 'text-muted hover:text-heading dark:text-dark-text-secondary dark:hover:text-dark-text',
                 )}
               >
                 {label}
-                {isActive && (
-                  <span className="mt-0.5 block h-[2px] rounded-full bg-accent dark:bg-dark-accent" />
-                )}
+                <span
+                  className={cn(
+                    'absolute inset-x-3 -bottom-[1px] h-[2px] rounded-full transition-all duration-300',
+                    isActive
+                      ? 'bg-accent dark:bg-dark-accent'
+                      : 'scale-x-0 bg-accent/60 group-hover:scale-x-100 dark:bg-dark-accent/60',
+                  )}
+                />
               </Link>
             );
           })}
