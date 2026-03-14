@@ -37,6 +37,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" suppressHydrationWarning>
       <head>
         <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'Person',
+              name: 'Volodymyr Vreshch',
+              url: 'https://vreshch.com',
+              jobTitle: 'Senior Software Engineer',
+              worksFor: { '@type': 'Organization', name: 'Microsoft' },
+              sameAs: [
+                'https://www.linkedin.com/in/vreshch',
+                'https://github.com/vreshch',
+                'https://www.facebook.com/vreshch',
+                'https://www.instagram.com/vreshch.v/',
+              ],
+              image: 'https://vreshch.com/images/profile.jpeg',
+              description:
+                'Building quality software that matters — for millions.',
+            }),
+          }}
+        />
+        <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
