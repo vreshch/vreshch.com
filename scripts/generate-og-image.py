@@ -19,6 +19,20 @@ WIDTH, HEIGHT = 1200, 630
 BG_COLOR = "#1f2028"
 SEED = 42
 
+# Layout
+PADDING = 60
+PHOTO_SIZE = 290
+GAP = 50
+PHOTO_X = PADDING
+PHOTO_Y = (HEIGHT - PHOTO_SIZE) // 2
+TEXT_X = PHOTO_X + PHOTO_SIZE + GAP
+
+# Font sizes
+NAME_SIZE = 56
+TITLE_SIZE = 32
+TAGLINE_SIZE = 26
+URL_SIZE = 21
+
 
 def hex_to_rgb(h: str) -> tuple[int, int, int]:
     h = h.lstrip("#")
@@ -43,10 +57,9 @@ def main() -> None:
     img = Image.new("RGB", (WIDTH, HEIGHT), BG_COLOR)
     draw = ImageDraw.Draw(img)
 
-    # Voronoi network (seed=42, 80 points, max_dist=120)
+    # Voronoi network
     rng = random.Random(SEED)
     points = [(rng.randint(0, WIDTH), rng.randint(0, HEIGHT)) for _ in range(80)]
-
     for i, (x1, y1) in enumerate(points):
         for x2, y2 in points[i + 1 :]:
             if math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2) < 120:
@@ -59,7 +72,7 @@ def main() -> None:
         dot_draw.ellipse((x - 2, y - 2, x + 2, y + 2), fill=(255, 255, 255, 60))
     img = Image.alpha_composite(img.convert("RGBA"), dot_overlay).convert("RGB")
 
-    # Navy glow behind photo
+    # Navy glow
     glow_overlay = Image.new("RGBA", (WIDTH, HEIGHT), (0, 0, 0, 0))
     glow_draw = ImageDraw.Draw(glow_overlay)
     bg_rgb = hex_to_rgb(BG_COLOR)
@@ -73,16 +86,18 @@ def main() -> None:
 
     # Profile photo
     if PROFILE.exists():
-        photo = Image.open(PROFILE).resize((160, 160), Image.LANCZOS)
-        img.paste(photo, (100, 235), make_circle_mask(160))
+        photo = Image.open(PROFILE).resize((PHOTO_SIZE, PHOTO_SIZE), Image.LANCZOS)
+        img.paste(photo, (PHOTO_X, PHOTO_Y), make_circle_mask(PHOTO_SIZE))
 
-    # Text
+    # Text — vertically centered
+    text_h = NAME_SIZE + 24 + TITLE_SIZE + 18 + TAGLINE_SIZE + 18 + URL_SIZE
+    ty = (HEIGHT - text_h) // 2
+
     draw = ImageDraw.Draw(img)
-    ty = 245
-    draw.text((320, ty), "Volodymyr Vreshch", fill="#ffffff", font=load_font(38, bold=True))
-    draw.text((320, ty + 55), "Software Engineer at Microsoft", fill="#a9adc1", font=load_font(20))
-    draw.text((320, ty + 95), "Building quality software that matters \u2014 for millions.", fill="#f59e0b", font=load_font(18))
-    draw.text((320, ty + 130), "https://vreshch.com", fill="#f59e0b", font=load_font(15))
+    draw.text((TEXT_X, ty), "Volodymyr Vreshch", fill="#ffffff", font=load_font(NAME_SIZE, bold=True))
+    draw.text((TEXT_X, ty + NAME_SIZE + 24), "Software Engineer at Microsoft", fill="#a9adc1", font=load_font(TITLE_SIZE))
+    draw.text((TEXT_X, ty + NAME_SIZE + TITLE_SIZE + 42), "Building quality software that matters \u2014 for millions.", fill="#f59e0b", font=load_font(TAGLINE_SIZE))
+    draw.text((TEXT_X, ty + NAME_SIZE + TITLE_SIZE + TAGLINE_SIZE + 60), "https://vreshch.com", fill="#f59e0b", font=load_font(URL_SIZE))
 
     img.save(OUTPUT, "PNG", optimize=True)
     print(f"Saved to {OUTPUT} ({OUTPUT.stat().st_size / 1024:.0f} KB)")
