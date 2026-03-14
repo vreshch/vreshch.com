@@ -10,14 +10,22 @@ export const metadata: Metadata = {
 const contacts = [
   { label: 'Homepage', value: 'vreshch.com', href: 'https://vreshch.com/' },
   { label: 'Email', value: 'vreshch@gmail.com' },
-  { label: 'Skype', value: 'vreshch.work' },
-  { label: 'Tel', value: '+38(096)337-87-**' },
   {
     label: 'LinkedIn',
-    value: 'Volodymyr Vreshch',
-    href: 'https://www.linkedin.com/in/vreshch-volodymyr-3969498a',
+    value: 'in/vreshch',
+    href: 'https://www.linkedin.com/in/vreshch',
   },
   { label: 'GitHub', value: 'vreshch', href: 'https://github.com/vreshch' },
+  {
+    label: 'Facebook',
+    value: 'vreshch',
+    href: 'https://www.facebook.com/vreshch',
+  },
+  {
+    label: 'Instagram',
+    value: 'vreshch.v',
+    href: 'https://www.instagram.com/vreshch.v/',
+  },
 ];
 
 export default function ContactsPage() {
@@ -33,7 +41,7 @@ export default function ContactsPage() {
               alt="Volodymyr Vreshch"
               width={200}
               height={200}
-              src="/images/mphoto.jpeg"
+              src="/images/profile.jpeg"
             />
           </div>
           <Card className="w-full flex-1">
@@ -48,7 +56,7 @@ export default function ContactsPage() {
                       href={contact.href}
                       target="_blank"
                       rel="noreferrer"
-                      className="text-sm font-medium text-heading underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:text-dark-text dark:decoration-dark-border dark:hover:decoration-dark-text"
+                      className="text-sm font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
                     >
                       {contact.value}
                     </a>

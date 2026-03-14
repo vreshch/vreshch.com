@@ -25,7 +25,7 @@ export default function HomePage() {
               <div className="flex flex-wrap gap-4">
                 <Link
                   href="/interests"
-                  className="inline-block rounded-full bg-surface px-8 py-3.5 text-sm font-medium text-heading transition-colors hover:bg-surface-alt dark:bg-dark-surface-alt dark:text-dark-text dark:hover:bg-dark-surface"
+                  className="inline-block rounded-full bg-accent px-8 py-3.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover dark:bg-dark-accent dark:text-dark-bg dark:hover:bg-dark-accent-hover"
                 >
                   Learn more about me
                 </Link>
@@ -104,7 +104,7 @@ export default function HomePage() {
             </h2>
             <Link
               href="/projects"
-              className="flex items-center gap-2 text-sm font-medium text-muted transition-colors hover:text-heading dark:text-dark-text-secondary dark:hover:text-dark-text"
+              className="flex items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
             >
               See all projects
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

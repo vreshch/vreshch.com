@@ -99,7 +99,7 @@ export default function ProjectsPage() {
               href="https://github.com/chemistry"
               target="_blank"
               rel="noreferrer"
-              className="font-medium text-heading underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:text-dark-text dark:decoration-dark-border dark:hover:decoration-dark-text"
+              className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
             >
               GitHub
             </a>{' '}
@@ -113,7 +113,7 @@ export default function ProjectsPage() {
                     href={lib.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:decoration-dark-border dark:hover:decoration-dark-text"
+                    className="text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
                   >
                     {lib.name}
                   </a>
@@ -127,7 +127,7 @@ export default function ProjectsPage() {
                         href={lib.link.href}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-medium text-heading underline decoration-border underline-offset-4 transition-colors hover:decoration-heading dark:text-dark-text dark:decoration-dark-border dark:hover:decoration-dark-text"
+                        className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
                       >
                         {lib.link.label}
                       </a>

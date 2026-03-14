@@ -62,7 +62,7 @@ export function Navigation() {
               >
                 {label}
                 {isActive && (
-                  <span className="mt-0.5 block h-[2px] rounded-full bg-heading dark:bg-dark-text" />
+                  <span className="mt-0.5 block h-[2px] rounded-full bg-accent dark:bg-dark-accent" />
                 )}
               </Link>
             );
