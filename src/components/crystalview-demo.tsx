@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 import { Mol3DView } from '@chemistry/crystalview';
-import '../../node_modules/@chemistry/crystalview/dist/crystalview.css';
+import '@chemistry/crystalview/crystalview.css';
 
 const STRUCTURE = {
   _id: '1518815',

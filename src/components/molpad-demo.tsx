@@ -4,7 +4,7 @@ import { useEffect, useRef } from 'react';
 import { MolPad } from '@chemistry/molpad';
 import type { MolPadHandle } from '@chemistry/molpad';
 
-/* CSS imports — using direct node_modules paths since package exports don't include them */
+/* TODO: replace with `import '@chemistry/molpad/molpad.css'` after publishing @chemistry/molpad@3.1.0 */
 import '../../node_modules/@chemistry/molpad/dist/components/molpad-view/molpad-view.css';
 import '../../node_modules/@chemistry/molpad/dist/components/molpad-content/molpad-content.css';
 import '../../node_modules/@chemistry/molpad/dist/components/periodic-table/periodic-table.css';
