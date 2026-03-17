@@ -119,16 +119,24 @@ jobs:
             set -e
             cd /opt/vreshch-com
             
+            # Authenticate with GHCR on server
+            echo "🔐 Authenticating with GHCR..."
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
             # Update image tag in docker-compose
             sed -i "s|image:.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}|g" docker-compose.yml
-            
+
+            # Pull new image before deploying
+            echo "📥 Pulling image..."
+            docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${IMAGE_TAG}
+
             # Deploy to Docker Swarm
             echo "🐳 Deploying stack..."
             docker stack deploy -c docker-compose.yml vreshch --with-registry-auth
 
-            # Force service update to ensure new image is pulled and containers restart
+            # Force service update to ensure containers restart with new image
             echo "🔄 Forcing service update..."
-            docker service update --force --with-registry-auth vreshch_web
+            docker service update --force vreshch_web
 
             # Wait for deployment
             echo "⏳ Waiting for service to be ready..."
