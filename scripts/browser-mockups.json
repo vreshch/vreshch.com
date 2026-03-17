@@ -1,0 +1,26 @@
+[
+  {
+    "url": "https://diffractwd.com",
+    "title": "DiffractWD - Free Powder Diffraction",
+    "width": 1280,
+    "height": 800,
+    "zoom": 1,
+    "output": "diffractwd-com.png"
+  },
+  {
+    "url": "https://mcpxhub.io",
+    "title": "MCPxHub - MCP Catalog Platform",
+    "width": 1280,
+    "height": 800,
+    "zoom": 1,
+    "output": "mcpxhub-io.png"
+  },
+  {
+    "url": "https://crystallography.io",
+    "title": "Crystallography Online",
+    "width": 1280,
+    "height": 800,
+    "zoom": 1,
+    "output": "crystallography-io.png"
+  }
+]

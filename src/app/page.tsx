@@ -134,13 +134,15 @@ export default function HomePage() {
             </a>
             <a href="https://mcpxhub.io" target="_blank" rel="noreferrer">
               <Card hover="lift" padding="none" className="overflow-hidden">
-                <Image
-                  src="/images/mcpxhub.jpg"
-                  width={397}
-                  height={284}
-                  className="h-auto w-full"
-                  alt="mcpxhub.io"
-                />
+                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+                  <Image
+                    src="/mockups/mcpxhub-io.png"
+                    width={1400}
+                    height={1007}
+                    className="h-auto w-full"
+                    alt="mcpxhub.io"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
                     mcpxhub.io

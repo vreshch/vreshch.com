@@ -52,13 +52,15 @@ export default function ProjectsPage() {
             </a>
             <a href="https://mcpxhub.io" target="_blank" rel="noreferrer">
               <Card hover="lift" padding="none" className="overflow-hidden">
-                <Image
-                  src="/images/mcpxhub.jpg"
-                  width={397}
-                  height={284}
-                  className="h-auto w-full"
-                  alt="mcpxhub.io"
-                />
+                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+                  <Image
+                    src="/mockups/mcpxhub-io.png"
+                    width={1400}
+                    height={1007}
+                    className="h-auto w-full"
+                    alt="mcpxhub.io"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
                     mcpxhub.io
@@ -137,13 +139,15 @@ export default function ProjectsPage() {
           <div className="grid gap-6 md:grid-cols-2">
             <a href="https://crystallography.io" target="_blank" rel="noreferrer">
               <Card hover="lift" padding="none" className="overflow-hidden">
-                <Image
-                  src="/images/crystallography_online.jpg"
-                  width={397}
-                  height={284}
-                  className="h-auto w-full"
-                  alt="crystallography.io"
-                />
+                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+                  <Image
+                    src="/mockups/crystallography-io.png"
+                    width={1400}
+                    height={1007}
+                    className="h-auto w-full"
+                    alt="crystallography.io"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
                     crystallography.io
@@ -156,13 +160,15 @@ export default function ProjectsPage() {
             </a>
             <a href="https://diffractwd.com" target="_blank" rel="noreferrer">
               <Card hover="lift" padding="none" className="overflow-hidden">
-                <Image
-                  src="/images/diffractwd.jpg"
-                  width={397}
-                  height={284}
-                  className="h-auto w-full"
-                  alt="diffractwd.com"
-                />
+                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+                  <Image
+                    src="/mockups/diffractwd-com.png"
+                    width={1400}
+                    height={1007}
+                    className="h-auto w-full"
+                    alt="diffractwd.com"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
                     diffractwd.com
