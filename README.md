@@ -7,8 +7,9 @@ Personal Website vreshch.com, contains CV, interests, Contacts;
 
 ## Technologies Used
 
-- Rect & Typescript
-- Next JS as Framework
+- React 19 & TypeScript
+- Next.js 15 (App Router)
+- Tailwind CSS v4
 
 ## 🚀 Deployment
 
