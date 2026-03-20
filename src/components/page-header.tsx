@@ -6,7 +6,9 @@ export function PageHeader({ title, description }: { title: string; description?
           {title}
         </h1>
         {description && (
-          <p className="text-lg text-muted dark:text-dark-text-secondary md:text-xl">{description}</p>
+          <p className="text-lg text-muted dark:text-dark-text-secondary md:text-xl">
+            {description}
+          </p>
         )}
       </div>
     </section>

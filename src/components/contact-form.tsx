@@ -14,9 +14,7 @@ export function ContactForm() {
     e.preventDefault();
 
     const subject = encodeURIComponent(`Message from ${name || 'Website Visitor'}`);
-    const body = encodeURIComponent(
-      `Name: ${name}\nEmail: ${email}\n\n${message}`,
-    );
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
 
     window.location.href = `mailto:vreshch@gmail.com?subject=${subject}&body=${body}`;
   };
@@ -25,7 +23,10 @@ export function ContactForm() {
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
-          <label htmlFor="name" className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-muted dark:text-dark-text-secondary">
+          <label
+            htmlFor="name"
+            className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-muted dark:text-dark-text-secondary"
+          >
             Name
           </label>
           <input
@@ -39,7 +40,10 @@ export function ContactForm() {
           />
         </div>
         <div>
-          <label htmlFor="email" className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-muted dark:text-dark-text-secondary">
+          <label
+            htmlFor="email"
+            className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-muted dark:text-dark-text-secondary"
+          >
             Email
           </label>
           <input
@@ -54,7 +58,10 @@ export function ContactForm() {
         </div>
       </div>
       <div>
-        <label htmlFor="message" className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-muted dark:text-dark-text-secondary">
+        <label
+          htmlFor="message"
+          className="mb-1.5 block text-xs font-medium uppercase tracking-widest text-muted dark:text-dark-text-secondary"
+        >
           Message
         </label>
         <textarea

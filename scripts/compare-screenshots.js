@@ -30,7 +30,9 @@ import pixelmatch from 'pixelmatch';
 
 function listPngs(dir) {
   if (!existsSync(dir)) return [];
-  return readdirSync(dir).filter((f) => f.endsWith('.png')).sort();
+  return readdirSync(dir)
+    .filter((f) => f.endsWith('.png'))
+    .sort();
 }
 
 function readPng(filepath) {
@@ -205,8 +207,12 @@ function generateHighlight(currentPath, diffImg, highlightPath) {
       for (let x = x1; x <= x2; x++) {
         const idx = (y * width + x) * 4;
         highlight.data[idx] = Math.round(255 * fillAlpha + highlight.data[idx] * (1 - fillAlpha));
-        highlight.data[idx + 1] = Math.round(0 * fillAlpha + highlight.data[idx + 1] * (1 - fillAlpha));
-        highlight.data[idx + 2] = Math.round(255 * fillAlpha + highlight.data[idx + 2] * (1 - fillAlpha));
+        highlight.data[idx + 1] = Math.round(
+          0 * fillAlpha + highlight.data[idx + 1] * (1 - fillAlpha)
+        );
+        highlight.data[idx + 2] = Math.round(
+          255 * fillAlpha + highlight.data[idx + 2] * (1 - fillAlpha)
+        );
       }
     }
   }
@@ -217,8 +223,12 @@ function generateHighlight(currentPath, diffImg, highlightPath) {
     const idx = i * 4;
     if (diffImg.data[idx + 3] > 0) {
       highlight.data[idx] = Math.round(255 * pixelAlpha + currImg.data[idx] * (1 - pixelAlpha));
-      highlight.data[idx + 1] = Math.round(0 * pixelAlpha + currImg.data[idx + 1] * (1 - pixelAlpha));
-      highlight.data[idx + 2] = Math.round(255 * pixelAlpha + currImg.data[idx + 2] * (1 - pixelAlpha));
+      highlight.data[idx + 1] = Math.round(
+        0 * pixelAlpha + currImg.data[idx + 1] * (1 - pixelAlpha)
+      );
+      highlight.data[idx + 2] = Math.round(
+        255 * pixelAlpha + currImg.data[idx + 2] * (1 - pixelAlpha)
+      );
       highlight.data[idx + 3] = 255;
     }
   }
@@ -263,7 +273,7 @@ function main() {
 
   if (!baseDir || !currentDir) {
     console.error(
-      'Usage: node compare-screenshots.js <base-dir> <current-dir> [--output file.json] [--diff-dir dir] [--highlight-dir dir]',
+      'Usage: node compare-screenshots.js <base-dir> <current-dir> [--output file.json] [--diff-dir dir] [--highlight-dir dir]'
     );
     process.exit(1);
   }
