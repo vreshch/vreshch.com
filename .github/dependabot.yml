@@ -11,39 +11,9 @@ updates:
       - 'vreshch'
     open-pull-requests-limit: 10
     groups:
-      dev-dependencies:
+      all-dependencies:
         patterns:
-          - '@types/*'
-          - 'typescript'
-          - 'typescript-eslint'
-          - 'eslint*'
-          - '@eslint/*'
-          - 'prettier'
-          - 'vitest*'
-          - '@vitest/*'
-          - 'jest*'
-          - 'ts-jest'
-          - '@playwright/*'
-          - 'playwright*'
-          - '@testing-library/*'
-          - 'postcss'
-          - 'autoprefixer'
-          - '@tailwindcss/*'
-          - 'tailwindcss'
-        update-types:
-          - 'minor'
-          - 'patch'
-      next:
-        patterns:
-          - 'next'
-          - '@next/*'
-          - 'eslint-config-next'
-      react:
-        patterns:
-          - 'react'
-          - 'react-dom'
-          - '@types/react'
-          - '@types/react-dom'
+          - '*'
     ignore:
       - dependency-name: '*'
         update-types: ['version-update:semver-major']
@@ -57,6 +27,11 @@ updates:
       timezone: 'Europe/Prague'
     assignees:
       - 'vreshch'
+    open-pull-requests-limit: 5
+    groups:
+      all-docker:
+        patterns:
+          - '*'
 
   - package-ecosystem: 'github-actions'
     directory: '/'
@@ -67,3 +42,9 @@ updates:
       timezone: 'Europe/Prague'
     assignees:
       - 'vreshch'
+    open-pull-requests-limit: 5
+    groups:
+      all-actions:
+        patterns:
+          - '*'
+
