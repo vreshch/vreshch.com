@@ -81,9 +81,7 @@ export default function HomePage() {
                   <p>2015 — 2016. JavaScript, Backbone, LESS, HTML, NodeJS.</p>
                 </div>
                 <div>
-                  <p className="font-medium text-heading dark:text-dark-text">
-                    Academic Research
-                  </p>
+                  <p className="font-medium text-heading dark:text-dark-text">Academic Research</p>
                   <p>
                     2008 — 2012. Post-Doc in USA &amp; France. Ph.D. in Inorganic Chemistry, Kyiv,
                     Ukraine.
@@ -108,7 +106,12 @@ export default function HomePage() {
             >
               See all projects
               <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17 8l4 4m0 0l-4 4m4-4H3"
+                />
               </svg>
             </Link>
           </div>

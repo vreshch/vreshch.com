@@ -10,10 +10,26 @@ export const metadata: Metadata = {
 };
 
 const libraries = [
-  { name: '@chemistry/crystallography.io', url: 'https://github.com/chemistry/crystallography.io', description: 'Web interface for COD database' },
-  { name: '@chemistry/crystalview', url: 'https://github.com/chemistry/crystalview', description: 'Molecular viewer for crystal structures' },
-  { name: '@chemistry/molpad', url: 'https://github.com/chemistry/molpad', description: 'Molecule editor component' },
-  { name: '@chemistry/chemical-libraries', url: 'https://github.com/chemistry/chemical-libraries', description: 'Math, elements, and space group utilities' },
+  {
+    name: '@chemistry/crystallography.io',
+    url: 'https://github.com/chemistry/crystallography.io',
+    description: 'Web interface for COD database',
+  },
+  {
+    name: '@chemistry/crystalview',
+    url: 'https://github.com/chemistry/crystalview',
+    description: 'Molecular viewer for crystal structures',
+  },
+  {
+    name: '@chemistry/molpad',
+    url: 'https://github.com/chemistry/molpad',
+    description: 'Molecule editor component',
+  },
+  {
+    name: '@chemistry/chemical-libraries',
+    url: 'https://github.com/chemistry/chemical-libraries',
+    description: 'Math, elements, and space group utilities',
+  },
 ];
 
 export default function ProjectsPage() {
@@ -27,9 +43,7 @@ export default function ProjectsPage() {
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
         {/* Featured Projects */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
-            Featured
-          </h2>
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Featured</h2>
           <div className="grid gap-6 md:grid-cols-2">
             <a href="https://github.com/agentage/desktop" target="_blank" rel="noreferrer">
               <Card hover="lift" padding="none" className="overflow-hidden">
@@ -102,8 +116,7 @@ export default function ProjectsPage() {
               {
                 name: '@agentage/cli',
                 url: 'https://github.com/agentage/cli',
-                description:
-                  'Command-line tool to discover, install, run, and publish AI agents',
+                description: 'Command-line tool to discover, install, run, and publish AI agents',
               },
               {
                 name: '@agentage/infrastructure',
@@ -198,11 +211,21 @@ export default function ProjectsPage() {
                 </h3>
                 <p className="text-sm text-muted dark:text-dark-text-secondary">
                   Draw and edit molecular structures —{' '}
-                  <a href="https://github.com/chemistry/molpad" target="_blank" rel="noreferrer" className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover">source</a>
+                  <a
+                    href="https://github.com/chemistry/molpad"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+                  >
+                    source
+                  </a>
                 </p>
               </div>
             </Card>
-            <Card padding="none" className="overflow-hidden border border-border dark:border-dark-border">
+            <Card
+              padding="none"
+              className="overflow-hidden border border-border dark:border-dark-border"
+            >
               <div className="aspect-square">
                 <CrystalViewDemo />
               </div>
@@ -212,7 +235,14 @@ export default function ProjectsPage() {
                 </h3>
                 <p className="text-sm text-muted dark:text-dark-text-secondary">
                   3D crystal structure visualization —{' '}
-                  <a href="https://github.com/chemistry/crystalview" target="_blank" rel="noreferrer" className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover">source</a>
+                  <a
+                    href="https://github.com/chemistry/crystalview"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+                  >
+                    source
+                  </a>
                 </p>
               </div>
             </Card>
@@ -237,7 +267,8 @@ export default function ProjectsPage() {
                   >
                     {lib.name}
                   </a>
-                  {' — '}{lib.description}
+                  {' — '}
+                  {lib.description}
                 </span>
               </li>
             ))}

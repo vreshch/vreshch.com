@@ -5,6 +5,10 @@ on:
     branches: [master]
     types: [opened, synchronize, reopened]
 
+concurrency:
+  group: pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 permissions:
   contents: write
   pull-requests: write
@@ -28,21 +32,35 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
+        id: install
         run: npm ci
 
       - name: Lint code
+        id: lint
+        if: always() && steps.install.outcome == 'success'
         run: npm run lint
 
+      - name: Format check
+        id: format
+        if: always() && steps.install.outcome == 'success'
+        run: npm run format:check
+
       - name: Build project
+        id: build
+        if: always() && steps.install.outcome == 'success'
         run: npm run build
 
       - name: Validate Dockerfile
+        id: docker
+        if: always() && steps.install.outcome == 'success'
         run: docker build -t vreshch-com:pr-${{ github.event.pull_request.number }} .
 
       - name: Install Playwright browsers
+        if: always() && steps.build.outcome == 'success'
         run: npx playwright install --with-deps chromium
 
       - name: Extract base branch screenshots
+        if: always() && steps.build.outcome == 'success'
         run: |
           mkdir -p /tmp/screenshots-base
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
@@ -54,6 +72,7 @@ jobs:
           ls /tmp/screenshots-base/ 2>/dev/null || echo "None found"
 
       - name: Copy base screenshots as baselines
+        if: always() && steps.build.outcome == 'success'
         run: |
           if ls /tmp/screenshots-base/*.png 1>/dev/null 2>&1; then
             cp /tmp/screenshots-base/*.png e2e/screenshots/
@@ -64,6 +83,7 @@ jobs:
 
       - name: Run E2E tests (visual warnings only)
         id: e2e
+        if: always() && steps.build.outcome == 'success'
         continue-on-error: true
         env:
           CI: true
@@ -71,7 +91,7 @@ jobs:
         run: npx playwright test 2>&1 | tee e2e-output.txt
 
       - name: Collect current screenshots
-        if: always()
+        if: always() && steps.e2e.outcome != 'skipped'
         run: |
           mkdir -p /tmp/screenshots-current
           if [ -d "test-results" ]; then
@@ -90,7 +110,7 @@ jobs:
           ls /tmp/screenshots-current/
 
       - name: Run smart diff comparison
-        if: always()
+        if: always() && steps.e2e.outcome != 'skipped'
         run: |
           node scripts/compare-screenshots.js \
             /tmp/screenshots-base \
@@ -100,7 +120,7 @@ jobs:
             --highlight-dir /tmp/screenshot-highlights
 
       - name: Ensure ci-assets release exists
-        if: always()
+        if: always() && steps.e2e.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -108,7 +128,7 @@ jobs:
             gh release create ci-assets --title "CI Assets" --notes "Automated visual regression assets" --prerelease
 
       - name: Upload images to release assets
-        if: always()
+        if: always() && steps.e2e.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -117,13 +137,11 @@ jobs:
           REPO="${{ github.repository }}"
           PREFIX="pr${PR_NUM}-run${RUN_ID}"
 
-          # Delete old assets for this PR
           gh release view ci-assets --json assets --jq ".assets[].name" 2>/dev/null | \
             grep "^pr${PR_NUM}-" | while read -r old; do
               gh release delete-asset ci-assets "$old" --yes 2>/dev/null || true
             done
 
-          # Read changed files
           CHANGED=$(node -e "
             const r = JSON.parse(require('fs').readFileSync('/tmp/comparison.json','utf-8'));
             r.images.filter(i => i.status === 'changed').forEach(i => console.log(i.name));
@@ -139,7 +157,6 @@ jobs:
               AFTER_URL=""
               HIGHLIGHT_URL=""
 
-              # Upload before (copy with prefixed name, then upload)
               if [ -f "/tmp/screenshots-base/$name" ]; then
                 ASSET="${PREFIX}-before-${name}"
                 cp "/tmp/screenshots-base/$name" "/tmp/upload-staging/${ASSET}"
@@ -147,7 +164,6 @@ jobs:
                 BEFORE_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
               fi
 
-              # Upload after
               if [ -f "/tmp/screenshots-current/$name" ]; then
                 ASSET="${PREFIX}-after-${name}"
                 cp "/tmp/screenshots-current/$name" "/tmp/upload-staging/${ASSET}"
@@ -155,7 +171,6 @@ jobs:
                 AFTER_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
               fi
 
-              # Upload highlight (smart diff)
               if [ -f "/tmp/screenshot-highlights/highlight-$name" ]; then
                 ASSET="${PREFIX}-highlight-${name}"
                 cp "/tmp/screenshot-highlights/highlight-$name" "/tmp/upload-staging/${ASSET}"
@@ -169,15 +184,9 @@ jobs:
 
           rm -rf /tmp/upload-staging
           echo -e "$URLS" > /tmp/image-urls.txt
-          echo "Uploaded assets:"
-          cat /tmp/image-urls.txt
-
-          # Verify asset names
-          echo "=== Release assets ==="
-          gh release view ci-assets --json assets --jq '.assets[].name' | grep "^pr${PR_NUM}-" | sort
 
       - name: Upload all screenshots (combined artifact)
-        if: always()
+        if: always() && steps.e2e.outcome != 'skipped'
         uses: actions/upload-artifact@v7
         with:
           name: all-screenshots
@@ -190,168 +199,106 @@ jobs:
           retention-days: 14
           if-no-files-found: ignore
 
-      - name: Comment on PR with results
+      - name: Comment on PR
         if: always()
         uses: actions/github-script@v8
         with:
           script: |
             const fs = require('fs');
+            const marker = '<!-- pr-validation-bot -->';
 
-            const jobStatus = '${{ job.status }}';
-            const e2eStatus = '${{ steps.e2e.outcome }}';
-            const prNumber = ${{ github.event.pull_request.number }};
-            const runId = '${{ github.run_id }}';
-            const repo = '${{ github.repository }}';
+            // Standard checks
+            const checks = [
+              { name: 'Dependencies installed', outcome: '${{ steps.install.outcome }}' },
+              { name: 'Linting passed', outcome: '${{ steps.lint.outcome }}' },
+              { name: 'Format check passed', outcome: '${{ steps.format.outcome }}' },
+              { name: 'Build successful', outcome: '${{ steps.build.outcome }}' },
+              { name: 'Docker build', outcome: '${{ steps.docker.outcome }}' },
+              { name: 'E2E tests', outcome: '${{ steps.e2e.outcome }}' },
+            ];
 
-            const statusIcon = jobStatus === 'success' ? '✅' : '❌';
-            const e2eIcon = e2eStatus === 'success' ? '✅' : '⚠️';
+            const allPassed = checks.every(c => c.outcome === 'success');
+            const status = allPassed ? '✅ PASSED' : '❌ FAILED';
+            const emoji = allPassed ? '🎉' : '💥';
 
-            // Read comparison report
-            let report = { images: [], summary: { total: 0, changed: 0, added: 0, removed: 0, unchanged: 0 } };
-            try {
-              report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
-            } catch {}
+            const checkLines = checks
+              .map(c => `- ${c.outcome === 'success' ? '✅' : c.outcome === 'skipped' ? '⏭️' : '❌'} ${c.name}`)
+              .join('\n');
 
-            // Read image URLs from release assets upload
-            const urlMap = new Map();
-            try {
-              const lines = fs.readFileSync('/tmp/image-urls.txt', 'utf-8').trim().split('\n');
-              for (const line of lines) {
-                if (!line.trim()) continue;
-                const [name, before, after, highlight] = line.split('|');
-                if (name) urlMap.set(name, { before, after, highlight });
-              }
-            } catch {}
-
-            const { summary } = report;
-            const changedImages = report.images.filter(i => i.status === 'changed');
-            const addedImages = report.images.filter(i => i.status === 'added');
-            const removedImages = report.images.filter(i => i.status === 'removed');
-
-            // Checks table
-            const checksTable = [
-              `| Step | Status |`,
-              `|------|--------|`,
-              `| 📦 Dependencies | ${statusIcon} |`,
-              `| 🔍 Linting | ${statusIcon} |`,
-              `| 🏗️ Build | ${statusIcon} |`,
-              `| 🐳 Docker | ${statusIcon} |`,
-              `| 🎭 E2E Tests | ${e2eIcon} |`,
-            ].join('\n');
-
-            // Visual section with embedded images
+            // Visual regression section
             let visualSection = '';
+            try {
+              const report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
+              const { summary } = report;
+              const changedImages = report.images.filter(i => i.status === 'changed');
 
-            if (changedImages.length > 0) {
-              visualSection += `\n### 🔄 Visual Changes (${changedImages.length} of ${summary.total} screenshots)\n\n`;
-              visualSection += `| 📊 | Count |\n|-----|-------|\n`;
-              visualSection += `| 🔄 Changed | ${summary.changed} |\n`;
-              if (summary.added > 0) visualSection += `| 🆕 Added | ${summary.added} |\n`;
-              if (summary.removed > 0) visualSection += `| 🗑️ Removed | ${summary.removed} |\n`;
-              visualSection += `| ✅ Unchanged | ${summary.unchanged} |\n\n`;
-
-              for (const img of changedImages) {
-                const pageName = img.name.replace('.png', '').replace(/-/g, ' ');
-                const pct = img.changedPercent !== undefined ? ` — ${img.changedPercent}% changed` : '';
-                const pixels = img.changedPixels !== undefined ? ` (${img.changedPixels.toLocaleString()} px)` : '';
-                const urls = urlMap.get(img.name);
-
-                visualSection += `<details>\n`;
-                visualSection += `<summary>📸 <strong>${pageName}</strong>${pct}${pixels}</summary>\n\n`;
-
-                if (urls?.before && urls?.after && urls?.highlight) {
-                  visualSection += `| 🔙 Before | 🔜 After | 🔬 Smart Diff |\n`;
-                  visualSection += `|-----------|----------|---------------|\n`;
-                  visualSection += `| <img src="${urls.before}" width="280" /> | <img src="${urls.after}" width="280" /> | <img src="${urls.highlight}" width="280" /> |\n\n`;
-                } else if (urls?.before && urls?.after) {
-                  visualSection += `| 🔙 Before | 🔜 After |\n`;
-                  visualSection += `|-----------|----------|\n`;
-                  visualSection += `| <img src="${urls.before}" width="400" /> | <img src="${urls.after}" width="400" /> |\n\n`;
-                } else {
-                  visualSection += `> ⬇️ Download **all-screenshots** artifact to review.\n\n`;
+              const urlMap = new Map();
+              try {
+                const lines = fs.readFileSync('/tmp/image-urls.txt', 'utf-8').trim().split('\n');
+                for (const line of lines) {
+                  if (!line.trim()) continue;
+                  const [name, before, after, highlight] = line.split('|');
+                  if (name) urlMap.set(name, { before, after, highlight });
                 }
+              } catch {}
 
-                visualSection += `</details>\n\n`;
-              }
-
-              if (addedImages.length > 0) {
-                visualSection += `#### 🆕 Added Screenshots\n`;
-                for (const img of addedImages) {
-                  visualSection += `- \`${img.name}\`\n`;
+              if (changedImages.length > 0) {
+                visualSection += `\n**Visual Changes:** ${summary.changed} of ${summary.total} screenshots changed\n\n`;
+                for (const img of changedImages) {
+                  const pageName = img.name.replace('.png', '').replace(/-/g, ' ');
+                  const pct = img.changedPercent !== undefined ? ` — ${img.changedPercent}% changed` : '';
+                  const urls = urlMap.get(img.name);
+                  visualSection += `<details>\n<summary>📸 <strong>${pageName}</strong>${pct}</summary>\n\n`;
+                  if (urls?.before && urls?.after && urls?.highlight) {
+                    visualSection += `| Before | After | Diff |\n|--------|-------|------|\n`;
+                    visualSection += `| <img src="${urls.before}" width="280" /> | <img src="${urls.after}" width="280" /> | <img src="${urls.highlight}" width="280" /> |\n\n`;
+                  }
+                  visualSection += `</details>\n\n`;
                 }
-                visualSection += '\n';
+              } else {
+                visualSection += `\n**Visual Regression:** ✅ All ${summary.total} screenshots match — no changes.\n`;
               }
-
-              if (removedImages.length > 0) {
-                visualSection += `#### 🗑️ Removed Screenshots\n`;
-                for (const img of removedImages) {
-                  visualSection += `- \`${img.name}\`\n`;
-                }
-                visualSection += '\n';
-              }
-            } else {
-              visualSection += `\n### ✅ Visual Regression\n\n`;
-              visualSection += `All ${summary.total} screenshots match baselines — no visual changes detected.\n\n`;
+            } catch {
+              visualSection = '';
             }
 
-            // Page status table
-            const pages = ['home', 'cv', 'interests', 'projects', 'chemistry-js', 'contacts'];
-            const pageRows = pages.map(p => {
-              const desktopImg = report.images.find(i => i.name === `${p}-desktop.png`);
-              const mobileImg = report.images.find(i => i.name === `${p}-mobile.png`);
-              const desktopIcon = !desktopImg ? '➖' : desktopImg.status === 'changed' ? '🔄' : '✅';
-              const mobileIcon = !mobileImg ? '➖' : mobileImg.status === 'changed' ? '🔄' : '✅';
-              return `| ${p} | ${desktopIcon} | ${mobileIcon} |`;
-            }).join('\n');
+            const body = `${marker}
+            ${emoji} **PR Validation ${status}**
 
-            const mergeStatus = jobStatus === 'success' && e2eStatus === 'success'
-              ? '🚀 **Ready to merge!**'
-              : '⚠️ **Review changes before merging.**';
+            **Commit:** \`${{ github.event.pull_request.head.sha }}\`
+            **Branch:** \`${{ github.head_ref }}\`
 
-            const body = [
-              `## 🔍 PR Validation ${statusIcon}`,
-              ``,
-              `> **Commit:** \`${{ github.sha }}\` | **Branch:** \`${{ github.head_ref }}\``,
-              ``,
-              `### 📋 Checks`,
-              checksTable,
-              ``,
-              visualSection,
-              `### 📸 Page Status`,
-              `| Page | 🖥️ Desktop | 📱 Mobile |`,
-              `|------|-----------|----------|`,
-              pageRows,
-              ``,
-              mergeStatus,
-              ``,
-              `---`,
-              `🔗 [Workflow run](https://github.com/${repo}/actions/runs/${runId}) · ⬇️ [Download all screenshots](https://github.com/${repo}/actions/runs/${runId}#artifacts)`,
-              `⏰ \`${new Date().toISOString()}\``,
-            ].join('\n');
+            **Checks:**
+            ${checkLines}
+            ${visualSection}
+            ${allPassed ? '**Ready to merge!** ✨' : '**Please fix the failing checks.**'}
 
-            const comments = await github.rest.issues.listComments({
+            ---
+            🔗 [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            ⏰ Generated at: \`${new Date().toISOString()}\``;
+
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: context.issue.number,
             });
 
-            const botComment = comments.data.find(comment =>
-              comment.user.login === 'github-actions[bot]' &&
-              comment.body.includes('PR Validation')
+            const existing = comments.find(c =>
+              c.user.login === 'github-actions[bot]' && c.body.startsWith(marker)
             );
 
-            if (botComment) {
+            if (existing) {
               await github.rest.issues.updateComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                comment_id: botComment.id,
-                body: body
+                comment_id: existing.id,
+                body: body,
               });
             } else {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 issue_number: context.issue.number,
-                body: body
+                body: body,
               });
             }

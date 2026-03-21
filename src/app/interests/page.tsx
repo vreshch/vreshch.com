@@ -41,12 +41,10 @@ export default function InterestsPage() {
 
         {/* Tech Stack */}
         <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
-            Tech Stack
-          </h2>
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Tech Stack</h2>
           <p className="mb-6 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
-            10+ years building enterprise products with millions of users — from frontend
-            interfaces to backend services, infrastructure, and AI-powered tooling.
+            10+ years building enterprise products with millions of users — from frontend interfaces
+            to backend services, infrastructure, and AI-powered tooling.
           </p>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {[

@@ -34,7 +34,7 @@ export function ThemeToggle() {
             'absolute inset-0 h-5 w-5 transition-all duration-300',
             mounted && dark
               ? 'translate-y-0 rotate-0 opacity-100'
-              : '-translate-y-full rotate-90 opacity-0',
+              : '-translate-y-full rotate-90 opacity-0'
           )}
           fill="none"
           stroke="currentColor"
@@ -52,7 +52,7 @@ export function ThemeToggle() {
             'absolute inset-0 h-5 w-5 transition-all duration-300',
             mounted && !dark
               ? 'translate-y-0 rotate-0 opacity-100'
-              : 'translate-y-full -rotate-90 opacity-0',
+              : 'translate-y-full -rotate-90 opacity-0'
           )}
           fill="none"
           stroke="currentColor"
