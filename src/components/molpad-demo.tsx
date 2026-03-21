@@ -4,16 +4,7 @@ import { useEffect, useRef } from 'react';
 import { MolPad } from '@chemistry/molpad';
 import type { MolPadHandle } from '@chemistry/molpad';
 
-/* CSS imports — using direct node_modules paths since package exports don't include them */
-import '../../node_modules/@chemistry/molpad/dist/components/molpad-view/molpad-view.css';
-import '../../node_modules/@chemistry/molpad/dist/components/molpad-content/molpad-content.css';
-import '../../node_modules/@chemistry/molpad/dist/components/periodic-table/periodic-table.css';
-import '../../node_modules/@chemistry/molpad/dist/components/toolbar/left-toolbar/icons/icons.css';
-import '../../node_modules/@chemistry/molpad/dist/components/toolbar/top-toolbar/icons/icons.css';
-import '../../node_modules/@chemistry/molpad/dist/components/toolbar/right-toolbar/icons/icons.css';
-import '../../node_modules/@chemistry/molpad/dist/widgets/toolbar/toolbar.css';
-import '../../node_modules/@chemistry/molpad/dist/widgets/popup/popup.css';
-import '../../node_modules/@chemistry/molpad/dist/widgets/toolbar-item/toolbar-item.css';
+import '@chemistry/molpad/molpad.css';
 
 const CAFFEINE = {
   id: 'caffeine',
