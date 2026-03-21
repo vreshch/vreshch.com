@@ -35,7 +35,7 @@ export async function waitForVisualStability(page: Page, timeout = 500): Promise
 export async function expectScreenshot(
   page: Page,
   name: string,
-  options: ScreenshotOptions = {},
+  options: ScreenshotOptions = {}
 ): Promise<void> {
   const mode = getVisualMode();
   const opts = { ...DEFAULT_OPTIONS, ...options };

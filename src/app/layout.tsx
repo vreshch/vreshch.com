@@ -27,8 +27,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'Volodymyr Vreshch — Software Engineer',
-    description:
-      'Building quality software that matters — for millions.',
+    description: 'Building quality software that matters — for millions.',
   },
 };
 
@@ -53,8 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 'https://www.instagram.com/vreshch.v/',
               ],
               image: 'https://vreshch.com/images/profile.jpeg',
-              description:
-                'Building quality software that matters — for millions.',
+              description: 'Building quality software that matters — for millions.',
             }),
           }}
         />

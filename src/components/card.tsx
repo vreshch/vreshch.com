@@ -3,29 +3,25 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/lib/cn';
 
-export const cardVariants = cva(
-  'rounded-2xl bg-surface dark:bg-dark-surface',
-  {
-    variants: {
-      padding: {
-        none: '',
-        tight: 'p-4',
-        compact: 'p-5',
-        default: 'p-6 md:p-8',
-      },
-      hover: {
-        none: '',
-        lift: 'transition-all duration-200 hover:bg-surface-alt dark:hover:bg-dark-surface-alt',
-        border:
-          'transition-all duration-200 hover:bg-surface-alt dark:hover:bg-dark-surface-alt',
-      },
+export const cardVariants = cva('rounded-2xl bg-surface dark:bg-dark-surface', {
+  variants: {
+    padding: {
+      none: '',
+      tight: 'p-4',
+      compact: 'p-5',
+      default: 'p-6 md:p-8',
     },
-    defaultVariants: {
-      padding: 'default',
-      hover: 'none',
+    hover: {
+      none: '',
+      lift: 'transition-all duration-200 hover:bg-surface-alt dark:hover:bg-dark-surface-alt',
+      border: 'transition-all duration-200 hover:bg-surface-alt dark:hover:bg-dark-surface-alt',
     },
   },
-);
+  defaultVariants: {
+    padding: 'default',
+    hover: 'none',
+  },
+});
 
 type CardProps = VariantProps<typeof cardVariants> & {
   children: ReactNode;
