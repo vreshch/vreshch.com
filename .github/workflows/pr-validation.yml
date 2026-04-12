@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Comment in progress
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const marker = '<!-- pr-validation-bot -->';
@@ -250,7 +250,7 @@ jobs:
 
       - name: Comment on PR
         if: always()
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const fs = require('fs');

@@ -179,7 +179,7 @@ jobs:
 
     steps:
       - name: 📊 Generate summary
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const buildResult = '${{ needs.build-and-push.result }}';
