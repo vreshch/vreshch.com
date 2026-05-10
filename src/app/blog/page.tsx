@@ -10,19 +10,7 @@ export const metadata: Metadata = {
   description: 'Field reports on agents, MCP, developer tooling, and shipping software.',
 };
 
-function PostMeta({ post, size = 'sm' }: { post: BlogPostMeta; size?: 'sm' | 'xs' }) {
-  return (
-    <div
-      className={`flex flex-wrap items-center gap-x-3 gap-y-1 ${size === 'xs' ? 'text-xs' : 'text-sm'} text-muted dark:text-dark-text-secondary`}
-    >
-      <time dateTime={post.date}>{formatPostDate(post.date)}</time>
-      <span aria-hidden="true">·</span>
-      <span>{post.readingTime}</span>
-    </div>
-  );
-}
-
-function CoverFrame({ url, alt, sizes }: { url?: string; alt: string; sizes: string }) {
+function GridCoverFrame({ url, alt, sizes }: { url?: string; alt: string; sizes: string }) {
   return (
     <div className="relative aspect-[16/9] w-full overflow-hidden bg-surface-alt dark:bg-dark-surface-alt">
       {url ? (
@@ -38,22 +26,34 @@ function FeaturedCard({ post }: { post: BlogPostMeta }) {
   return (
     <Link href={`/blog/${post.slug}`} className="block">
       <Card hover="lift" padding="none" className="overflow-hidden">
-        <div className="grid md:grid-cols-2">
-          <CoverFrame
-            url={post.coverUrl}
-            alt={post.title}
-            sizes="(min-width: 768px) 50vw, 100vw"
-          />
-          <div className="flex flex-col justify-center p-6 md:p-10">
-            <span className="mb-3 inline-flex w-fit items-center rounded-full bg-accent/10 px-3 py-1 text-xs font-medium uppercase tracking-wide text-accent dark:bg-dark-accent/15 dark:text-dark-accent">
-              Featured
-            </span>
-            <PostMeta post={post} />
-            <h2 className="mb-3 mt-2 text-2xl font-medium leading-snug text-heading dark:text-dark-text md:text-3xl">
+        <div className="grid items-stretch md:grid-cols-2">
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-surface-alt dark:bg-dark-surface-alt md:aspect-auto md:h-full md:min-h-[260px]">
+            {post.coverUrl ? (
+              <Image
+                src={post.coverUrl}
+                alt={post.title}
+                fill
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover object-center"
+              />
+            ) : (
+              <div className="h-full w-full bg-gradient-to-br from-surface to-surface-alt dark:from-dark-surface dark:to-dark-surface-alt" />
+            )}
+          </div>
+          <div className="flex flex-col justify-center p-6 md:p-8">
+            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted dark:text-dark-text-secondary">
+              <span className="inline-flex items-center rounded-full bg-accent/10 px-2.5 py-0.5 text-[0.6875rem] font-medium uppercase tracking-wide text-accent dark:bg-dark-accent/15 dark:text-dark-accent">
+                Featured
+              </span>
+              <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+              <span aria-hidden="true">·</span>
+              <span>{post.readingTime}</span>
+            </div>
+            <h2 className="mb-2 text-2xl font-medium leading-snug text-heading dark:text-dark-text md:text-3xl">
               {post.title}
             </h2>
             {post.subtitle && (
-              <p className="text-base text-muted dark:text-dark-text-secondary md:text-lg">
+              <p className="line-clamp-2 text-sm text-muted dark:text-dark-text-secondary md:text-base">
                 {post.subtitle}
               </p>
             )}
@@ -68,13 +68,17 @@ function GridCard({ post }: { post: BlogPostMeta }) {
   return (
     <Link href={`/blog/${post.slug}`} className="flex w-full">
       <Card hover="lift" padding="none" className="flex w-full flex-col overflow-hidden">
-        <CoverFrame
+        <GridCoverFrame
           url={post.coverUrl}
           alt={post.title}
           sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
         />
         <div className="flex flex-1 flex-col p-6">
-          <PostMeta post={post} size="xs" />
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted dark:text-dark-text-secondary">
+            <time dateTime={post.date}>{formatPostDate(post.date)}</time>
+            <span aria-hidden="true">·</span>
+            <span>{post.readingTime}</span>
+          </div>
           <h2 className="mb-2 mt-2 text-lg font-medium leading-snug text-heading dark:text-dark-text">
             {post.title}
           </h2>
