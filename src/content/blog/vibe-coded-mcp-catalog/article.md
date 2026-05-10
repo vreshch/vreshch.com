@@ -7,6 +7,7 @@ category: coding
 cover: images/cover.png
 ogImage: images/cover.png
 readingTime: '3 min read'
+mediumUrl: 'https://medium.com/@vreshch/i-vibe-coded-an-mcp-catalog-coding-was-the-easy-part-c4735776d02d'
 tags:
   - mcp
   - vibe-coding

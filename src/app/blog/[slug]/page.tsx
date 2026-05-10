@@ -94,6 +94,19 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
             ))}
           </ul>
         )}
+        {post.mediumUrl && (
+          <p className="mt-5 text-sm">
+            <a
+              href={post.mediumUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{ textDecoration: 'underline', textUnderlineOffset: '4px' }}
+              className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+            >
+              Full article at Medium →
+            </a>
+          </p>
+        )}
       </header>
       {post.coverUrl && (
         <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-border/40 bg-surface-alt dark:border-dark-border dark:bg-dark-surface-alt">
