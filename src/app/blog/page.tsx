@@ -7,7 +7,8 @@ import { getAllPosts, formatPostDate, type BlogPostMeta } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Mostly on agents, MCP, and the craft of shipping — with detours into family and hobby.',
+  description:
+    'Mostly on agents, MCP, and the craft of shipping — with detours into family and hobby.',
 };
 
 function GridCoverFrame({ url, alt, sizes }: { url?: string; alt: string; sizes: string }) {
