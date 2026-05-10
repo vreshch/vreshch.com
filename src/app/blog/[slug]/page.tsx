@@ -7,6 +7,9 @@ import { formatPostDate, getAllPostSlugs, getPost } from '@/lib/blog';
 
 type Params = { slug: string };
 
+const REPO_URL = 'https://github.com/vreshch/vreshch.com';
+const REPO_BRANCH = 'master';
+
 export async function generateStaticParams(): Promise<Params[]> {
   const slugs = await getAllPostSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -34,6 +37,7 @@ export async function generateMetadata({
       title: post.title,
       description: post.description,
       publishedTime: post.date,
+      modifiedTime: post.updated ?? post.date,
       images: [{ url: ogImage, width: 1200, height: 630, alt: post.title }],
     },
     twitter: {
@@ -50,6 +54,8 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
   const post = await getPost(slug);
   if (!post) notFound();
 
+  const sourceUrl = `${REPO_URL}/blob/${REPO_BRANCH}/src/content/blog/${post.slug}/article.md`;
+
   return (
     <article className="mx-auto max-w-3xl px-6 pb-16 pt-12 md:pb-24 md:pt-16">
       <Link
@@ -63,14 +69,34 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
           <time dateTime={post.date}>{formatPostDate(post.date)}</time>
           <span aria-hidden="true">·</span>
           <span>{post.readingTime}</span>
+          {post.updated && post.updated !== post.date && (
+            <>
+              <span aria-hidden="true">·</span>
+              <span>
+                Updated <time dateTime={post.updated}>{formatPostDate(post.updated)}</time>
+              </span>
+            </>
+          )}
         </div>
         <h1 className="mb-4 text-3xl font-medium leading-tight text-heading dark:text-dark-text md:text-5xl md:leading-tight">
           {post.title}
         </h1>
         {post.subtitle && (
-          <p className="text-lg text-muted dark:text-dark-text-secondary md:text-xl">
+          <p className="mb-5 text-lg text-muted dark:text-dark-text-secondary md:text-xl">
             {post.subtitle}
           </p>
+        )}
+        {post.tags && post.tags.length > 0 && (
+          <ul className="flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <li
+                key={tag}
+                className="rounded-full bg-surface px-3 py-1 text-xs font-medium text-muted dark:bg-dark-surface dark:text-dark-text-secondary"
+              >
+                {tag}
+              </li>
+            ))}
+          </ul>
         )}
       </header>
       {post.coverUrl && (
@@ -88,6 +114,22 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
       <div className="prose-blog">
         <BlogMdx source={post.content} />
       </div>
+      <footer className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-border/30 pt-8 text-sm text-muted dark:border-dark-border dark:text-dark-text-secondary">
+        <Link
+          href="/blog"
+          className="inline-flex items-center gap-2 transition-colors hover:text-heading dark:hover:text-dark-text"
+        >
+          ← All posts
+        </Link>
+        <a
+          href={sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="inline-flex items-center gap-2 transition-colors hover:text-heading dark:hover:text-dark-text"
+        >
+          Edit this post on GitHub →
+        </a>
+      </footer>
     </article>
   );
 }

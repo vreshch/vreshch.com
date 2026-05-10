@@ -196,7 +196,12 @@ a {
 }
 
 .prose-blog figure[data-rehype-pretty-code-figure] {
-  margin: 1.75em 0;
+  margin: 1.75em -1rem;
+}
+@media (min-width: 768px) {
+  .prose-blog figure[data-rehype-pretty-code-figure] {
+    margin: 1.75em -2rem;
+  }
 }
 .prose-blog pre {
   overflow-x: auto;
@@ -229,4 +234,34 @@ a {
   font-size: 0.875rem;
   color: var(--color-muted);
   text-align: center;
+}
+
+/* Heading anchors (rehype-autolink-headings) */
+.prose-blog h2,
+.prose-blog h3 {
+  scroll-margin-top: 5rem;
+  position: relative;
+}
+.prose-blog .heading-anchor {
+  position: absolute;
+  left: -1.25rem;
+  color: var(--color-muted);
+  opacity: 0;
+  text-decoration: none;
+  font-weight: 400;
+  transition: opacity 0.15s;
+}
+.prose-blog h2:hover .heading-anchor,
+.prose-blog h3:hover .heading-anchor,
+.prose-blog .heading-anchor:focus {
+  opacity: 1;
+}
+.dark .prose-blog .heading-anchor {
+  color: var(--color-dark-text-secondary);
+}
+.prose-blog .heading-anchor:hover {
+  color: var(--color-accent);
+}
+.dark .prose-blog .heading-anchor:hover {
+  color: var(--color-dark-accent);
 }

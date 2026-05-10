@@ -7,6 +7,7 @@ export type BlogPostFrontmatter = {
   subtitle?: string;
   description?: string;
   date: string;
+  updated?: string;
   cover?: string;
   ogImage?: string;
   tags?: string[];
@@ -19,6 +20,7 @@ export type BlogPostMeta = {
   subtitle?: string;
   description?: string;
   date: string;
+  updated?: string;
   tags?: string[];
   readingTime: string;
   coverUrl?: string;
@@ -64,6 +66,7 @@ async function readPostFile(slug: string): Promise<BlogPost> {
     subtitle: fm.subtitle,
     description: fm.description ?? fm.subtitle,
     date: fm.date,
+    updated: fm.updated,
     tags: fm.tags,
     readingTime: fm.readingTime ?? calculateReadingTime(content),
     coverUrl,
@@ -86,6 +89,7 @@ export async function getAllPosts(): Promise<BlogPostMeta[]> {
     subtitle: post.subtitle,
     description: post.description,
     date: post.date,
+    updated: post.updated,
     tags: post.tags,
     readingTime: post.readingTime,
     coverUrl: post.coverUrl,
