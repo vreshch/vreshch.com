@@ -35,7 +35,7 @@ function FeaturedCard({ post }: { post: BlogPostMeta }) {
                   alt={post.title}
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
-                  className="object-cover object-center"
+                  className="object-contain object-center p-2"
                 />
               ) : (
                 <div className="h-full w-full bg-gradient-to-br from-surface to-surface-alt dark:from-dark-surface dark:to-dark-surface-alt" />
