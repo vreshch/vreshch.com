@@ -17,6 +17,7 @@ export type BlogPostFrontmatter = {
   ogImage?: string;
   tags?: string[];
   readingTime?: string;
+  mediumUrl?: string;
 };
 
 export type BlogPostMeta = {
@@ -31,6 +32,7 @@ export type BlogPostMeta = {
   readingTime: string;
   coverUrl?: string;
   ogImageUrl?: string;
+  mediumUrl?: string;
 };
 
 export type BlogPost = BlogPostMeta & {
@@ -78,6 +80,7 @@ async function readPostFile(slug: string): Promise<BlogPost> {
     readingTime: fm.readingTime ?? calculateReadingTime(content),
     coverUrl,
     ogImageUrl,
+    mediumUrl: fm.mediumUrl,
     content,
   };
 }
@@ -102,6 +105,7 @@ export async function getAllPosts(): Promise<BlogPostMeta[]> {
     readingTime: post.readingTime,
     coverUrl: post.coverUrl,
     ogImageUrl: post.ogImageUrl,
+    mediumUrl: post.mediumUrl,
   }));
   return metas.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
