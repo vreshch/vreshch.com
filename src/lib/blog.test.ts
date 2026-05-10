@@ -52,6 +52,7 @@ describe('lib/blog', () => {
       expect(post?.title).toMatch(/Vibe-Coded an MCP Catalog/);
       expect(post?.coverUrl).toBe(`/blog/${FIRST_POST_SLUG}/images/cover.png`);
       expect(post?.content).toContain('mcpxhub.io');
+      expect(post?.category).toBe('coding');
     });
 
     it('returns null for unknown slug', async () => {

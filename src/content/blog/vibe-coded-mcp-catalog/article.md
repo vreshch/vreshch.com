@@ -3,6 +3,7 @@ title: 'I Vibe-Coded an MCP Catalog. Coding Was the Easy Part.'
 subtitle: 'I shipped 26,708 MCP servers in two weeks of vibe-coded code. Four field-report lessons from running it since.'
 description: 'I shipped 26,708 MCP servers in two weeks of vibe-coded code. Four field-report lessons from running it since.'
 date: 2026-05-10
+category: coding
 cover: images/cover.png
 ogImage: images/cover.png
 readingTime: '3 min read'

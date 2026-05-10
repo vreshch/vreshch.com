@@ -2,12 +2,17 @@ import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
 
+export type BlogCategory = 'coding' | 'family' | 'hobby';
+
+export const BLOG_CATEGORIES: BlogCategory[] = ['coding', 'family', 'hobby'];
+
 export type BlogPostFrontmatter = {
   title: string;
   subtitle?: string;
   description?: string;
   date: string;
   updated?: string;
+  category?: BlogCategory;
   cover?: string;
   ogImage?: string;
   tags?: string[];
@@ -21,6 +26,7 @@ export type BlogPostMeta = {
   description?: string;
   date: string;
   updated?: string;
+  category: BlogCategory;
   tags?: string[];
   readingTime: string;
   coverUrl?: string;
@@ -67,6 +73,7 @@ async function readPostFile(slug: string): Promise<BlogPost> {
     description: fm.description ?? fm.subtitle,
     date: fm.date,
     updated: fm.updated,
+    category: fm.category ?? 'coding',
     tags: fm.tags,
     readingTime: fm.readingTime ?? calculateReadingTime(content),
     coverUrl,
@@ -90,6 +97,7 @@ export async function getAllPosts(): Promise<BlogPostMeta[]> {
     description: post.description,
     date: post.date,
     updated: post.updated,
+    category: post.category,
     tags: post.tags,
     readingTime: post.readingTime,
     coverUrl: post.coverUrl,
