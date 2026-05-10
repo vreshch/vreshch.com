@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BlogMdx } from '@/components/blog-mdx';
@@ -21,7 +22,7 @@ export async function generateMetadata({
   if (!post) return {};
 
   const url = `https://vreshch.com/blog/${post.slug}`;
-  const ogImage = post.ogImage ? `/blog/${post.slug}/${post.ogImage}` : '/og-image.png';
+  const ogImage = post.ogImageUrl ?? '/og-image.png';
 
   return {
     title: post.title,
@@ -72,6 +73,18 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
           </p>
         )}
       </header>
+      {post.coverUrl && (
+        <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-border/40 bg-surface-alt dark:border-dark-border dark:bg-dark-surface-alt">
+          <Image
+            src={post.coverUrl}
+            alt={post.title}
+            fill
+            sizes="(min-width: 768px) 768px, 100vw"
+            className="object-cover"
+            priority
+          />
+        </div>
+      )}
       <div className="prose-blog">
         <BlogMdx source={post.content} />
       </div>

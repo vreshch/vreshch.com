@@ -7,8 +7,8 @@ const BASE = 'http://localhost:3000';
 const shots = [
   { url: '/blog', file: 'blog-list-light.png', theme: 'light' },
   { url: '/blog', file: 'blog-list-dark.png', theme: 'dark' },
-  { url: '/blog/hello-world', file: 'blog-post-light.png', theme: 'light' },
-  { url: '/blog/hello-world', file: 'blog-post-dark.png', theme: 'dark' },
+  { url: '/blog/vibe-coded-mcp-catalog', file: 'blog-post-light.png', theme: 'light' },
+  { url: '/blog/vibe-coded-mcp-catalog', file: 'blog-post-dark.png', theme: 'dark' },
 ];
 
 await mkdir(OUT, { recursive: true });

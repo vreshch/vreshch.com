@@ -1,11 +1,13 @@
 import { describe, it, expect } from 'vitest';
 import { getAllPosts, getAllPostSlugs, getPost, formatPostDate } from './blog';
 
+const FIRST_POST_SLUG = 'vibe-coded-mcp-catalog';
+
 describe('lib/blog', () => {
   describe('getAllPostSlugs', () => {
-    it('returns at least the placeholder post', async () => {
+    it('discovers the first post', async () => {
       const slugs = await getAllPostSlugs();
-      expect(slugs).toContain('hello-world');
+      expect(slugs).toContain(FIRST_POST_SLUG);
     });
   });
 
@@ -35,14 +37,21 @@ describe('lib/blog', () => {
         expect(post).not.toHaveProperty('content');
       }
     });
+
+    it('resolves cover URL relative to the post slug', async () => {
+      const posts = await getAllPosts();
+      const post = posts.find((p) => p.slug === FIRST_POST_SLUG);
+      expect(post?.coverUrl).toBe(`/blog/${FIRST_POST_SLUG}/images/cover.png`);
+    });
   });
 
   describe('getPost', () => {
-    it('returns the placeholder post by slug', async () => {
-      const post = await getPost('hello-world');
+    it('returns the first post by slug', async () => {
+      const post = await getPost(FIRST_POST_SLUG);
       expect(post).not.toBeNull();
-      expect(post?.title).toBe('Hello, blog');
-      expect(post?.content).toContain('placeholder post');
+      expect(post?.title).toMatch(/Vibe-Coded an MCP Catalog/);
+      expect(post?.coverUrl).toBe(`/blog/${FIRST_POST_SLUG}/images/cover.png`);
+      expect(post?.content).toContain('mcpxhub.io');
     });
 
     it('returns null for unknown slug', async () => {

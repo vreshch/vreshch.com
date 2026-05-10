@@ -7,14 +7,22 @@ export type BlogPostFrontmatter = {
   subtitle?: string;
   description?: string;
   date: string;
+  cover?: string;
   ogImage?: string;
   tags?: string[];
   readingTime?: string;
 };
 
-export type BlogPostMeta = BlogPostFrontmatter & {
+export type BlogPostMeta = {
   slug: string;
+  title: string;
+  subtitle?: string;
+  description?: string;
+  date: string;
+  tags?: string[];
   readingTime: string;
+  coverUrl?: string;
+  ogImageUrl?: string;
 };
 
 export type BlogPost = BlogPostMeta & {
@@ -30,25 +38,36 @@ function calculateReadingTime(content: string): string {
   return `${minutes} min read`;
 }
 
+function resolveAssetUrl(slug: string, asset: string | undefined): string | undefined {
+  if (!asset) return undefined;
+  if (/^https?:\/\//.test(asset) || asset.startsWith('/')) return asset;
+  const cleaned = asset.replace(/^\.?\//, '');
+  return `/blog/${slug}/${cleaned}`;
+}
+
 async function readPostFile(slug: string): Promise<BlogPost> {
   const filePath = path.join(CONTENT_DIR, slug, 'article.md');
   const raw = await readFile(filePath, 'utf-8');
   const { data, content } = matter(raw);
 
-  const frontmatter = data as BlogPostFrontmatter;
-  if (!frontmatter.title || !frontmatter.date) {
+  const fm = data as BlogPostFrontmatter;
+  if (!fm.title || !fm.date) {
     throw new Error(`Post ${slug} is missing required frontmatter: title or date.`);
   }
 
+  const coverUrl = resolveAssetUrl(slug, fm.cover);
+  const ogImageUrl = resolveAssetUrl(slug, fm.ogImage) ?? coverUrl;
+
   return {
     slug,
-    title: frontmatter.title,
-    subtitle: frontmatter.subtitle,
-    description: frontmatter.description ?? frontmatter.subtitle,
-    date: frontmatter.date,
-    ogImage: frontmatter.ogImage,
-    tags: frontmatter.tags,
-    readingTime: frontmatter.readingTime ?? calculateReadingTime(content),
+    title: fm.title,
+    subtitle: fm.subtitle,
+    description: fm.description ?? fm.subtitle,
+    date: fm.date,
+    tags: fm.tags,
+    readingTime: fm.readingTime ?? calculateReadingTime(content),
+    coverUrl,
+    ogImageUrl,
     content,
   };
 }
@@ -67,9 +86,10 @@ export async function getAllPosts(): Promise<BlogPostMeta[]> {
     subtitle: post.subtitle,
     description: post.description,
     date: post.date,
-    ogImage: post.ogImage,
     tags: post.tags,
     readingTime: post.readingTime,
+    coverUrl: post.coverUrl,
+    ogImageUrl: post.ogImageUrl,
   }));
   return metas.sort((a, b) => (a.date < b.date ? 1 : -1));
 }
