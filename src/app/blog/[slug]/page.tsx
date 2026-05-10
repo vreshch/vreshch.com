@@ -95,14 +95,17 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
           </ul>
         )}
         {post.mediumUrl && (
-          <a
-            href={post.mediumUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-5 inline-flex items-center gap-2 rounded-full border border-border/60 px-4 py-2 text-sm font-medium text-muted transition-colors hover:border-accent hover:text-accent dark:border-dark-border dark:text-dark-text-secondary dark:hover:border-dark-accent dark:hover:text-dark-accent"
-          >
-            Originally published on Medium →
-          </a>
+          <p className="mt-5 text-sm">
+            <a
+              href={post.mediumUrl}
+              target="_blank"
+              rel="noreferrer"
+              style={{ textDecoration: 'underline', textUnderlineOffset: '4px' }}
+              className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+            >
+              Full article at Medium →
+            </a>
+          </p>
         )}
       </header>
       {post.coverUrl && (
