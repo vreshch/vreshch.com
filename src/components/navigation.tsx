@@ -12,6 +12,7 @@ export const navItems = [
   { href: '/', label: 'Home' },
   { href: '/interests', label: 'Interests' },
   { href: '/projects', label: 'Projects' },
+  { href: '/blog', label: 'Blog' },
   { href: '/contacts', label: 'Contacts' },
   ...(isDev ? [{ href: '/design-system', label: 'Design System' }] : []),
 ];
