@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { GoogleAnalytics } from '@/components/google-analytics';
 import { Navigation } from '@/components/navigation';
 import './globals.css';
 
@@ -72,6 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="flex min-h-screen flex-col bg-white dark:bg-dark-bg">
+        <GoogleAnalytics />
         <Navigation />
         <main className="flex-1">{children}</main>
         <footer className="py-12">
