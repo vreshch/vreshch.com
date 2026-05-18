@@ -26,9 +26,10 @@ export const metadata: Metadata = {
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'Volodymyr Vreshch' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
     title: 'Volodymyr Vreshch — Software Engineer',
     description: 'Building quality software that matters — for millions.',
+    images: ['/og-image.png'],
   },
 };
 
