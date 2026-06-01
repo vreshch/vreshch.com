@@ -180,13 +180,17 @@ jobs:
     steps:
       - name: 📊 Generate summary
         uses: actions/github-script@v9
+        env:
+          # Pass via env, not string-interpolation: a backtick (or any special
+          # char) in the commit message would otherwise break the inline script.
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
         with:
           script: |
             const buildResult = '${{ needs.build-and-push.result }}';
             const deployResult = '${{ needs.deploy.result }}';
             const imageTag = '${{ needs.build-and-push.outputs.image-tag }}';
             const commitSha = '${{ github.sha }}';
-            const commitMessage = `${{ github.event.head_commit.message }}` || 'Manual deployment';
+            const commitMessage = process.env.COMMIT_MESSAGE || 'Manual deployment';
             const eventName = '${{ github.event_name }}';
             const triggerType = eventName === 'workflow_dispatch' ? 'Manual' : 'Automatic (push)';
 
