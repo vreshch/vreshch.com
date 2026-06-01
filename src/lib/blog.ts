@@ -18,6 +18,7 @@ export type BlogPostFrontmatter = {
   tags?: string[];
   readingTime?: string;
   mediumUrl?: string;
+  coverLink?: string;
 };
 
 export type BlogPostMeta = {
@@ -33,6 +34,7 @@ export type BlogPostMeta = {
   coverUrl?: string;
   ogImageUrl?: string;
   mediumUrl?: string;
+  coverLink?: string;
 };
 
 export type BlogPost = BlogPostMeta & {
@@ -81,6 +83,7 @@ async function readPostFile(slug: string): Promise<BlogPost> {
     coverUrl,
     ogImageUrl,
     mediumUrl: fm.mediumUrl,
+    coverLink: fm.coverLink,
     content,
   };
 }

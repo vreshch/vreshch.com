@@ -6,6 +6,7 @@ date: 2026-05-31
 category: coding
 cover: images/cover.png
 ogImage: images/cover.png
+coverLink: 'https://agentage.io/#waitlist'
 tags:
   - agentage
   - ai-memory

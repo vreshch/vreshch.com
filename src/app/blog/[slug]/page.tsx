@@ -108,18 +108,37 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
           </p>
         )}
       </header>
-      {post.coverUrl && (
-        <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-border/40 bg-surface-alt dark:border-dark-border dark:bg-dark-surface-alt">
-          <Image
-            src={post.coverUrl}
-            alt={post.title}
-            fill
-            sizes="(min-width: 768px) 768px, 100vw"
-            className="object-cover"
-            priority
-          />
-        </div>
-      )}
+      {post.coverUrl &&
+        (post.coverLink ? (
+          <a
+            href={post.coverLink}
+            aria-label="Join the waitlist at agentage.io"
+            className="group relative mb-10 block aspect-[16/9] w-full overflow-hidden rounded-xl border border-border/40 bg-surface-alt dark:border-dark-border dark:bg-dark-surface-alt"
+          >
+            <Image
+              src={post.coverUrl}
+              alt={post.title}
+              fill
+              sizes="(min-width: 768px) 768px, 100vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+              priority
+            />
+            <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/75 to-transparent p-4 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              Join the waitlist at agentage.io →
+            </span>
+          </a>
+        ) : (
+          <div className="relative mb-10 aspect-[16/9] w-full overflow-hidden rounded-xl border border-border/40 bg-surface-alt dark:border-dark-border dark:bg-dark-surface-alt">
+            <Image
+              src={post.coverUrl}
+              alt={post.title}
+              fill
+              sizes="(min-width: 768px) 768px, 100vw"
+              className="object-cover"
+              priority
+            />
+          </div>
+        ))}
       <div className="prose-blog">
         <BlogMdx source={post.content} />
       </div>
