@@ -4,6 +4,8 @@ subtitle: 'One markdown memory every AI reads and writes - owned by you, hosted 
 description: 'Agentage Memory is one shared markdown memory every AI reads and writes through a single MCP endpoint - files-first, EU-private, owned by you. Waitlist open.'
 date: 2026-05-31
 category: coding
+cover: images/cover.png
+ogImage: images/cover.png
 tags:
   - agentage
   - ai-memory
