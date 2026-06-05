@@ -53,7 +53,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
   const sourceUrl = `${REPO_URL}/blob/${REPO_BRANCH}/src/content/blog/${post.slug}/article.md`;
 
   return (
-    <article className="mx-auto max-w-3xl px-6 pb-16 pt-12 md:pb-24 md:pt-16">
+    <article className="mx-auto max-w-5xl px-6 pb-16 pt-12 md:pb-24 md:pt-16">
       <Link
         href="/blog"
         className="mb-8 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-heading dark:text-dark-text-secondary dark:hover:text-dark-text"
@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
               src={post.coverUrl}
               alt={post.title}
               fill
-              sizes="(min-width: 768px) 768px, 100vw"
+              sizes="(min-width: 1024px) 1024px, 100vw"
               className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
               priority
             />
@@ -133,7 +133,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
               src={post.coverUrl}
               alt={post.title}
               fill
-              sizes="(min-width: 768px) 768px, 100vw"
+              sizes="(min-width: 1024px) 1024px, 100vw"
               className="object-cover"
               priority
             />
