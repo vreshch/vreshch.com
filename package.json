@@ -39,16 +39,16 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
-    "next": "^15.5.18",
+    "next": "^15.5.19",
     "next-mdx-remote": "^6.0.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-pretty-code": "^0.14.3",
     "rehype-slug": "^6.0.0",
     "remark-gfm": "^4.0.1",
     "sharp": "^0.34.1",
-    "shiki": "^4.1.0",
+    "shiki": "^4.2.0",
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
@@ -57,13 +57,13 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@types/node": "^22.19.19",
-    "@types/react": "^19.2.15",
-    "@typescript-eslint/eslint-plugin": "^8.60.0",
+    "@types/react": "^19.2.16",
+    "@typescript-eslint/eslint-plugin": "^8.60.1",
     "@typescript-eslint/parser": "^8.57.1",
     "@vitejs/plugin-react": "^5.2.0",
     "autoprefixer": "^10.5.0",
     "eslint": "^9.39.4",
-    "eslint-config-next": "^15.5.18",
+    "eslint-config-next": "^15.5.19",
     "eslint-config-prettier": "^10.1.5",
     "jsdom": "^28.1.0",
     "pixelmatch": "^7.2.0",
@@ -72,6 +72,6 @@
     "prettier": "^3.8.3",
     "tailwindcss": "^4.1.8",
     "typescript": "^5.8.3",
-    "vitest": "^4.1.7"
+    "vitest": "^4.1.8"
   }
 }
