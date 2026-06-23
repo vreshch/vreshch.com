@@ -20,7 +20,7 @@ function PostCard({ post }: { post: BlogPostMeta }) {
             <div className="relative aspect-[16/9] w-full overflow-hidden rounded-lg border border-border/60 bg-surface-alt dark:border-dark-border dark:bg-dark-surface-alt">
               {post.coverUrl ? (
                 <Image
-                  src={post.coverUrl}
+                  src={post.thumbnailUrl ?? post.coverUrl}
                   alt={post.title}
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
