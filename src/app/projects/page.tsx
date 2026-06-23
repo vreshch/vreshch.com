@@ -45,21 +45,24 @@ export default function ProjectsPage() {
         <section className="mb-16">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Featured</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            <a href="https://github.com/agentage/desktop" target="_blank" rel="noreferrer">
+            <a href="https://agentage.io" target="_blank" rel="noreferrer">
               <Card hover="lift" padding="none" className="overflow-hidden">
-                <Image
-                  src="/images/agentage.jpg"
-                  width={397}
-                  height={284}
-                  className="h-auto w-full"
-                  alt="Agentage Desktop"
-                />
+                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+                  <Image
+                    src="/mockups/agentage-io.png"
+                    width={1360}
+                    height={967}
+                    className="h-auto w-full"
+                    alt="Agentage Memory"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    Agentage Desktop
+                    Agentage Memory
                   </h3>
                   <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    AI agent orchestration platform — manage, execute, and distribute agents
+                    One memory, every AI, owned by you - a shared markdown memory every tool reads
+                    and writes through one MCP endpoint.
                   </p>
                 </div>
               </Card>
@@ -94,7 +97,8 @@ export default function ProjectsPage() {
             Agentage Ecosystem
           </h2>
           <p className="mb-6 text-sm text-muted dark:text-dark-text-secondary md:text-base">
-            Open source tools for building, running, and distributing AI agents — released on{' '}
+            Open source tools around Agentage Memory - the shared memory layer for every AI -
+            released on{' '}
             <a
               href="https://github.com/agentage"
               target="_blank"
@@ -108,21 +112,31 @@ export default function ProjectsPage() {
           <div className="space-y-3">
             {[
               {
-                name: '@agentage/agentkit',
-                url: 'https://github.com/agentage/agentkit',
-                description:
-                  'Complete AI agent toolkit — fluent API, CLI integration, and core runtime in one monorepo',
-              },
-              {
                 name: '@agentage/cli',
                 url: 'https://github.com/agentage/cli',
-                description: 'Command-line tool to discover, install, run, and publish AI agents',
+                description:
+                  'Command-line client for Agentage Memory - connect, search, and manage your memory from the terminal',
               },
               {
-                name: '@agentage/infrastructure',
-                url: 'https://github.com/agentage/infrastructure',
+                name: 'agentage/obsidian-sync',
+                url: 'https://github.com/agentage/obsidian-sync',
                 description:
-                  'Production IaC for the Agentage platform — Terraform, Docker Swarm, Traefik',
+                  'Obsidian plugin - two-way sync your vault to a memory every AI can read and write',
+              },
+              {
+                name: 'agentage/obsidian-galaxy',
+                url: 'https://github.com/agentage/obsidian-galaxy',
+                description: 'Obsidian plugin - render your vault as a 3D, rotating force-graph',
+              },
+              {
+                name: 'agentage/vscode-agentage',
+                url: 'https://github.com/agentage/vscode-agentage',
+                description: 'VS Code extension - connect your editor to your memory over MCP',
+              },
+              {
+                name: 'agentage/server-memory',
+                url: 'https://github.com/agentage/server-memory',
+                description: 'The MCP server behind memory.agentage.io - git-backed markdown store',
               },
             ].map((pkg) => (
               <Card key={pkg.name} hover="lift">

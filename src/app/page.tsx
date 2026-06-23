@@ -116,21 +116,24 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
-            <a href="https://github.com/agentage/desktop" target="_blank" rel="noreferrer">
+            <a href="https://agentage.io" target="_blank" rel="noreferrer">
               <Card hover="lift" padding="none" className="overflow-hidden">
-                <Image
-                  src="/images/agentage.jpg"
-                  width={397}
-                  height={284}
-                  className="h-auto w-full"
-                  alt="Agentage Desktop"
-                />
+                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+                  <Image
+                    src="/mockups/agentage-io.png"
+                    width={1360}
+                    height={967}
+                    className="h-auto w-full"
+                    alt="Agentage Memory"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    Agentage Desktop
+                    Agentage Memory
                   </h3>
                   <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    AI agent orchestration platform — manage, execute, and distribute agents
+                    One memory, every AI, owned by you - a shared markdown memory every tool reads
+                    and writes through one MCP endpoint.
                   </p>
                 </div>
               </Card>
