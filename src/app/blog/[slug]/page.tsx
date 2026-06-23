@@ -122,6 +122,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
               sizes="(min-width: 1024px) 1024px, 100vw"
               className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
               priority
+              unoptimized={post.coverUrl.endsWith('.gif')}
             />
             <span className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-center gap-2 bg-gradient-to-t from-black/75 to-transparent p-4 text-sm font-medium text-white opacity-0 transition-opacity duration-300 group-hover:opacity-100">
               Join the waitlist at agentage.io →
@@ -136,6 +137,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
               sizes="(min-width: 1024px) 1024px, 100vw"
               className="object-cover"
               priority
+              unoptimized={post.coverUrl.endsWith('.gif')}
             />
           </div>
         ))}

@@ -15,6 +15,7 @@ export type BlogPostFrontmatter = {
   category?: BlogCategory;
   cover?: string;
   ogImage?: string;
+  thumbnail?: string;
   tags?: string[];
   readingTime?: string;
   mediumUrl?: string;
@@ -33,6 +34,7 @@ export type BlogPostMeta = {
   readingTime: string;
   coverUrl?: string;
   ogImageUrl?: string;
+  thumbnailUrl?: string;
   mediumUrl?: string;
   coverLink?: string;
 };
@@ -69,6 +71,9 @@ async function readPostFile(slug: string): Promise<BlogPost> {
 
   const coverUrl = resolveAssetUrl(slug, fm.cover);
   const ogImageUrl = resolveAssetUrl(slug, fm.ogImage) ?? coverUrl;
+  // Static list/OG image so a post can use an animated cover on its own page
+  // while the index card stays static. Falls back to the cover.
+  const thumbnailUrl = resolveAssetUrl(slug, fm.thumbnail) ?? coverUrl;
 
   return {
     slug,
@@ -82,6 +87,7 @@ async function readPostFile(slug: string): Promise<BlogPost> {
     readingTime: fm.readingTime ?? calculateReadingTime(content),
     coverUrl,
     ogImageUrl,
+    thumbnailUrl,
     mediumUrl: fm.mediumUrl,
     coverLink: fm.coverLink,
     content,
@@ -108,6 +114,7 @@ export async function getAllPosts(): Promise<BlogPostMeta[]> {
     readingTime: post.readingTime,
     coverUrl: post.coverUrl,
     ogImageUrl: post.ogImageUrl,
+    thumbnailUrl: post.thumbnailUrl,
     mediumUrl: post.mediumUrl,
   }));
   return metas.sort((a, b) => (a.date < b.date ? 1 : -1));
