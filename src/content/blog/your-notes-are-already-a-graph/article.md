@@ -17,7 +17,7 @@ tags:
   - knowledge-management
 ---
 
-Your Obsidian vault is already a graph. [Install Agentage Galaxy](obsidian://show-plugin?id=agentage-galaxy) and one click turns it into a rotating 3D galaxy like the one below. The rest of this piece is why that picture matters.
+Your Obsidian vault is already a graph. [Install Agentage Galaxy](obsidian://show-plugin?id=agentage-galaxy) and one click turns it into a rotating 3D galaxy like the one above. The rest of this piece is why that picture matters.
 
 On June 12, 2026, Google Cloud published a spec called the [Open Knowledge Format](https://cloud.google.com/blog/products/data-analytics/how-the-open-knowledge-format-can-improve-data-sharing). It defines knowledge as "a directory of markdown files with YAML frontmatter." Its reference implementation ships a static HTML file that "turns any OKF bundle into an interactive graph view."
 
@@ -26,9 +26,6 @@ I have been keeping my notes in exactly that format for years, in Obsidian. A fo
 The thesis is simple: your knowledge is already a graph. Plain Markdown plus `[[links]]` is the format both you and every LLM now read and write. A 3D galaxy is just what that graph looks like when you turn on the lights.
 
 And this is not a preference anyone can switch off. These models were trained on oceans of Markdown. They take it in and put it back out by default. That is learned behavior baked into the weights, not a vendor toggle or a customer setting. You can ask a model for less of it, but you are fighting the default, not changing it.
-
-![A 3D force-graph of an Obsidian vault, notes as colored nodes joined by links, clustered by folder](/blog/your-notes-are-already-a-graph/images/galaxy.png)
-_My vault, rendered as a 3D force-graph. Each node is a note. Each line is a `[[link]]`. The big nodes are hubs, and the colors are top-level folders._
 
 ## Why is Markdown the format models read and write?
 
