@@ -7,8 +7,19 @@ import { formatPostDate, getAllPostSlugs, getPost } from '@/lib/blog';
 
 type Params = { slug: string };
 
+const SITE = 'https://vreshch.com';
 const REPO_URL = 'https://github.com/vreshch/vreshch.com';
 const REPO_BRANCH = 'master';
+
+// JSON.stringify does not escape </script> or line/paragraph separators - escape for safe inline embedding.
+function serialize(data: unknown): string {
+  return JSON.stringify(data)
+    .replace(/</g, '\\u003c')
+    .replace(/>/g, '\\u003e')
+    .replace(/&/g, '\\u0026')
+    .replace(/\u2028/g, '\\u2028')
+    .replace(/\u2029/g, '\\u2029');
+}
 
 export async function generateStaticParams(): Promise<Params[]> {
   const slugs = await getAllPostSlugs();
@@ -51,9 +62,41 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
   if (!post) notFound();
 
   const sourceUrl = `${REPO_URL}/blob/${REPO_BRANCH}/src/content/blog/${post.slug}/article.md`;
+  const postUrl = `${SITE}/blog/${post.slug}`;
+
+  const blogPostingLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    dateModified: post.updated ?? post.date,
+    author: { '@type': 'Person', name: 'Volodymyr Vreshch', url: SITE },
+    publisher: { '@type': 'Person', name: 'Volodymyr Vreshch', url: SITE },
+    image: `${SITE}${post.ogImageUrl ?? '/og-image.png'}`,
+    mainEntityOfPage: { '@type': 'WebPage', '@id': postUrl },
+    url: postUrl,
+  };
+
+  const breadcrumbLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Blog', item: `${SITE}/blog` },
+      { '@type': 'ListItem', position: 2, name: post.title, item: postUrl },
+    ],
+  };
 
   return (
     <article className="mx-auto max-w-5xl px-6 pb-16 pt-12 md:pb-24 md:pt-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serialize(blogPostingLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serialize(breadcrumbLd) }}
+      />
       <Link
         href="/blog"
         className="mb-8 inline-flex items-center gap-2 text-sm text-muted transition-colors hover:text-heading dark:text-dark-text-secondary dark:hover:text-dark-text"
