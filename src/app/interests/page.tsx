@@ -5,7 +5,6 @@ import { PageHeader } from '@/components/page-header';
 import { ExternalLink } from '@/components/interests/external-link';
 import { FocusSection } from '@/components/interests/focus-section';
 import { TimelineRow } from '@/components/interests/timeline-row';
-import { ScrollReveal } from '@/components/interests/scroll-reveal';
 import { TIMELINE, HOBBIES, INTERESTS, PROFILE_LINKS } from '@/lib/interests-data';
 import { getAllPosts } from '@/lib/blog';
 
@@ -74,7 +73,7 @@ export default async function InterestsPage() {
           }
         />
 
-        <ScrollReveal as="section" className="mb-16">
+        <section className="mb-16">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
             Track record
           </h2>
@@ -85,9 +84,9 @@ export default async function InterestsPage() {
               ))}
             </div>
           </Card>
-        </ScrollReveal>
+        </section>
 
-        <ScrollReveal as="section" className="mb-16 max-w-3xl">
+        <section className="mb-16 max-w-3xl">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
             Beyond the keyboard
           </h2>
@@ -99,9 +98,9 @@ export default async function InterestsPage() {
               </li>
             ))}
           </ul>
-        </ScrollReveal>
+        </section>
 
-        <ScrollReveal as="section">
+        <section>
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Find me</h2>
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             {PROFILE_LINKS.map((link) => (
@@ -110,7 +109,7 @@ export default async function InterestsPage() {
               </ExternalLink>
             ))}
           </div>
-        </ScrollReveal>
+        </section>
       </div>
     </div>
   );

@@ -21,9 +21,7 @@ export type ProfileLink = {
 
 export type FocusStat = {
   label: string;
-  value: number;
-  prefix?: string;
-  suffix?: string;
+  value: string;
   href: string;
   source: string;
 };
@@ -64,27 +62,25 @@ export const NOW_THREADS: NowThread[] = [
 export const FOCUS_STATS: FocusStat[] = [
   {
     label: 'years shipping software',
-    value: 10,
-    suffix: '+',
+    value: '10+',
     href: 'https://www.linkedin.com/in/vreshch',
     source: 'LinkedIn',
   },
   {
     label: 'open-source repos',
-    value: 9,
+    value: '9',
     href: 'https://github.com/agentage',
     source: 'github.com/agentage',
   },
   {
     label: 'MCP servers indexed',
-    value: 15,
-    suffix: 'k+',
+    value: '15k+',
     href: 'https://catalog.agentage.io/mcp',
     source: 'the catalog',
   },
   {
     label: 'essays in 2026',
-    value: 6,
+    value: '6',
     href: '/blog',
     source: 'the blog',
   },

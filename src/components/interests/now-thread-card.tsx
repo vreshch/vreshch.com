@@ -19,7 +19,7 @@ export function NowThreadCard({
     <Card
       padding="none"
       hover="lift"
-      className="group flex h-full flex-col overflow-hidden ring-1 ring-border/60 dark:ring-dark-border"
+      className="flex h-full flex-col overflow-hidden ring-1 ring-border/60 dark:ring-dark-border"
     >
       {image && (
         <div className="aspect-[16/10] overflow-hidden bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-3">
@@ -28,7 +28,7 @@ export function NowThreadCard({
             alt={image.alt}
             width={image.width}
             height={image.height}
-            className="h-full w-full rounded-md object-cover object-top shadow-lg transition-transform duration-500 ease-out group-hover:scale-[1.04] motion-reduce:transition-none"
+            className="h-full w-full rounded-md object-cover object-top shadow-lg"
           />
         </div>
       )}

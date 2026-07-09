@@ -26,9 +26,7 @@ export function TimelineRow({ entry }: { entry: TimelineEntry }) {
           >
             <span
               aria-hidden
-              className={`mt-1.5 text-xs text-accent transition-transform duration-200 dark:text-dark-accent motion-reduce:transition-none ${
-                open ? 'rotate-90' : ''
-              }`}
+              className={`mt-1.5 text-xs text-accent dark:text-dark-accent ${open ? 'rotate-90' : ''}`}
             >
               &#9654;
             </span>
