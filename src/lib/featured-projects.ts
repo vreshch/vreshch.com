@@ -19,7 +19,10 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
   },
   {
     name: 'MCP Directory',
-    url: 'https://agentage.io/mcp',
+    url: 'https://catalog.agentage.io/mcp',
     description: 'A public directory of Model Context Protocol servers.',
+    image: '/mockups/mcp-directory.png',
+    imageWidth: 1360,
+    imageHeight: 967,
   },
 ];
