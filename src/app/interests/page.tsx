@@ -1,127 +1,116 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Card } from '@/components/card';
 import { PageHeader } from '@/components/page-header';
+import { ExternalLink } from '@/components/interests/external-link';
+import { FocusSection } from '@/components/interests/focus-section';
+import { TimelineRow } from '@/components/interests/timeline-row';
+import { ScrollReveal } from '@/components/interests/scroll-reveal';
+import { TIMELINE, HOBBIES, INTERESTS, PROFILE_LINKS } from '@/lib/interests-data';
+import { getAllPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'Interests',
   description:
-    'What Volodymyr Vreshch focuses on and builds: AI agents, the Model Context Protocol, full-stack TypeScript, developer experience, and open source at scale.',
+    'Volodymyr Vreshch: platform engineer with a PhD, exploring AI agents, the Model Context Protocol, AI memory, and open source. Interests, track record, and links.',
   alternates: { canonical: '/interests' },
   openGraph: {
     title: 'Interests',
     description:
-      'AI agents, the Model Context Protocol, full-stack TypeScript, developer experience, and open source at scale.',
+      'Platform engineer exploring AI agents, the Model Context Protocol, AI memory, and open source.',
     url: '/interests',
     siteName: 'Volodymyr Vreshch',
   },
 };
 
-export default function InterestsPage() {
+export default async function InterestsPage() {
+  const posts = await getAllPosts();
+  const latest = posts.find((p) => p.thumbnailUrl ?? p.coverUrl);
+  const writingCover = latest?.thumbnailUrl ?? latest?.coverUrl;
+
   return (
     <div>
-      <PageHeader
-        title="Interests"
-        description="What I focus on, what I build, and what drives me."
-      />
+      <PageHeader title="Interests" description="What I explore, build, and keep coming back to." />
 
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
-        {/* Areas of Interest */}
-        <section className="mb-16">
-          <Card>
-            <h2 className="mb-6 text-xl font-medium text-heading dark:text-dark-text">
-              Areas of Interest
-            </h2>
-            <ul className="space-y-3 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
-              {[
-                'AI Agents, LLMs, and agent orchestration platforms',
-                'Model Context Protocol (MCP) and tool ecosystems for AI',
-                'Full-stack web development: React, Next.js, Node.js, TypeScript',
-                'Developer experience, engineering productivity, and development flow optimization',
-                'Infrastructure as Code, CI/CD pipelines, and cloud architecture',
-                'Open-source software and building tools that serve millions',
-              ].map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-muted/50 dark:bg-dark-text-secondary/50" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </Card>
+        <section className="mb-10 flex max-w-3xl items-start gap-5">
+          <Image
+            src="/images/profile.jpeg"
+            alt="Volodymyr Vreshch"
+            width={72}
+            height={72}
+            className="hidden h-16 w-16 flex-shrink-0 rounded-full object-cover ring-1 ring-border/70 sm:block dark:ring-dark-border"
+          />
+          <p className="text-base leading-relaxed text-muted dark:text-dark-text-secondary md:text-lg">
+            I&apos;m a platform engineer with a PhD, now a Senior Software Engineer at Microsoft.
+            Lately I&apos;ve been exploring AI agents, the Model Context Protocol, and how AI should
+            remember. Based in Prague.
+          </p>
         </section>
 
-        {/* Tech Stack */}
-        <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Tech Stack</h2>
-          <p className="mb-6 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
-            10+ years building enterprise products with millions of users — from frontend interfaces
-            to backend services, infrastructure, and AI-powered tooling.
-          </p>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              'AI Agents, MCP, LLM Orchestration',
-              'OpenAI, Anthropic, Google AI',
-              'TypeScript, C#, Python',
-              'React, Next.js, Vite',
-              'Node.js, Express, MongoDB',
-              'Electron, React Native, Expo',
-              'Azure, Google Cloud, AWS',
-              'Docker, Terraform, CI/CD',
-              'Supabase, CosmosDB, Redis',
-              'Tailwind CSS, Radix UI',
-              'TDD, Playwright, Jest',
-              'Git, GitHub Actions, Traefik',
-            ].map((skill) => (
-              <Card key={skill} padding="compact">
-                <p className="text-sm font-medium text-heading dark:text-dark-text">{skill}</p>
-              </Card>
+        <section className="mb-16 max-w-3xl">
+          <ul className="flex flex-wrap gap-2.5">
+            {INTERESTS.map((interest) => (
+              <li
+                key={interest}
+                className="rounded-full border border-border/70 bg-surface-alt px-3.5 py-1.5 text-sm text-muted dark:border-dark-border dark:bg-dark-surface-alt dark:text-dark-text-secondary"
+              >
+                {interest}
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <FocusSection
+          writingCover={
+            writingCover
+              ? {
+                  src: writingCover,
+                  alt: latest?.title ?? 'Latest essay',
+                  width: 1200,
+                  height: 630,
+                }
+              : undefined
+          }
+        />
+
+        <ScrollReveal as="section" className="mb-16">
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
+            Track record
+          </h2>
+          <Card className="md:p-10">
+            <div className="space-y-6">
+              {TIMELINE.map((entry) => (
+                <TimelineRow key={entry.role} entry={entry} />
+              ))}
+            </div>
+          </Card>
+        </ScrollReveal>
+
+        <ScrollReveal as="section" className="mb-16 max-w-3xl">
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
+            Beyond the keyboard
+          </h2>
+          <ul className="space-y-3 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
+            {HOBBIES.map((hobby) => (
+              <li key={hobby} className="flex items-start gap-3">
+                <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-muted/50 dark:bg-dark-text-secondary/50" />
+                {hobby}
+              </li>
+            ))}
+          </ul>
+        </ScrollReveal>
+
+        <ScrollReveal as="section">
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Find me</h2>
+          <div className="flex flex-wrap gap-x-6 gap-y-3">
+            {PROFILE_LINKS.map((link) => (
+              <ExternalLink key={link.href} href={link.href}>
+                {link.label}
+              </ExternalLink>
             ))}
           </div>
-        </section>
-
-        {/* What I'm Building */}
-        <section>
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
-            What I&apos;m Building
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card>
-              <h3 className="mb-2 text-base font-medium text-heading dark:text-dark-text">
-                AI Agent Platform
-              </h3>
-              <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
-                Building an orchestration platform for AI agents — manage, execute, and distribute
-                agents across desktop, web, mobile, and CLI.
-              </p>
-            </Card>
-            <Card>
-              <h3 className="mb-2 text-base font-medium text-heading dark:text-dark-text">
-                MCP Catalog
-              </h3>
-              <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
-                Central hub for discovering and cataloging Model Context Protocol servers — helping
-                developers find the right tools for their AI workflows.
-              </p>
-            </Card>
-            <Card>
-              <h3 className="mb-2 text-base font-medium text-heading dark:text-dark-text">
-                Enterprise at Microsoft
-              </h3>
-              <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
-                Leading frontend development on products used by millions. Focused on engineering
-                productivity, team enablement, and shipping at scale.
-              </p>
-            </Card>
-            <Card>
-              <h3 className="mb-2 text-base font-medium text-heading dark:text-dark-text">
-                Open Source
-              </h3>
-              <p className="text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
-                Maintaining open-source libraries and tools — from crystal structure search
-                applications to developer utilities and infrastructure automation.
-              </p>
-            </Card>
-          </div>
-        </section>
+        </ScrollReveal>
       </div>
     </div>
   );

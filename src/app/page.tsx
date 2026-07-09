@@ -193,6 +193,15 @@ export default async function HomePage() {
                   Earlier: Software Engineer at GlobalLogic, and academic research - Ph.D. in
                   Inorganic Chemistry (Kyiv) with post-docs in the USA and France.
                 </p>
+                <p>
+                  <Link
+                    href="/interests"
+                    className="inline-flex items-center gap-1 font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+                  >
+                    More about me
+                    <span aria-hidden>&rarr;</span>
+                  </Link>
+                </p>
               </div>
             </div>
           </Card>
