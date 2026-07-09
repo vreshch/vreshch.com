@@ -30,10 +30,7 @@ export default async function InterestsPage() {
 
   return (
     <div>
-      <PageHeader
-        title="Interests"
-        description="What I explore, build, and keep coming back to."
-      />
+      <PageHeader title="Interests" description="What I explore, build, and keep coming back to." />
 
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
         <section className="mb-10 flex max-w-3xl items-start gap-5">
@@ -64,7 +61,18 @@ export default async function InterestsPage() {
           </ul>
         </section>
 
-        <FocusSection writingCover={writingCover ? { src: writingCover, alt: latest?.title ?? 'Latest essay', width: 1200, height: 630 } : undefined} />
+        <FocusSection
+          writingCover={
+            writingCover
+              ? {
+                  src: writingCover,
+                  alt: latest?.title ?? 'Latest essay',
+                  width: 1200,
+                  height: 630,
+                }
+              : undefined
+          }
+        />
 
         <ScrollReveal as="section" className="mb-16">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">

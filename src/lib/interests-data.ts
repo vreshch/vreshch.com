@@ -120,9 +120,7 @@ export const TIMELINE: TimelineEntry[] = [
   {
     period: 'Education',
     role: 'PhD, Taras Shevchenko National University of Kyiv; MS Computer Science',
-    receipts: [
-      { label: 'The @chemistry npm scope', href: 'https://www.npmjs.com/org/chemistry' },
-    ],
+    receipts: [{ label: 'The @chemistry npm scope', href: 'https://www.npmjs.com/org/chemistry' }],
   },
 ];
 
