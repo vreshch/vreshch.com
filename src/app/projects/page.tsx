@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Card } from '@/components/card';
 import { PageHeader } from '@/components/page-header';
+import { FeaturedProjectCard } from '@/components/featured-project-card';
+import { FEATURED_PROJECTS } from '@/lib/featured-projects';
 import { MolPadDemo } from '@/components/molpad-demo';
 import { CrystalViewDemo } from '@/components/crystalview-demo';
 
@@ -55,49 +57,9 @@ export default function ProjectsPage() {
         <section className="mb-16">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Featured</h2>
           <div className="grid gap-6 md:grid-cols-2">
-            <a href="https://agentage.io" target="_blank" rel="noreferrer">
-              <Card hover="lift" padding="none" className="overflow-hidden">
-                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
-                  <Image
-                    src="/mockups/agentage-io.png"
-                    width={1360}
-                    height={967}
-                    className="h-auto w-full"
-                    alt="Agentage Memory"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    Agentage Memory
-                  </h3>
-                  <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    One memory, every AI, owned by you - a shared markdown memory every tool reads
-                    and writes through one MCP endpoint.
-                  </p>
-                </div>
-              </Card>
-            </a>
-            <a href="https://mcpxhub.io" target="_blank" rel="noreferrer">
-              <Card hover="lift" padding="none" className="overflow-hidden">
-                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
-                  <Image
-                    src="/mockups/mcpxhub-io.png"
-                    width={1400}
-                    height={1007}
-                    className="h-auto w-full"
-                    alt="mcpxhub.io"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    mcpxhub.io
-                  </h3>
-                  <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    MCP Catalog Platform — discover and manage Model Context Protocol servers
-                  </p>
-                </div>
-              </Card>
-            </a>
+            {FEATURED_PROJECTS.map((project) => (
+              <FeaturedProjectCard key={project.url} project={project} />
+            ))}
           </div>
         </section>
 
@@ -234,7 +196,7 @@ export default function ProjectsPage() {
                   MolPad
                 </h3>
                 <p className="text-sm text-muted dark:text-dark-text-secondary">
-                  Draw and edit molecular structures —{' '}
+                  Draw and edit molecular structures -{' '}
                   <a
                     href="https://github.com/chemistry/molpad"
                     target="_blank"
@@ -258,7 +220,7 @@ export default function ProjectsPage() {
                   CrystalView
                 </h3>
                 <p className="text-sm text-muted dark:text-dark-text-secondary">
-                  3D crystal structure visualization —{' '}
+                  3D crystal structure visualization -{' '}
                   <a
                     href="https://github.com/chemistry/crystalview"
                     target="_blank"
@@ -291,7 +253,7 @@ export default function ProjectsPage() {
                   >
                     {lib.name}
                   </a>
-                  {' — '}
+                  {' - '}
                   {lib.description}
                 </span>
               </li>

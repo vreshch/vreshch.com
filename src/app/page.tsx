@@ -2,22 +2,65 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card } from '@/components/card';
+import { FeaturedProjectCard } from '@/components/featured-project-card';
+import { FEATURED_PROJECTS } from '@/lib/featured-projects';
+import { getAllPosts, formatPostDate, type BlogPostMeta } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: { absolute: 'Volodymyr Vreshch - Software Engineer' },
   description:
-    'Volodymyr Vreshch, Senior Software Engineer at Microsoft with 10+ years shipping software at scale, building AI agents, MCP tooling, and open source.',
+    'Senior Software Engineer at Microsoft with 10+ years of experience. I write about AI agents, MCP, and how AI should remember.',
   alternates: { canonical: '/' },
   openGraph: {
     title: 'Volodymyr Vreshch - Software Engineer',
     description:
-      'Senior Software Engineer at Microsoft with 10+ years shipping software at scale, building AI agents, MCP tooling, and open source.',
+      'Senior Software Engineer at Microsoft with 10+ years of experience. I write about AI agents, MCP, and how AI should remember.',
     url: '/',
     siteName: 'Volodymyr Vreshch',
   },
 };
 
-export default function HomePage() {
+function WritingCard({ post }: { post: BlogPostMeta }) {
+  return (
+    <Link href={`/blog/${post.slug}`} className="block h-full">
+      <Card hover="lift" padding="none" className="flex h-full flex-col overflow-hidden">
+        <div className="relative aspect-[16/9] w-full overflow-hidden bg-surface-alt dark:bg-dark-surface-alt">
+          {post.coverUrl ? (
+            <Image
+              src={post.thumbnailUrl ?? post.coverUrl}
+              alt={post.title}
+              fill
+              sizes="(min-width: 768px) 33vw, 100vw"
+              className="object-cover object-center"
+            />
+          ) : (
+            <div className="h-full w-full bg-gradient-to-br from-surface to-surface-alt dark:from-dark-surface dark:to-dark-surface-alt" />
+          )}
+        </div>
+        <div className="flex flex-1 flex-col p-6">
+          <time
+            dateTime={post.date}
+            className="mb-2 text-xs text-muted dark:text-dark-text-secondary"
+          >
+            {formatPostDate(post.date)}
+          </time>
+          <h3 className="mb-2 text-lg font-medium leading-snug text-heading dark:text-dark-text">
+            {post.title}
+          </h3>
+          {post.description && (
+            <p className="line-clamp-3 text-sm text-muted dark:text-dark-text-secondary">
+              {post.description}
+            </p>
+          )}
+        </div>
+      </Card>
+    </Link>
+  );
+}
+
+export default async function HomePage() {
+  const latestPosts = (await getAllPosts()).slice(0, 3);
+
   return (
     <div>
       {/* Hero */}
@@ -26,18 +69,19 @@ export default function HomePage() {
           <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
             <div className="flex-1">
               <h1 className="mb-6 text-3xl font-medium leading-snug text-heading dark:text-dark-text md:text-5xl md:leading-tight">
-                Building quality software that matters — for millions.
+                I build Agentage and the MCP directory.
               </h1>
               <p className="mb-10 max-w-lg text-lg leading-relaxed text-muted dark:text-dark-text-secondary md:text-xl">
-                Senior Software Engineer at Microsoft with 10+ years of experience. Passionate about
-                empowering teams, optimizing development flows, and shipping impactful software.
+                A platform for AI memory and the tools that plug into it, plus a public directory of
+                MCP servers. I write about agents, MCP, and the craft of shipping. Senior Software
+                Engineer at Microsoft, along the way.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
-                  href="/interests"
+                  href="/blog"
                   className="inline-block rounded-full bg-accent px-8 py-3.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover dark:bg-dark-accent dark:text-dark-bg dark:hover:bg-dark-accent-hover"
                 >
-                  Learn more about me
+                  Read my writing
                 </Link>
                 <Link
                   href="/contacts"
@@ -61,52 +105,42 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* About */}
-      <section className="py-4 md:py-6">
-        <div className="mx-auto max-w-5xl px-6">
-          <Card className="md:p-12">
-            <div className="grid gap-8 md:grid-cols-2 md:gap-12">
-              <div>
-                <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
-                  Career Path
-                </h2>
-              </div>
-              <div className="space-y-6 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
-                <div>
-                  <p className="font-medium text-heading dark:text-dark-text">
-                    Senior Software Engineer, Microsoft
-                  </p>
-                  <p>2021 — Present. Frontend Developer.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-heading dark:text-dark-text">
-                    Lead Software Engineer, EPAM Systems
-                  </p>
-                  <p>2016 — 2021. TypeScript, React, Angular 2+, NodeJS, Cloud.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-heading dark:text-dark-text">
-                    Software Engineer, GlobalLogic
-                  </p>
-                  <p>2015 — 2016. JavaScript, Backbone, LESS, HTML, NodeJS.</p>
-                </div>
-                <div>
-                  <p className="font-medium text-heading dark:text-dark-text">Academic Research</p>
-                  <p>
-                    2008 — 2012. Post-Doc in USA &amp; France. Ph.D. in Inorganic Chemistry, Kyiv,
-                    Ukraine.
-                  </p>
-                </div>
-              </div>
+      {/* Latest writing */}
+      {latestPosts.length > 0 && (
+        <section className="py-8 md:py-12">
+          <div className="mx-auto max-w-5xl px-6">
+            <div className="mb-8 flex items-baseline justify-between">
+              <h2 className="text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
+                Latest writing
+              </h2>
+              <Link
+                href="/blog"
+                className="flex items-center gap-2 text-sm font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+              >
+                All writing
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 8l4 4m0 0l-4 4m4-4H3"
+                  />
+                </svg>
+              </Link>
             </div>
-          </Card>
-        </div>
-      </section>
+            <div className="grid gap-6 md:grid-cols-3">
+              {latestPosts.map((post) => (
+                <WritingCard key={post.slug} post={post} />
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Projects */}
-      <section className="pb-4 pt-8 md:pb-6 md:pt-12">
+      <section className="py-8 md:py-12">
         <div className="mx-auto max-w-5xl px-6">
-          <div className="mb-12 flex items-baseline justify-between">
+          <div className="mb-8 flex items-baseline justify-between">
             <h2 className="text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
               Projects
             </h2>
@@ -126,50 +160,43 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid gap-6 md:grid-cols-2">
-            <a href="https://agentage.io" target="_blank" rel="noreferrer">
-              <Card hover="lift" padding="none" className="overflow-hidden">
-                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
-                  <Image
-                    src="/mockups/agentage-io.png"
-                    width={1360}
-                    height={967}
-                    className="h-auto w-full"
-                    alt="Agentage Memory"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    Agentage Memory
-                  </h3>
-                  <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    One memory, every AI, owned by you - a shared markdown memory every tool reads
-                    and writes through one MCP endpoint.
-                  </p>
-                </div>
-              </Card>
-            </a>
-            <a href="https://mcpxhub.io" target="_blank" rel="noreferrer">
-              <Card hover="lift" padding="none" className="overflow-hidden">
-                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
-                  <Image
-                    src="/mockups/mcpxhub-io.png"
-                    width={1400}
-                    height={1007}
-                    className="h-auto w-full"
-                    alt="mcpxhub.io"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    mcpxhub.io
-                  </h3>
-                  <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    MCP Catalog Platform — discover and manage Model Context Protocol servers
-                  </p>
-                </div>
-              </Card>
-            </a>
+            {FEATURED_PROJECTS.map((project) => (
+              <FeaturedProjectCard key={project.url} project={project} />
+            ))}
           </div>
+        </div>
+      </section>
+
+      {/* Career Path */}
+      <section className="pb-8 pt-4 md:pb-12 md:pt-6">
+        <div className="mx-auto max-w-5xl px-6">
+          <Card className="md:p-12">
+            <div className="grid gap-8 md:grid-cols-2 md:gap-12">
+              <div>
+                <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
+                  Career Path
+                </h2>
+              </div>
+              <div className="space-y-4 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
+                <p>
+                  <span className="font-medium text-heading dark:text-dark-text">
+                    Senior Software Engineer, Microsoft
+                  </span>{' '}
+                  (2021 - present).
+                </p>
+                <p>
+                  <span className="font-medium text-heading dark:text-dark-text">
+                    Lead Software Engineer, EPAM Systems
+                  </span>{' '}
+                  (2016 - 2021). TypeScript, React, Angular, Node, Cloud.
+                </p>
+                <p>
+                  Earlier: Software Engineer at GlobalLogic, and academic research - Ph.D. in
+                  Inorganic Chemistry (Kyiv) with post-docs in the USA and France.
+                </p>
+              </div>
+            </div>
+          </Card>
         </div>
       </section>
     </div>
