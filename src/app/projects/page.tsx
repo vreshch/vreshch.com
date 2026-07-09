@@ -7,6 +7,16 @@ import { CrystalViewDemo } from '@/components/crystalview-demo';
 
 export const metadata: Metadata = {
   title: 'Projects',
+  description:
+    'Projects by Volodymyr Vreshch: Agentage Memory and its open source ecosystem, mcpxhub.io, crystallography.io, plus chemistry tools and interactive demos.',
+  alternates: { canonical: '/projects' },
+  openGraph: {
+    title: 'Projects',
+    description:
+      'Agentage Memory and its open source ecosystem, mcpxhub.io, crystallography.io, plus chemistry tools and interactive demos.',
+    url: '/projects',
+    siteName: 'Volodymyr Vreshch',
+  },
 };
 
 const libraries = [

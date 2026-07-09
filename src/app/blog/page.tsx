@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   title: 'Blog',
   description:
     'Mostly on agents, MCP, and the craft of shipping — with detours into family and hobby.',
+  alternates: { canonical: '/blog' },
+  openGraph: {
+    title: 'Blog',
+    description:
+      'Mostly on agents, MCP, and the craft of shipping - with detours into family and hobby.',
+    url: '/blog',
+    siteName: 'Volodymyr Vreshch',
+  },
 };
 
 function PostCard({ post }: { post: BlogPostMeta }) {

@@ -4,6 +4,16 @@ import { PageHeader } from '@/components/page-header';
 
 export const metadata: Metadata = {
   title: 'Interests',
+  description:
+    'What Volodymyr Vreshch focuses on and builds: AI agents, the Model Context Protocol, full-stack TypeScript, developer experience, and open source at scale.',
+  alternates: { canonical: '/interests' },
+  openGraph: {
+    title: 'Interests',
+    description:
+      'AI agents, the Model Context Protocol, full-stack TypeScript, developer experience, and open source at scale.',
+    url: '/interests',
+    siteName: 'Volodymyr Vreshch',
+  },
 };
 
 export default function InterestsPage() {
