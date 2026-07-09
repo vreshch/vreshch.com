@@ -2,255 +2,170 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Card } from '@/components/card';
 import { PageHeader } from '@/components/page-header';
-import { FeaturedProjectCard } from '@/components/featured-project-card';
-import { FEATURED_PROJECTS } from '@/lib/featured-projects';
+import { DemoCard } from '@/components/demo-card';
 import { MolPadDemo } from '@/components/molpad-demo';
 import { CrystalViewDemo } from '@/components/crystalview-demo';
+import { AI_PROJECTS, CHEMISTRY_LIBRARIES, type ProjectLink } from '@/lib/projects-data';
 
 export const metadata: Metadata = {
   title: 'Projects',
   description:
-    'Projects by Volodymyr Vreshch: Agentage Memory and its open source ecosystem, mcpxhub.io, crystallography.io, plus chemistry tools and interactive demos.',
+    'Open source and side projects by Volodymyr Vreshch: the Agentage Memory ecosystem, the MCP directory, crystallography.io, and chemistry tools with interactive demos.',
   alternates: { canonical: '/projects' },
   openGraph: {
     title: 'Projects',
     description:
-      'Agentage Memory and its open source ecosystem, mcpxhub.io, crystallography.io, plus chemistry tools and interactive demos.',
+      'The Agentage Memory ecosystem, the MCP directory, crystallography.io, and chemistry tools with interactive demos.',
     url: '/projects',
     siteName: 'Volodymyr Vreshch',
   },
 };
 
-const libraries = [
-  {
-    name: '@chemistry/crystallography.io',
-    url: 'https://github.com/chemistry/crystallography.io',
-    description: 'Web interface for COD database',
-  },
-  {
-    name: '@chemistry/crystalview',
-    url: 'https://github.com/chemistry/crystalview',
-    description: 'Molecular viewer for crystal structures',
-  },
-  {
-    name: '@chemistry/molpad',
-    url: 'https://github.com/chemistry/molpad',
-    description: 'Molecule editor component',
-  },
-  {
-    name: '@chemistry/chemical-libraries',
-    url: 'https://github.com/chemistry/chemical-libraries',
-    description: 'Math, elements, and space group utilities',
-  },
-];
+const linkClass =
+  'font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover';
+
+function ProjectRow({ project }: { project: ProjectLink }) {
+  return (
+    <Card hover="lift" padding="compact">
+      <h3 className="mb-1 text-base font-medium text-heading dark:text-dark-text">
+        <a href={project.url} target="_blank" rel="noreferrer" className={linkClass}>
+          {project.name}
+        </a>
+      </h3>
+      <p className="text-sm text-muted dark:text-dark-text-secondary">{project.description}</p>
+    </Card>
+  );
+}
+
+function SiteCard({
+  href,
+  image,
+  title,
+  subtitle,
+}: {
+  href: string;
+  image: string;
+  title: string;
+  subtitle: string;
+}) {
+  return (
+    <a href={href} target="_blank" rel="noreferrer">
+      <Card hover="lift" padding="none" className="overflow-hidden">
+        <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+          <Image src={image} width={1400} height={1007} className="h-auto w-full" alt={title} />
+        </div>
+        <div className="p-6">
+          <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">{title}</h3>
+          <p className="text-sm text-muted dark:text-dark-text-secondary">{subtitle}</p>
+        </div>
+      </Card>
+    </a>
+  );
+}
 
 export default function ProjectsPage() {
   return (
     <div>
       <PageHeader
         title="Projects"
-        description="Active projects, AI tools, and open source libraries."
+        description="A catalog of my open source and side projects, grouped by area."
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
-        {/* Featured Projects */}
-        <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Featured</h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            {FEATURED_PROJECTS.map((project) => (
-              <FeaturedProjectCard key={project.url} project={project} />
-            ))}
-          </div>
-        </section>
-
-        {/* Agentage Ecosystem */}
         <section className="mb-16">
           <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text">
-            Agentage Ecosystem
+            AI &amp; MCP (open source)
           </h2>
           <p className="mb-6 text-sm text-muted dark:text-dark-text-secondary md:text-base">
-            Open source tools around Agentage Memory - the shared memory layer for every AI -
-            released on{' '}
+            Work around Agentage Memory - the shared memory layer for every AI - released on{' '}
             <a
               href="https://github.com/agentage"
               target="_blank"
               rel="noreferrer"
-              className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+              className={linkClass}
             >
               GitHub
             </a>{' '}
             under MIT license.
           </p>
-          <div className="space-y-3">
-            {[
-              {
-                name: '@agentage/cli',
-                url: 'https://github.com/agentage/cli',
-                description:
-                  'Command-line client for Agentage Memory - connect, search, and manage your memory from the terminal',
-              },
-              {
-                name: 'agentage/obsidian-sync',
-                url: 'https://github.com/agentage/obsidian-sync',
-                description:
-                  'Obsidian plugin - two-way sync your vault to a memory every AI can read and write',
-              },
-              {
-                name: 'agentage/obsidian-galaxy',
-                url: 'https://github.com/agentage/obsidian-galaxy',
-                description: 'Obsidian plugin - render your vault as a 3D, rotating force-graph',
-              },
-              {
-                name: 'agentage/vscode-agentage',
-                url: 'https://github.com/agentage/vscode-agentage',
-                description: 'VS Code extension - connect your editor to your memory over MCP',
-              },
-              {
-                name: 'agentage/server-memory',
-                url: 'https://github.com/agentage/server-memory',
-                description: 'The MCP server behind memory.agentage.io - git-backed markdown store',
-              },
-            ].map((pkg) => (
-              <Card key={pkg.name} hover="lift">
-                <h3 className="mb-2 text-base font-medium text-heading dark:text-dark-text">
-                  <a
-                    href={pkg.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
-                  >
-                    {pkg.name}
-                  </a>
-                </h3>
-                <p className="text-sm text-muted dark:text-dark-text-secondary">
-                  {pkg.description}
-                </p>
-              </Card>
+          <div className="grid gap-3 md:grid-cols-2">
+            {AI_PROJECTS.map((project) => (
+              <ProjectRow key={project.url} project={project} />
             ))}
           </div>
         </section>
 
-        {/* Other Projects */}
         <section className="mb-16">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
-            Other Projects
+            Chemistry &amp; science tools
           </h2>
           <div className="grid gap-6 md:grid-cols-2">
-            <a href="https://crystallography.io" target="_blank" rel="noreferrer">
-              <Card hover="lift" padding="none" className="overflow-hidden">
-                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
-                  <Image
-                    src="/mockups/crystallography-io.png"
-                    width={1400}
-                    height={1007}
-                    className="h-auto w-full"
-                    alt="crystallography.io"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    crystallography.io
-                  </h3>
-                  <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    Crystal Structure Search Application
-                  </p>
-                </div>
-              </Card>
-            </a>
-            <a href="https://diffractwd.com" target="_blank" rel="noreferrer">
-              <Card hover="lift" padding="none" className="overflow-hidden">
-                <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
-                  <Image
-                    src="/mockups/diffractwd-com.png"
-                    width={1400}
-                    height={1007}
-                    className="h-auto w-full"
-                    alt="diffractwd.com"
-                  />
-                </div>
-                <div className="p-6">
-                  <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                    diffractwd.com
-                  </h3>
-                  <p className="text-sm text-muted dark:text-dark-text-secondary">
-                    Free Powder Diffraction Software
-                  </p>
-                </div>
-              </Card>
-            </a>
+            <SiteCard
+              href="https://crystallography.io"
+              image="/mockups/crystallography-io.png"
+              title="crystallography.io"
+              subtitle="Search over 80k+ structures from the Crystallography Open Database"
+            />
+            <SiteCard
+              href="https://diffractwd.com"
+              image="/mockups/diffractwd-com.png"
+              title="diffractwd.com"
+              subtitle="Free powder diffraction software"
+            />
           </div>
-        </section>
-
-        {/* Interactive Demos */}
-        <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
-            Interactive Demos
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card padding="none" className="overflow-hidden">
-              <div className="aspect-square bg-white">
-                <MolPadDemo />
-              </div>
-              <div className="p-6">
-                <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                  MolPad
-                </h3>
-                <p className="text-sm text-muted dark:text-dark-text-secondary">
-                  Draw and edit molecular structures -{' '}
-                  <a
-                    href="https://github.com/chemistry/molpad"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
-                  >
-                    source
-                  </a>
-                </p>
-              </div>
-            </Card>
-            <Card
-              padding="none"
-              className="overflow-hidden border border-border dark:border-dark-border"
+          <p className="mb-6 mt-4 text-sm text-muted dark:text-dark-text-secondary md:text-base">
+            diffractwd is described in{' '}
+            <a
+              href="https://doi.org/10.1107/S0021889811035090"
+              target="_blank"
+              rel="noreferrer"
+              className={linkClass}
             >
-              <div className="aspect-square">
-                <CrystalViewDemo />
-              </div>
-              <div className="p-6">
-                <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">
-                  CrystalView
-                </h3>
-                <p className="text-sm text-muted dark:text-dark-text-secondary">
-                  3D crystal structure visualization -{' '}
-                  <a
-                    href="https://github.com/chemistry/crystalview"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
-                  >
-                    source
-                  </a>
-                </p>
-              </div>
-            </Card>
+              J. Appl. Crystallogr. (2011)
+            </a>
+            .
+          </p>
+          <div className="grid gap-6 md:grid-cols-2">
+            <DemoCard
+              title="MolPad"
+              description="Draw and edit molecular structures"
+              sourceUrl="https://github.com/chemistry/molpad"
+            >
+              <MolPadDemo />
+            </DemoCard>
+            <DemoCard
+              title="CrystalView"
+              description="3D crystal structure visualization"
+              sourceUrl="https://github.com/chemistry/crystalview"
+              bordered
+            >
+              <CrystalViewDemo />
+            </DemoCard>
           </div>
         </section>
 
-        {/* Open Source Libraries */}
         <section>
           <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text">
-            Open Source Libraries
+            Libraries &amp; other
           </h2>
+          <p className="mb-6 text-sm text-muted dark:text-dark-text-secondary md:text-base">
+            Open source packages published under the{' '}
+            <a
+              href="https://github.com/chemistry"
+              target="_blank"
+              rel="noreferrer"
+              className={linkClass}
+            >
+              @chemistry
+            </a>{' '}
+            npm scope.
+          </p>
           <ul className="space-y-2 text-sm text-muted dark:text-dark-text-secondary">
-            {libraries.map((lib) => (
+            {CHEMISTRY_LIBRARIES.map((lib) => (
               <li key={lib.name} className="flex items-baseline gap-2">
                 <span className="mt-1.5 h-1 w-1 flex-shrink-0 rounded-full bg-muted/50 dark:bg-dark-text-secondary/50" />
                 <span>
-                  <a
-                    href={lib.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
-                  >
+                  <a href={lib.url} target="_blank" rel="noreferrer" className={linkClass}>
                     {lib.name}
                   </a>
                   {' - '}
