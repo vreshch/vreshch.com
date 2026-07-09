@@ -6,6 +6,16 @@ import { ContactForm } from '@/components/contact-form';
 
 export const metadata: Metadata = {
   title: 'Contacts',
+  description:
+    'Get in touch with Volodymyr Vreshch by email or via LinkedIn, GitHub, Facebook, and Instagram, or send a message directly through the contact form.',
+  alternates: { canonical: '/contacts' },
+  openGraph: {
+    title: 'Contacts',
+    description:
+      'Get in touch with Volodymyr Vreshch by email, LinkedIn, GitHub, and social, or send a message through the contact form.',
+    url: '/contacts',
+    siteName: 'Volodymyr Vreshch',
+  },
 };
 
 const contacts = [

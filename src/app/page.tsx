@@ -4,7 +4,17 @@ import Link from 'next/link';
 import { Card } from '@/components/card';
 
 export const metadata: Metadata = {
-  title: 'Volodymyr Vreshch - Home',
+  title: { absolute: 'Volodymyr Vreshch - Software Engineer' },
+  description:
+    'Volodymyr Vreshch, Senior Software Engineer at Microsoft with 10+ years shipping software at scale, building AI agents, MCP tooling, and open source.',
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: 'Volodymyr Vreshch - Software Engineer',
+    description:
+      'Senior Software Engineer at Microsoft with 10+ years shipping software at scale, building AI agents, MCP tooling, and open source.',
+    url: '/',
+    siteName: 'Volodymyr Vreshch',
+  },
 };
 
 export default function HomePage() {
