@@ -42,6 +42,15 @@ const contacts = [
     ),
   },
   {
+    label: 'agentage',
+    value: 'agentage.io',
+    href: 'https://agentage.io',
+    icon: (
+      <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zM2 12h20M12 2c2.5 2.7 4 6.2 4 10s-1.5 7.3-4 10c-2.5-2.7-4-6.2-4-10s1.5-7.3 4-10z" />
+    ),
+    iconStroke: true,
+  },
+  {
     label: 'Facebook',
     value: 'vreshch',
     href: 'https://www.facebook.com/vreshch',
