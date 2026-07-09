@@ -22,23 +22,23 @@ export const AI_PROJECTS: ProjectLink[] = [
     description: 'Stdio MCP server exposing the git-backed markdown memory tools',
   },
   {
-    name: 'agentage/cli',
+    name: '@agentage/cli',
     url: 'https://github.com/agentage/cli',
     description: 'Command-line client - connect, search, and manage your memory from the terminal',
   },
   {
-    name: 'agentage/obsidian-sync',
+    name: '@agentage/obsidian-sync',
     url: 'https://github.com/agentage/obsidian-sync',
     description:
       'Obsidian plugin - two-way sync your vault to a memory every AI can read and write',
   },
   {
-    name: 'agentage/obsidian-galaxy',
+    name: '@agentage/obsidian-galaxy',
     url: 'https://github.com/agentage/obsidian-galaxy',
     description: 'Obsidian plugin - render your vault as a 3D, rotating force-graph',
   },
   {
-    name: 'agentage/vscode-agentage',
+    name: '@agentage/vscode-agentage',
     url: 'https://github.com/agentage/vscode-agentage',
     description: 'VS Code extension - connect your editor to your memory over MCP',
   },
