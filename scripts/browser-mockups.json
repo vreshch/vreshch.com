@@ -16,12 +16,12 @@
     "output": "diffractwd-com.png"
   },
   {
-    "url": "https://mcpxhub.io",
-    "title": "MCPxHub - MCP Catalog Platform",
+    "url": "https://catalog.agentage.io/mcp",
+    "title": "MCP Directory - agentage",
     "width": 1280,
     "height": 800,
     "zoom": 1,
-    "output": "mcpxhub-io.png"
+    "output": "mcp-directory.png"
   },
   {
     "url": "https://crystallography.io",

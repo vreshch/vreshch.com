@@ -3,22 +3,24 @@ import { GoogleAnalytics } from '@/components/google-analytics';
 import { Navigation } from '@/components/navigation';
 import './globals.css';
 
+const SITE_TITLE = 'Volodymyr Vreshch - Software Engineer';
+const SITE_DESCRIPTION =
+  'Senior Software Engineer at Microsoft with 10+ years of experience. I write about AI agents, MCP, and how AI should remember.';
+
 export const metadata: Metadata = {
   title: {
-    default: 'Volodymyr Vreshch — Software Engineer',
+    default: SITE_TITLE,
     template: '%s | Volodymyr Vreshch',
   },
-  description:
-    'Building quality software that matters — for millions. Senior Software Engineer at Microsoft.',
+  description: SITE_DESCRIPTION,
   keywords:
-    'Volodymyr Vreshch, software engineer, AI agents, MCP, TypeScript, Microsoft, startup CTO, technical co-founder, engineering leadership, MVP development, build SaaS application, software consulting, product engineering, AI application development, startup engineering partner, scalable web applications, team building, engineering management',
+    'Volodymyr Vreshch, software engineer, Microsoft, AI agents, MCP, Model Context Protocol, AI memory, TypeScript',
   authors: [{ name: 'Volodymyr Vreshch' }],
   icons: { icon: '/icon.svg' },
   metadataBase: new URL('https://vreshch.com'),
   openGraph: {
-    title: 'Volodymyr Vreshch — Software Engineer',
-    description:
-      'Building quality software that matters — for millions. Senior Software Engineer at Microsoft.',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     url: 'https://vreshch.com',
     siteName: 'Volodymyr Vreshch',
     locale: 'en_US',
@@ -27,8 +29,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Volodymyr Vreshch — Software Engineer',
-    description: 'Building quality software that matters — for millions.',
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     images: ['/og-image.png'],
   },
 };
@@ -54,7 +56,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 'https://www.instagram.com/vreshch.v/',
               ],
               image: 'https://vreshch.com/images/profile.jpeg',
-              description: 'Building quality software that matters — for millions.',
+              description:
+                'Senior Software Engineer at Microsoft. Writes about AI agents, MCP, and AI memory.',
             }),
           }}
         />
