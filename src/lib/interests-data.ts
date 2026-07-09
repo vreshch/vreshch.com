@@ -1,6 +1,7 @@
 export type NowThread = {
   title: string;
   body: string;
+  image?: { src: string; alt: string; width: number; height: number };
   links: { label: string; href: string }[];
 };
 
@@ -9,6 +10,8 @@ export type TimelineEntry = {
   role: string;
   detail?: string;
   receipts?: { label: string; href: string }[];
+  image?: { src: string; alt: string; width: number; height: number };
+  defaultOpen?: boolean;
 };
 
 export type ProfileLink = {
@@ -16,10 +19,25 @@ export type ProfileLink = {
   href: string;
 };
 
+export type FocusStat = {
+  label: string;
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  href: string;
+  source: string;
+};
+
 export const NOW_THREADS: NowThread[] = [
   {
     title: 'AI memory',
-    body: 'Open-source work around one markdown memory every AI can read and write.',
+    body: 'Open-source work around one markdown memory every AI can read and write - owned by you, mirrored as plain files.',
+    image: {
+      src: '/mockups/agentage-io.png',
+      alt: 'agentage.io - one memory every AI can read and write',
+      width: 1360,
+      height: 967,
+    },
     links: [
       { label: 'agentage.io', href: 'https://agentage.io' },
       { label: 'github.com/agentage', href: 'https://github.com/agentage' },
@@ -27,13 +45,48 @@ export const NOW_THREADS: NowThread[] = [
   },
   {
     title: 'MCP ecosystem',
-    body: 'An open directory of Model Context Protocol servers, plus the tooling around it.',
+    body: 'An open directory of Model Context Protocol servers - the connective tissue between AI and the tools it uses.',
+    image: {
+      src: '/mockups/mcp-directory.png',
+      alt: 'The MCP directory - an open catalog of Model Context Protocol servers',
+      width: 1360,
+      height: 967,
+    },
     links: [{ label: 'MCP catalog', href: 'https://catalog.agentage.io/mcp' }],
   },
   {
     title: 'Writing',
-    body: 'Essays on agents, MCP, and how AI should remember.',
+    body: 'Essays on agents, MCP, and how AI should remember - thinking out loud as I build.',
     links: [{ label: 'Read the blog', href: '/blog' }],
+  },
+];
+
+export const FOCUS_STATS: FocusStat[] = [
+  {
+    label: 'citations',
+    value: 480,
+    prefix: '~',
+    href: 'https://scholar.google.com/citations?user=z3jmonEAAAAJ',
+    source: 'Google Scholar',
+  },
+  {
+    label: 'h-index',
+    value: 11,
+    href: 'https://scholar.google.com/citations?user=z3jmonEAAAAJ',
+    source: 'Google Scholar',
+  },
+  {
+    label: 'MCP servers indexed',
+    value: 15,
+    suffix: 'k+',
+    href: 'https://catalog.agentage.io/mcp',
+    source: 'the catalog',
+  },
+  {
+    label: 'essays in 2026',
+    value: 6,
+    href: '/blog',
+    source: 'the blog',
   },
 ];
 
@@ -42,6 +95,7 @@ export const TIMELINE: TimelineEntry[] = [
     period: '2021 - present',
     role: 'Senior Software Engineer, Microsoft',
     detail: 'Frontend on products used by millions.',
+    defaultOpen: true,
   },
   {
     period: '2016 - 2021',
@@ -56,6 +110,12 @@ export const TIMELINE: TimelineEntry[] = [
     period: '2008 - 2012',
     role: 'Post-doctoral research',
     detail: 'University at Albany (SUNY) and CNRS / Universite de Rennes 1.',
+    image: {
+      src: '/mockups/diffractwd-com.png',
+      alt: 'DiffractWD - crystallography diffraction software',
+      width: 1360,
+      height: 967,
+    },
     receipts: [
       {
         label: '~480 citations, h-index 11 (Google Scholar)',
@@ -70,6 +130,12 @@ export const TIMELINE: TimelineEntry[] = [
   {
     period: 'Education',
     role: 'PhD Inorganic Chemistry, Taras Shevchenko National University of Kyiv; MS Computer Science',
+    image: {
+      src: '/mockups/crystallography-io.png',
+      alt: 'crystallography.io - search 80k+ Crystallography Open Database structures',
+      width: 1360,
+      height: 967,
+    },
     receipts: [
       {
         label: 'crystallography.io - search over 80k+ Crystallography Open Database structures',

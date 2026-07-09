@@ -1,10 +1,13 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import { Card } from '@/components/card';
 import { PageHeader } from '@/components/page-header';
 import { ExternalLink } from '@/components/interests/external-link';
-import { NowThreadCard } from '@/components/interests/now-thread-card';
+import { FocusSection } from '@/components/interests/focus-section';
 import { TimelineRow } from '@/components/interests/timeline-row';
-import { NOW_THREADS, TIMELINE, HOBBIES, PROFILE_LINKS } from '@/lib/interests-data';
+import { ScrollReveal } from '@/components/interests/scroll-reveal';
+import { TIMELINE, HOBBIES, PROFILE_LINKS } from '@/lib/interests-data';
+import { getAllPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'Interests',
@@ -20,13 +23,24 @@ export const metadata: Metadata = {
   },
 };
 
-export default function InterestsPage() {
+export default async function InterestsPage() {
+  const posts = await getAllPosts();
+  const latest = posts.find((p) => p.thumbnailUrl ?? p.coverUrl);
+  const writingCover = latest?.thumbnailUrl ?? latest?.coverUrl;
+
   return (
     <div>
       <PageHeader title="About" description="A little more about me, my work, and what I explore." />
 
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
-        <section className="mb-16 max-w-3xl">
+        <section className="mb-16 flex max-w-3xl items-start gap-5">
+          <Image
+            src="/images/profile.jpeg"
+            alt="Volodymyr Vreshch"
+            width={72}
+            height={72}
+            className="hidden h-16 w-16 flex-shrink-0 rounded-full object-cover ring-1 ring-border/70 sm:block dark:ring-dark-border"
+          />
           <p className="text-base leading-relaxed text-muted dark:text-dark-text-secondary md:text-lg">
             I&apos;m an inorganic-chemistry PhD turned platform engineer, now a Senior Software
             Engineer at Microsoft. Lately I&apos;ve been exploring AI agents, the Model Context
@@ -34,29 +48,22 @@ export default function InterestsPage() {
           </p>
         </section>
 
-        <section className="mb-16">
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Now</h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            {NOW_THREADS.map((thread) => (
-              <NowThreadCard key={thread.title} thread={thread} />
-            ))}
-          </div>
-        </section>
+        <FocusSection writingCover={writingCover ? { src: writingCover, alt: latest?.title ?? 'Latest essay', width: 1200, height: 630 } : undefined} />
 
-        <section className="mb-16">
+        <ScrollReveal as="section" className="mb-16">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
             Track record
           </h2>
           <Card className="md:p-10">
-            <div className="space-y-8">
+            <div className="space-y-6">
               {TIMELINE.map((entry) => (
                 <TimelineRow key={entry.role} entry={entry} />
               ))}
             </div>
           </Card>
-        </section>
+        </ScrollReveal>
 
-        <section className="mb-16 max-w-3xl">
+        <ScrollReveal as="section" className="mb-16 max-w-3xl">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
             Beyond the keyboard
           </h2>
@@ -68,9 +75,9 @@ export default function InterestsPage() {
               </li>
             ))}
           </ul>
-        </section>
+        </ScrollReveal>
 
-        <section>
+        <ScrollReveal as="section">
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Find me</h2>
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             {PROFILE_LINKS.map((link) => (
@@ -79,7 +86,7 @@ export default function InterestsPage() {
               </ExternalLink>
             ))}
           </div>
-        </section>
+        </ScrollReveal>
       </div>
     </div>
   );
