@@ -3,9 +3,9 @@ import { GoogleAnalytics } from '@/components/google-analytics';
 import { Navigation } from '@/components/navigation';
 import './globals.css';
 
-const SITE_TITLE = 'Volodymyr Vreshch - Building Agentage & the MCP directory';
+const SITE_TITLE = 'Volodymyr Vreshch - Software Engineer';
 const SITE_DESCRIPTION =
-  'I build Agentage, a platform for AI memory and MCP tooling, and write about agents, MCP, and the craft of shipping. Senior Software Engineer at Microsoft.';
+  'Senior Software Engineer at Microsoft with 10+ years of experience. I write about AI agents, MCP, and how AI should remember.';
 
 export const metadata: Metadata = {
   title: {
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   keywords:
-    'Volodymyr Vreshch, Agentage, AI memory, MCP, Model Context Protocol, AI agents, MCP directory, TypeScript, software engineer, Microsoft',
+    'Volodymyr Vreshch, software engineer, Microsoft, AI agents, MCP, Model Context Protocol, AI memory, TypeScript',
   authors: [{ name: 'Volodymyr Vreshch' }],
   icons: { icon: '/icon.svg' },
   metadataBase: new URL('https://vreshch.com'),
@@ -57,7 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               ],
               image: 'https://vreshch.com/images/profile.jpeg',
               description:
-                'Builder of Agentage, a platform for AI memory and MCP tooling, and the MCP server directory.',
+                'Senior Software Engineer at Microsoft. Writes about AI agents, MCP, and AI memory.',
             }),
           }}
         />

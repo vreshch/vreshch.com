@@ -69,12 +69,11 @@ export default async function HomePage() {
           <div className="flex flex-col items-center gap-12 md:flex-row md:items-start md:gap-16">
             <div className="flex-1">
               <h1 className="mb-6 text-3xl font-medium leading-snug text-heading dark:text-dark-text md:text-5xl md:leading-tight">
-                I build Agentage and the MCP directory.
+                Building quality software that matters - for millions.
               </h1>
               <p className="mb-10 max-w-lg text-lg leading-relaxed text-muted dark:text-dark-text-secondary md:text-xl">
-                A platform for AI memory and the tools that plug into it, plus a public directory of
-                MCP servers. I write about agents, MCP, and the craft of shipping. Senior Software
-                Engineer at Microsoft, along the way.
+                Senior Software Engineer at Microsoft with 10+ years of experience. Lately curious
+                about AI agents, MCP, and how AI should remember - I write about it here.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
@@ -142,7 +141,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-5xl px-6">
           <div className="mb-8 flex items-baseline justify-between">
             <h2 className="text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
-              Projects
+              Side projects &amp; open source
             </h2>
             <Link
               href="/projects"

@@ -12,7 +12,7 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
     name: 'Agentage',
     url: 'https://agentage.io',
     description:
-      'The platform I am building - a memory layer first, more to come. Today: one markdown memory every AI reads and writes through a single MCP endpoint, owned by you.',
+      'Open-source AI memory - one markdown memory shared across AI assistants over MCP.',
     image: '/mockups/agentage-io.png',
     imageWidth: 1360,
     imageHeight: 967,
@@ -20,7 +20,6 @@ export const FEATURED_PROJECTS: FeaturedProject[] = [
   {
     name: 'MCP Directory',
     url: 'https://agentage.io/mcp',
-    description:
-      'A public directory of Model Context Protocol servers - browse, search, and connect the tools that plug into your AI.',
+    description: 'A public directory of Model Context Protocol servers.',
   },
 ];
