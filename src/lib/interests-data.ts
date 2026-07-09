@@ -63,17 +63,17 @@ export const NOW_THREADS: NowThread[] = [
 
 export const FOCUS_STATS: FocusStat[] = [
   {
-    label: 'citations',
-    value: 480,
-    prefix: '~',
-    href: 'https://scholar.google.com/citations?user=z3jmonEAAAAJ',
-    source: 'Google Scholar',
+    label: 'years shipping software',
+    value: 10,
+    suffix: '+',
+    href: 'https://www.linkedin.com/in/vreshch',
+    source: 'LinkedIn',
   },
   {
-    label: 'h-index',
-    value: 11,
-    href: 'https://scholar.google.com/citations?user=z3jmonEAAAAJ',
-    source: 'Google Scholar',
+    label: 'open-source repos',
+    value: 9,
+    href: 'https://github.com/agentage',
+    source: 'github.com/agentage',
   },
   {
     label: 'MCP servers indexed',
@@ -110,40 +110,30 @@ export const TIMELINE: TimelineEntry[] = [
     period: '2008 - 2012',
     role: 'Post-doctoral research',
     detail: 'University at Albany (SUNY) and CNRS / Universite de Rennes 1.',
-    image: {
-      src: '/mockups/diffractwd-com.png',
-      alt: 'DiffractWD - crystallography diffraction software',
-      width: 1360,
-      height: 967,
-    },
     receipts: [
       {
-        label: '~480 citations, h-index 11 (Google Scholar)',
+        label: 'Publications on Google Scholar',
         href: 'https://scholar.google.com/citations?user=z3jmonEAAAAJ',
-      },
-      {
-        label: 'Sole-author software paper: DiffractWD, J. Appl. Crystallogr. 44, 219-220 (2011)',
-        href: 'https://onlinelibrary.wiley.com/doi/abs/10.1107/S0021889810044614',
       },
     ],
   },
   {
     period: 'Education',
-    role: 'PhD Inorganic Chemistry, Taras Shevchenko National University of Kyiv; MS Computer Science',
-    image: {
-      src: '/mockups/crystallography-io.png',
-      alt: 'crystallography.io - search 80k+ Crystallography Open Database structures',
-      width: 1360,
-      height: 967,
-    },
+    role: 'PhD, Taras Shevchenko National University of Kyiv; MS Computer Science',
     receipts: [
-      {
-        label: 'crystallography.io - search over 80k+ Crystallography Open Database structures',
-        href: 'https://crystallography.io',
-      },
       { label: 'The @chemistry npm scope', href: 'https://www.npmjs.com/org/chemistry' },
     ],
   },
+];
+
+export const INTERESTS: string[] = [
+  'AI agents & orchestration',
+  'Model Context Protocol',
+  'AI memory & knowledge graphs',
+  'Developer experience',
+  'Open source',
+  'TypeScript & platform engineering',
+  'Infrastructure & CI/CD',
 ];
 
 export const HOBBIES: string[] = [

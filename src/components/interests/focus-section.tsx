@@ -26,12 +26,12 @@ export function FocusSection({ writingCover }: { writingCover?: Cover }) {
         </p>
       </ScrollReveal>
 
-      <div className="mt-10 grid gap-6 md:grid-cols-2">
-        <ScrollReveal className="md:row-span-2">
-          <NowThreadCard thread={aiMemory} featured />
+      <div className="mt-10 grid gap-6 md:grid-cols-3">
+        <ScrollReveal>
+          <NowThreadCard thread={aiMemory} />
         </ScrollReveal>
         <ScrollReveal delayMs={80}>
-          <NowThreadCard thread={mcp} featured />
+          <NowThreadCard thread={mcp} />
         </ScrollReveal>
         <ScrollReveal delayMs={160}>
           <NowThreadCard thread={writing} coverImage={writingCover} />

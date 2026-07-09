@@ -6,18 +6,18 @@ import { ExternalLink } from '@/components/interests/external-link';
 import { FocusSection } from '@/components/interests/focus-section';
 import { TimelineRow } from '@/components/interests/timeline-row';
 import { ScrollReveal } from '@/components/interests/scroll-reveal';
-import { TIMELINE, HOBBIES, PROFILE_LINKS } from '@/lib/interests-data';
+import { TIMELINE, HOBBIES, INTERESTS, PROFILE_LINKS } from '@/lib/interests-data';
 import { getAllPosts } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'Interests',
   description:
-    'Volodymyr Vreshch: inorganic-chemistry PhD turned platform engineer. Currently exploring AI agents, MCP, and how AI should remember. Track record, open-source work, and links.',
+    'Volodymyr Vreshch: platform engineer with a PhD, exploring AI agents, the Model Context Protocol, AI memory, and open source. Interests, track record, and links.',
   alternates: { canonical: '/interests' },
   openGraph: {
     title: 'Interests',
     description:
-      'Inorganic-chemistry PhD turned platform engineer. Exploring AI agents, MCP, and how AI should remember.',
+      'Platform engineer exploring AI agents, the Model Context Protocol, AI memory, and open source.',
     url: '/interests',
     siteName: 'Volodymyr Vreshch',
   },
@@ -30,10 +30,13 @@ export default async function InterestsPage() {
 
   return (
     <div>
-      <PageHeader title="About" description="A little more about me, my work, and what I explore." />
+      <PageHeader
+        title="Interests"
+        description="What I explore, build, and keep coming back to."
+      />
 
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
-        <section className="mb-16 flex max-w-3xl items-start gap-5">
+        <section className="mb-10 flex max-w-3xl items-start gap-5">
           <Image
             src="/images/profile.jpeg"
             alt="Volodymyr Vreshch"
@@ -42,10 +45,23 @@ export default async function InterestsPage() {
             className="hidden h-16 w-16 flex-shrink-0 rounded-full object-cover ring-1 ring-border/70 sm:block dark:ring-dark-border"
           />
           <p className="text-base leading-relaxed text-muted dark:text-dark-text-secondary md:text-lg">
-            I&apos;m an inorganic-chemistry PhD turned platform engineer, now a Senior Software
-            Engineer at Microsoft. Lately I&apos;ve been exploring AI agents, the Model Context
-            Protocol, and how AI should remember. Based in Prague.
+            I&apos;m a platform engineer with a PhD, now a Senior Software Engineer at Microsoft.
+            Lately I&apos;ve been exploring AI agents, the Model Context Protocol, and how AI should
+            remember. Based in Prague.
           </p>
+        </section>
+
+        <section className="mb-16 max-w-3xl">
+          <ul className="flex flex-wrap gap-2.5">
+            {INTERESTS.map((interest) => (
+              <li
+                key={interest}
+                className="rounded-full border border-border/70 bg-surface-alt px-3.5 py-1.5 text-sm text-muted dark:border-dark-border dark:bg-dark-surface-alt dark:text-dark-text-secondary"
+              >
+                {interest}
+              </li>
+            ))}
+          </ul>
         </section>
 
         <FocusSection writingCover={writingCover ? { src: writingCover, alt: latest?.title ?? 'Latest essay', width: 1200, height: 630 } : undefined} />

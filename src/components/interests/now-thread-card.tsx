@@ -8,11 +8,9 @@ type ThreadImage = { src: string; alt: string; width: number; height: number };
 
 export function NowThreadCard({
   thread,
-  featured = false,
   coverImage,
 }: {
   thread: NowThread;
-  featured?: boolean;
   coverImage?: ThreadImage;
 }) {
   const image = thread.image ?? coverImage;
@@ -24,24 +22,18 @@ export function NowThreadCard({
       className="group flex h-full flex-col overflow-hidden ring-1 ring-border/60 dark:ring-dark-border"
     >
       {image && (
-        <div className="overflow-hidden bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
+        <div className="aspect-[16/10] overflow-hidden bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-3">
           <Image
             src={image.src}
             alt={image.alt}
             width={image.width}
             height={image.height}
-            className="h-auto w-full rounded-md shadow-lg transition-transform duration-500 ease-out group-hover:scale-[1.04] motion-reduce:transition-none"
+            className="h-full w-full rounded-md object-cover object-top shadow-lg transition-transform duration-500 ease-out group-hover:scale-[1.04] motion-reduce:transition-none"
           />
         </div>
       )}
-      <div className={featured ? 'flex flex-1 flex-col p-6 md:p-7' : 'flex flex-1 flex-col p-6'}>
-        <h3
-          className={
-            featured
-              ? 'mb-2 text-xl font-medium text-heading dark:text-dark-text'
-              : 'mb-2 text-base font-medium text-heading dark:text-dark-text'
-          }
-        >
+      <div className="flex flex-1 flex-col p-6">
+        <h3 className="mb-2 text-base font-medium text-heading dark:text-dark-text">
           {thread.title}
         </h3>
         <p className="mb-4 flex-1 text-sm leading-relaxed text-muted dark:text-dark-text-secondary">
