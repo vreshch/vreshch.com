@@ -3,13 +3,14 @@ import Image from 'next/image';
 import { Card } from '@/components/card';
 import { PageHeader } from '@/components/page-header';
 import { CopyEmailButton } from '@/components/copy-email-button';
+import { ContactForm } from '@/components/contact-form';
 
 const EMAIL = 'vreshch@gmail.com';
 
 export const metadata: Metadata = {
   title: 'Contacts',
   description:
-    'Get in touch with Volodymyr Vreshch by email or via LinkedIn, GitHub, Facebook, and Instagram.',
+    'Get in touch with Volodymyr Vreshch by email, send a message, or connect via LinkedIn, GitHub, Facebook, and Instagram.',
   alternates: { canonical: '/contacts' },
   openGraph: {
     title: 'Contacts',
@@ -146,6 +147,15 @@ export default function ContactsPage() {
             </div>
           </div>
         </Card>
+
+        <section className="mt-12">
+          <h2 className="mb-6 text-lg font-medium text-heading dark:text-dark-text">
+            Send a message
+          </h2>
+          <Card>
+            <ContactForm />
+          </Card>
+        </section>
       </div>
     </div>
   );
