@@ -89,15 +89,22 @@ def main() -> None:
         photo = Image.open(PROFILE).resize((PHOTO_SIZE, PHOTO_SIZE), Image.LANCZOS)
         img.paste(photo, (PHOTO_X, PHOTO_Y), make_circle_mask(PHOTO_SIZE))
 
-    # Text — vertically centered
-    text_h = NAME_SIZE + 24 + TITLE_SIZE + 18 + TAGLINE_SIZE + 18 + URL_SIZE
-    ty = (HEIGHT - text_h) // 2
+    # Text lines: name / headline (amber) / role / tags / url - vertically centered
+    lines = [
+        ("Volodymyr Vreshch", "#ffffff", load_font(NAME_SIZE, bold=True), 26),
+        ("Building quality software that matters - for millions.", "#f59e0b", load_font(TAGLINE_SIZE), 22),
+        ("Senior Software Engineer at Microsoft", "#a9adc1", load_font(TITLE_SIZE), 14),
+        ("AI agents · MCP · AI memory", "#a9adc1", load_font(TITLE_SIZE), 26),
+        ("https://vreshch.com", "#f59e0b", load_font(URL_SIZE), 0),
+    ]
 
     draw = ImageDraw.Draw(img)
-    draw.text((TEXT_X, ty), "Volodymyr Vreshch", fill="#ffffff", font=load_font(NAME_SIZE, bold=True))
-    draw.text((TEXT_X, ty + NAME_SIZE + 24), "Software Engineer at Microsoft", fill="#a9adc1", font=load_font(TITLE_SIZE))
-    draw.text((TEXT_X, ty + NAME_SIZE + TITLE_SIZE + 42), "Building quality software that matters \u2014 for millions.", fill="#f59e0b", font=load_font(TAGLINE_SIZE))
-    draw.text((TEXT_X, ty + NAME_SIZE + TITLE_SIZE + TAGLINE_SIZE + 60), "https://vreshch.com", fill="#f59e0b", font=load_font(URL_SIZE))
+    line_heights = [font.getbbox(text)[3] for text, _, font, _ in lines]
+    text_h = sum(line_heights) + sum(gap for *_, gap in lines[:-1])
+    ty = (HEIGHT - text_h) // 2
+    for (text, color, font, gap), lh in zip(lines, line_heights):
+        draw.text((TEXT_X, ty), text, fill=color, font=font)
+        ty += lh + gap
 
     img.save(OUTPUT, "PNG", optimize=True)
     print(f"Saved to {OUTPUT} ({OUTPUT.stat().st_size / 1024:.0f} KB)")
