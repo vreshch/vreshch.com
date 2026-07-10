@@ -2,17 +2,18 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Card } from '@/components/card';
 import { PageHeader } from '@/components/page-header';
-import { ContactForm } from '@/components/contact-form';
+import { CopyEmailButton } from '@/components/copy-email-button';
+
+const EMAIL = 'vreshch@gmail.com';
 
 export const metadata: Metadata = {
   title: 'Contacts',
   description:
-    'Get in touch with Volodymyr Vreshch by email or via LinkedIn, GitHub, Facebook, and Instagram, or send a message directly through the contact form.',
+    'Get in touch with Volodymyr Vreshch by email or via LinkedIn, GitHub, Facebook, and Instagram.',
   alternates: { canonical: '/contacts' },
   openGraph: {
     title: 'Contacts',
-    description:
-      'Get in touch with Volodymyr Vreshch by email, LinkedIn, GitHub, and social, or send a message through the contact form.',
+    description: 'Get in touch with Volodymyr Vreshch by email, LinkedIn, GitHub, and social.',
     url: '/contacts',
     siteName: 'Volodymyr Vreshch',
   },
@@ -21,7 +22,8 @@ export const metadata: Metadata = {
 const contacts = [
   {
     label: 'Email',
-    value: 'vreshch@gmail.com',
+    value: EMAIL,
+    href: `mailto:${EMAIL}`,
     icon: <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />,
     iconStroke: true,
   },
@@ -105,8 +107,9 @@ export default function ContactsPage() {
                   {contact.href ? (
                     <a
                       href={contact.href}
-                      target="_blank"
-                      rel="noreferrer"
+                      {...(contact.href.startsWith('http')
+                        ? { target: '_blank', rel: 'noreferrer' }
+                        : {})}
                       className="text-sm font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
                     >
                       {contact.value}
@@ -122,15 +125,27 @@ export default function ContactsPage() {
           </Card>
         </div>
 
-        {/* Contact Form */}
-        <section className="mt-16">
-          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
-            Send a message
-          </h2>
-          <Card>
-            <ContactForm />
-          </Card>
-        </section>
+        <Card className="mt-12">
+          <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-lg font-medium text-heading dark:text-dark-text">
+                Let&apos;s talk
+              </h2>
+              <p className="mt-1 text-sm text-muted dark:text-dark-text-secondary">
+                The fastest way to reach me is email.
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center gap-3">
+              <a
+                href={`mailto:${EMAIL}`}
+                className="inline-block rounded-full bg-accent px-8 py-3.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover dark:bg-dark-accent dark:text-dark-bg dark:hover:bg-dark-accent-hover"
+              >
+                Email me
+              </a>
+              <CopyEmailButton email={EMAIL} />
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );
