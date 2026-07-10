@@ -7,13 +7,11 @@ import { getAllPosts, formatPostDate, type BlogPostMeta } from '@/lib/blog';
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description:
-    'Mostly on agents, MCP, and the craft of shipping — with detours into family and hobby.',
+  description: 'Notes on agents, MCP, and the craft of shipping - with an occasional detour.',
   alternates: { canonical: '/blog' },
   openGraph: {
     title: 'Blog',
-    description:
-      'Mostly on agents, MCP, and the craft of shipping - with detours into family and hobby.',
+    description: 'Notes on agents, MCP, and the craft of shipping - with an occasional detour.',
     url: '/blog',
     siteName: 'Volodymyr Vreshch',
   },
@@ -67,7 +65,7 @@ export default async function BlogIndexPage() {
     <div>
       <PageHeader
         title="Blog"
-        description="Mostly on agents, MCP, and the craft of shipping — with detours into family and hobby."
+        description="Notes on agents, MCP, and the craft of shipping - with an occasional detour."
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
