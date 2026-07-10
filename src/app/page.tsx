@@ -169,41 +169,21 @@ export default async function HomePage() {
       {/* Career Path */}
       <section className="pb-8 pt-4 md:pb-12 md:pt-6">
         <div className="mx-auto max-w-5xl px-6">
-          <Card className="md:p-12">
-            <div className="grid gap-8 md:grid-cols-2 md:gap-12">
-              <div>
-                <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text md:text-3xl">
-                  Career Path
-                </h2>
-              </div>
-              <div className="space-y-4 text-sm leading-relaxed text-muted dark:text-dark-text-secondary md:text-base">
-                <p>
-                  <span className="font-medium text-heading dark:text-dark-text">
-                    Senior Software Engineer, Microsoft
-                  </span>{' '}
-                  (2021 - present).
-                </p>
-                <p>
-                  <span className="font-medium text-heading dark:text-dark-text">
-                    Lead Software Engineer, EPAM Systems
-                  </span>{' '}
-                  (2016 - 2021). TypeScript, React, Angular, Node, Cloud.
-                </p>
-                <p>
-                  Earlier: Software Engineer at GlobalLogic, and academic research - Ph.D. in
-                  Inorganic Chemistry (Kyiv) with post-docs in the USA and France.
-                </p>
-                <p>
-                  <Link
-                    href="/interests"
-                    className="inline-flex items-center gap-1 font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
-                  >
-                    More about me
-                    <span aria-hidden>&rarr;</span>
-                  </Link>
-                </p>
-              </div>
-            </div>
+          <Card className="md:p-10">
+            <p className="text-base leading-relaxed text-muted dark:text-dark-text-secondary">
+              10+ years shipping software:{' '}
+              <span className="font-medium text-heading dark:text-dark-text">
+                Senior Software Engineer at Microsoft
+              </span>{' '}
+              since 2021, previously EPAM and GlobalLogic; a Ph.D. before that.
+            </p>
+            <Link
+              href="/interests"
+              className="mt-4 inline-flex items-center gap-1 text-sm font-medium text-accent transition-colors hover:text-accent-hover dark:text-dark-accent dark:hover:text-dark-accent-hover"
+            >
+              More about me
+              <span aria-hidden>&rarr;</span>
+            </Link>
           </Card>
         </div>
       </section>
