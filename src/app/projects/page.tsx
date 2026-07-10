@@ -5,6 +5,8 @@ import { PageHeader } from '@/components/page-header';
 import { DemoCard } from '@/components/demo-card';
 import { MolPadDemo } from '@/components/molpad-demo';
 import { CrystalViewDemo } from '@/components/crystalview-demo';
+import { FeaturedProjectCard } from '@/components/featured-project-card';
+import { FEATURED_PROJECTS } from '@/lib/featured-projects';
 import { AI_PROJECTS, CHEMISTRY_LIBRARIES, type ProjectLink } from '@/lib/projects-data';
 
 export const metadata: Metadata = {
@@ -72,6 +74,17 @@ export default function ProjectsPage() {
       />
 
       <div className="mx-auto max-w-5xl px-6 pb-16 md:pb-24">
+        <section className="mb-16">
+          <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">
+            Main projects
+          </h2>
+          <div className="grid gap-6 md:grid-cols-2">
+            {FEATURED_PROJECTS.map((project) => (
+              <FeaturedProjectCard key={project.url} project={project} />
+            ))}
+          </div>
+        </section>
+
         <section className="mb-16">
           <h2 className="mb-4 text-2xl font-medium text-heading dark:text-dark-text">
             AI &amp; MCP (open source)
