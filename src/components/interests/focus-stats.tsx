@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { trackEvent } from '@/lib/analytics';
 import type { FocusStat } from '@/lib/interests-data';
 
 function StatCell({ stat }: { stat: FocusStat }) {
@@ -8,6 +11,11 @@ function StatCell({ stat }: { stat: FocusStat }) {
     <Link
       href={stat.href}
       {...linkProps}
+      onClick={
+        external
+          ? () => trackEvent('outbound_click', { url: stat.href, label: stat.source })
+          : undefined
+      }
       className="group flex flex-col gap-1 rounded-xl px-1 py-2 transition-colors hover:bg-surface-alt dark:hover:bg-dark-surface-alt"
     >
       <span className="text-3xl font-semibold tabular-nums tracking-tight text-heading dark:text-dark-text md:text-4xl">

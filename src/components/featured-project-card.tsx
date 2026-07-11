@@ -1,10 +1,18 @@
+'use client';
+
 import Image from 'next/image';
 import { Card } from '@/components/card';
+import { trackEvent } from '@/lib/analytics';
 import type { FeaturedProject } from '@/lib/featured-projects';
 
 export function FeaturedProjectCard({ project }: { project: FeaturedProject }) {
   return (
-    <a href={project.url} target="_blank" rel="noreferrer">
+    <a
+      href={project.url}
+      target="_blank"
+      rel="noreferrer"
+      onClick={() => trackEvent('outbound_click', { url: project.url, label: project.name })}
+    >
       <Card hover="lift" padding="none" className="flex h-full flex-col overflow-hidden">
         {project.image ? (
           <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
