@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { readdir, readFile } from 'node:fs/promises';
 import path from 'node:path';
 import matter from 'gray-matter';
@@ -44,7 +45,21 @@ export type BlogPost = BlogPostMeta & {
 };
 
 const CONTENT_DIR = path.join(process.cwd(), 'src/content/blog');
+const PUBLIC_DIR = path.join(process.cwd(), 'public');
 const WORDS_PER_MINUTE = 220;
+
+// A generated per-post share card (scripts/generate-blog-og.py) is the canonical
+// OG image so every post gets a distinct social preview. Order: generated og.png
+// if present, else explicit frontmatter ogImage, else the cover, else sitewide.
+function resolveOgImageUrl(
+  slug: string,
+  fm: BlogPostFrontmatter,
+  coverUrl?: string
+): string | undefined {
+  const generated = `/blog/${slug}/images/og.png`;
+  if (existsSync(path.join(PUBLIC_DIR, generated))) return generated;
+  return resolveAssetUrl(slug, fm.ogImage) ?? coverUrl;
+}
 
 function calculateReadingTime(content: string): string {
   const words = content.trim().split(/\s+/).length;
@@ -70,7 +85,7 @@ async function readPostFile(slug: string): Promise<BlogPost> {
   }
 
   const coverUrl = resolveAssetUrl(slug, fm.cover);
-  const ogImageUrl = resolveAssetUrl(slug, fm.ogImage) ?? coverUrl;
+  const ogImageUrl = resolveOgImageUrl(slug, fm, coverUrl);
   // Static list/OG image so a post can use an animated cover on its own page
   // while the index card stays static. Falls back to the cover.
   const thumbnailUrl = resolveAssetUrl(slug, fm.thumbnail) ?? coverUrl;
