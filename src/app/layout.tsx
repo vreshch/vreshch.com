@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   authors: [{ name: 'Volodymyr Vreshch' }],
   icons: { icon: '/icon.svg' },
   metadataBase: new URL('https://vreshch.com'),
+  alternates: {
+    types: { 'application/rss+xml': '/rss.xml' },
+  },
   openGraph: {
     title: SITE_TITLE,
     description: SITE_DESCRIPTION,
