@@ -20,6 +20,7 @@ export function FeaturedProjectCard({ project }: { project: FeaturedProject }) {
               src={project.image}
               width={project.imageWidth ?? 1360}
               height={project.imageHeight ?? 967}
+              sizes="(min-width: 768px) 50vw, 100vw"
               className="h-auto w-full"
               alt={project.name}
             />

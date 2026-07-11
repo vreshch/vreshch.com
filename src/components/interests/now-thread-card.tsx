@@ -28,6 +28,7 @@ export function NowThreadCard({
             alt={image.alt}
             width={image.width}
             height={image.height}
+            sizes="(min-width: 768px) 33vw, 100vw"
             className="h-full w-full rounded-md object-cover object-top shadow-lg"
           />
         </div>

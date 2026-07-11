@@ -31,7 +31,7 @@ export const NOW_THREADS: NowThread[] = [
     title: 'AI memory',
     body: 'Open-source work around one markdown memory every AI can read and write - owned by you, mirrored as plain files.',
     image: {
-      src: '/mockups/agentage-io.png',
+      src: '/mockups/agentage-io.webp',
       alt: 'agentage.io - one memory every AI can read and write',
       width: 1360,
       height: 967,
@@ -45,7 +45,7 @@ export const NOW_THREADS: NowThread[] = [
     title: 'MCP ecosystem',
     body: 'An open directory of Model Context Protocol servers - the connective tissue between AI and the tools it uses.',
     image: {
-      src: '/mockups/mcp-directory.png',
+      src: '/mockups/mcp-directory.webp',
       alt: 'The MCP directory - an open catalog of Model Context Protocol servers',
       width: 1360,
       height: 967,

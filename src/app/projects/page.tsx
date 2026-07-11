@@ -54,7 +54,14 @@ function SiteCard({
     <a href={href} target="_blank" rel="noreferrer">
       <Card hover="lift" padding="none" className="overflow-hidden">
         <div className="bg-gradient-to-b from-[#1e2e47] to-[#0c0f16] p-4">
-          <Image src={image} width={1400} height={1007} className="h-auto w-full" alt={title} />
+          <Image
+            src={image}
+            width={1360}
+            height={967}
+            sizes="(min-width: 768px) 50vw, 100vw"
+            className="h-auto w-full"
+            alt={title}
+          />
         </div>
         <div className="p-6">
           <h3 className="mb-1 text-lg font-medium text-heading dark:text-dark-text">{title}</h3>
@@ -115,13 +122,13 @@ export default function ProjectsPage() {
           <div className="grid gap-6 md:grid-cols-2">
             <SiteCard
               href="https://crystallography.io"
-              image="/mockups/crystallography-io.png"
+              image="/mockups/crystallography-io.webp"
               title="crystallography.io"
               subtitle="Search over 80k+ structures from the Crystallography Open Database"
             />
             <SiteCard
               href="https://diffractwd.com"
-              image="/mockups/diffractwd-com.png"
+              image="/mockups/diffractwd-com.webp"
               title="diffractwd.com"
               subtitle="Free powder diffraction software"
             />
