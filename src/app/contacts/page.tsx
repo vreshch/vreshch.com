@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import Image from 'next/image';
 import { Card } from '@/components/card';
 import { PageHeader } from '@/components/page-header';
-import { CopyEmailButton } from '@/components/copy-email-button';
 import { ContactForm } from '@/components/contact-form';
 
 const EMAIL = 'vreshch@gmail.com';
@@ -125,28 +124,6 @@ export default function ContactsPage() {
             </div>
           </Card>
         </div>
-
-        <Card className="mt-12">
-          <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h2 className="text-lg font-medium text-heading dark:text-dark-text">
-                Let&apos;s talk
-              </h2>
-              <p className="mt-1 text-sm text-muted dark:text-dark-text-secondary">
-                The fastest way to reach me is email.
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <a
-                href={`mailto:${EMAIL}`}
-                className="inline-block rounded-full bg-accent px-8 py-3.5 text-sm font-medium text-white transition-colors hover:bg-accent-hover dark:bg-dark-accent dark:text-dark-bg dark:hover:bg-dark-accent-hover"
-              >
-                Email me
-              </a>
-              <CopyEmailButton email={EMAIL} />
-            </div>
-          </div>
-        </Card>
 
         <section className="mt-12">
           <h2 className="mb-6 text-lg font-medium text-heading dark:text-dark-text">
