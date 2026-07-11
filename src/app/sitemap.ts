@@ -1,15 +1,23 @@
 import type { MetadataRoute } from 'next';
-import { getAllPosts } from '@/lib/blog';
+import { getAllPosts, getAllTags } from '@/lib/blog';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://vreshch.com';
   const posts = await getAllPosts();
+  const tags = await getAllTags();
 
   const postEntries: MetadataRoute.Sitemap = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(post.date),
     changeFrequency: 'monthly',
     priority: 0.8,
+  }));
+
+  const tagEntries: MetadataRoute.Sitemap = tags.map(({ tag }) => ({
+    url: `${baseUrl}/blog/tag/${tag}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly',
+    priority: 0.5,
   }));
 
   return [
@@ -33,6 +41,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.9,
     },
     ...postEntries,
+    ...tagEntries,
     {
       url: `${baseUrl}/contacts`,
       lastModified: new Date(),

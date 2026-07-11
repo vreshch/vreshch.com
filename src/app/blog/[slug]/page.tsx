@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { BlogMdx } from '@/components/blog-mdx';
-import { formatPostDate, getAllPostSlugs, getPost } from '@/lib/blog';
+import { TagChips } from '@/components/tag-chip';
+import { formatPostDate, getAdjacentPosts, getAllPostSlugs, getPost } from '@/lib/blog';
 
 type Params = { slug: string };
 
@@ -61,6 +62,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
   const post = await getPost(slug);
   if (!post) notFound();
 
+  const { prev, next } = await getAdjacentPosts(slug);
   const sourceUrl = `${REPO_URL}/blob/${REPO_BRANCH}/src/content/blog/${post.slug}/article.md`;
   const postUrl = `${SITE}/blog/${post.slug}`;
 
@@ -125,18 +127,7 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
             {post.subtitle}
           </p>
         )}
-        {post.tags && post.tags.length > 0 && (
-          <ul className="flex flex-wrap gap-2">
-            {post.tags.map((tag) => (
-              <li
-                key={tag}
-                className="rounded-full bg-surface px-3 py-1 text-xs font-medium text-muted dark:bg-dark-surface dark:text-dark-text-secondary"
-              >
-                {tag}
-              </li>
-            ))}
-          </ul>
-        )}
+        {post.tags && post.tags.length > 0 && <TagChips tags={post.tags} />}
         {post.mediumUrl && (
           <p className="mt-5 text-sm">
             <a
@@ -187,6 +178,39 @@ export default async function BlogPostPage({ params }: { params: Promise<Params>
       <div className="prose-blog">
         <BlogMdx source={post.content} />
       </div>
+      {(prev || next) && (
+        <nav
+          aria-label="More posts"
+          className="mt-16 grid gap-4 border-t border-border/30 pt-8 sm:grid-cols-2 dark:border-dark-border"
+        >
+          {prev ? (
+            <Link
+              href={`/blog/${prev.slug}`}
+              className="group flex flex-col gap-1 rounded-lg border border-border/60 p-4 transition-colors hover:border-accent/60 dark:border-dark-border dark:hover:border-dark-accent/60"
+            >
+              <span className="text-xs font-medium uppercase tracking-wide text-muted dark:text-dark-text-secondary">
+                ← Previous
+              </span>
+              <span className="font-medium text-heading dark:text-dark-text">{prev.title}</span>
+            </Link>
+          ) : (
+            <span aria-hidden="true" className="hidden sm:block" />
+          )}
+          {next ? (
+            <Link
+              href={`/blog/${next.slug}`}
+              className="group flex flex-col gap-1 rounded-lg border border-border/60 p-4 text-right transition-colors hover:border-accent/60 dark:border-dark-border dark:hover:border-dark-accent/60"
+            >
+              <span className="text-xs font-medium uppercase tracking-wide text-muted dark:text-dark-text-secondary">
+                Next →
+              </span>
+              <span className="font-medium text-heading dark:text-dark-text">{next.title}</span>
+            </Link>
+          ) : (
+            <span aria-hidden="true" className="hidden sm:block" />
+          )}
+        </nav>
+      )}
       <footer className="mt-16 flex flex-wrap items-center justify-between gap-4 border-t border-border/30 pt-8 text-sm text-muted dark:border-dark-border dark:text-dark-text-secondary">
         <Link
           href="/blog"
