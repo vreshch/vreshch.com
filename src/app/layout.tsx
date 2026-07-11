@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { GoogleAnalytics } from '@/components/google-analytics';
 import { Navigation } from '@/components/navigation';
 import './globals.css';
@@ -36,6 +36,13 @@ export const metadata: Metadata = {
     description: SITE_DESCRIPTION,
     images: ['/og-image.png'],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#1f2028' },
+    { media: '(prefers-color-scheme: light)', color: '#F59E0B' },
+  ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
