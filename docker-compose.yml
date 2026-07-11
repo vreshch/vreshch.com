@@ -4,6 +4,8 @@ services:
   web:
     image: ghcr.io/vreshch/vreshch.com:latest
     restart: unless-stopped
+    env_file:
+      - .env
     networks:
       - traefik-public
     deploy:

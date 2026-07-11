@@ -105,6 +105,16 @@ jobs:
           scp -i ~/.ssh/deploy_key scripts/deploy.sh root@${{ secrets.SERVER_HOST }}:/opt/vreshch-com/
           ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} "chmod +x /opt/vreshch-com/deploy.sh"
 
+      - name: 🔑 Write runtime env on server
+        run: |
+          echo "🔑 Writing /opt/vreshch-com/.env (runtime secrets)..."
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} "install -m 600 /dev/stdin /opt/vreshch-com/.env" <<'ENV_EOF'
+          RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+          CONTACT_TO_EMAIL=vreshch@gmail.com
+          CONTACT_FROM_EMAIL=Volodymyr Vreshch <no-reply@mail.agentage.io>
+          ENV_EOF
+          echo "✅ Runtime env written"
+
       - name: 🚀 Deploy application
         id: deploy
         run: |
