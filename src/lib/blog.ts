@@ -144,6 +144,39 @@ export async function getPost(slug: string): Promise<BlogPost | null> {
   }
 }
 
+export type TagCount = { tag: string; count: number };
+
+export async function getAllTags(): Promise<TagCount[]> {
+  const posts = await getAllPosts();
+  const counts = new Map<string, number>();
+  for (const post of posts) {
+    for (const tag of post.tags ?? []) {
+      counts.set(tag, (counts.get(tag) ?? 0) + 1);
+    }
+  }
+  return [...counts.entries()]
+    .map(([tag, count]) => ({ tag, count }))
+    .sort((a, b) => a.tag.localeCompare(b.tag));
+}
+
+export async function getPostsByTag(tag: string): Promise<BlogPostMeta[]> {
+  const posts = await getAllPosts();
+  return posts.filter((post) => (post.tags ?? []).includes(tag));
+}
+
+// Posts are newest-first; prev = newer post, next = older post.
+export async function getAdjacentPosts(
+  slug: string
+): Promise<{ prev: BlogPostMeta | null; next: BlogPostMeta | null }> {
+  const posts = await getAllPosts();
+  const index = posts.findIndex((post) => post.slug === slug);
+  if (index === -1) return { prev: null, next: null };
+  return {
+    prev: index > 0 ? posts[index - 1] : null,
+    next: index < posts.length - 1 ? posts[index + 1] : null,
+  };
+}
+
 export function formatPostDate(iso: string): string {
   const date = new Date(iso);
   return date.toLocaleDateString('en-US', {
