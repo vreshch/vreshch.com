@@ -104,7 +104,7 @@ export default async function InterestsPage() {
           <h2 className="mb-6 text-2xl font-medium text-heading dark:text-dark-text">Find me</h2>
           <div className="flex flex-wrap gap-x-6 gap-y-3">
             {PROFILE_LINKS.map((link) => (
-              <ExternalLink key={link.href} href={link.href}>
+              <ExternalLink key={link.href} href={link.href} label={link.label}>
                 {link.label}
               </ExternalLink>
             ))}

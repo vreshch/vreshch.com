@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { trackEvent } from '@/lib/analytics';
 
 const inputStyles =
   'w-full rounded-xl border-0 bg-surface px-4 py-3 text-sm text-heading placeholder:text-muted/60 focus:outline-none focus:ring-2 focus:ring-accent/40 dark:bg-dark-surface-alt dark:text-dark-text dark:placeholder:text-dark-text-secondary/40 dark:focus:ring-dark-accent/40';
@@ -32,15 +33,18 @@ export function ContactForm() {
       const data = await res.json().catch(() => ({}));
 
       if (res.ok && data.success) {
+        trackEvent('contact_submit', { method: 'form' });
         setStatus('sent');
         setName('');
         setEmail('');
         setMessage('');
         return;
       }
+      trackEvent('contact_submit_error', { method: 'form' });
       setError(data.error || 'Something went wrong. Please try again.');
       setStatus('error');
     } catch {
+      trackEvent('contact_submit_error', { method: 'form' });
       setError('Something went wrong. Please try again.');
       setStatus('error');
     }
