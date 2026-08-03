@@ -39,7 +39,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "gray-matter": "^4.0.3",
-    "next": "^15.5.22",
+    "next": "^16.3.0",
     "next-mdx-remote": "^6.0.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
