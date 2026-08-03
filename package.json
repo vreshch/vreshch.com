@@ -69,7 +69,7 @@
     "jsdom": "^28.1.0",
     "pixelmatch": "^7.2.0",
     "pngjs": "^7.0.0",
-    "postcss": "^8.5.24",
+    "postcss": "^8.5.25",
     "prettier": "^3.9.6",
     "tailwindcss": "^4.1.8",
     "typescript": "^6.0.3",
