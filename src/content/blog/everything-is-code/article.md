@@ -3,12 +3,12 @@ title: 'Look, Everything Is... Code'
 subtitle: 'My logo, covers, social cards, and LinkedIn banner are all scripts in a repo. 24 HTML files, one afternoon, here is the method.'
 description: 'I write 24 HTML files by hand and render five images with headless Chrome instead of opening Figma, Canva, or a slide deck. Here is the method.'
 date: '2026-08-06'
-publishAt: '2026-08-10T08:00:00Z'
+publishAt: '2026-08-11T12:09:00Z'
 category: coding
 cover: images/cover.png
 ogImage: images/cover.png
 readingTime: '7 min read'
-mediumUrl: 'https://medium.com/@vreshch/look-everything-is-code-bedfb6dff8e9'
+mediumUrl: 'https://medium.com/@vreshch/bedfb6dff8e9'
 tags:
   - programming
   - design-systems
@@ -17,7 +17,7 @@ tags:
   - svg
 ---
 
-**[Read on Medium →](https://medium.com/@vreshch/look-everything-is-code-bedfb6dff8e9)**
+**[Read on Medium →](https://medium.com/@vreshch/bedfb6dff8e9)**
 
 My last article went out with five images. I wrote 24 HTML files by hand, rendered them through
 headless Chrome, and kept five - the cover alone took nine variants before one survived. Twenty-four
@@ -43,7 +43,7 @@ software. It invades things that were never code - my logo, my article covers, s
 > _Assets written as code can be aligned with each other, because they can share a value instead of
 > resembling one._
 
-**[Read on Medium →](https://medium.com/@vreshch/look-everything-is-code-bedfb6dff8e9)**
+**[Read on Medium →](https://medium.com/@vreshch/bedfb6dff8e9)**
 
 ---
 
