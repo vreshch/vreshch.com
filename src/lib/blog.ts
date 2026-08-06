@@ -21,6 +21,7 @@ export type BlogPostFrontmatter = {
   readingTime?: string;
   mediumUrl?: string;
   coverLink?: string;
+  publishAt?: string;
 };
 
 export type BlogPostMeta = {
@@ -42,7 +43,19 @@ export type BlogPostMeta = {
 
 export type BlogPost = BlogPostMeta & {
   content: string;
+  publishAt?: string;
 };
+
+// Scheduled visibility: a post with a future publishAt stays reachable at its direct URL
+// (Medium Import fetches it for canonical linking) but is excluded from discovery surfaces.
+// Accepts Date too since unquoted YAML datetimes parse into Date objects (see toDateString above).
+export function isPostVisible(
+  publishAt: string | Date | undefined,
+  now: Date = new Date()
+): boolean {
+  if (!publishAt) return true;
+  return new Date(publishAt).getTime() <= now.getTime();
+}
 
 const CONTENT_DIR = path.join(process.cwd(), 'src/content/blog');
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
@@ -114,6 +127,7 @@ async function readPostFile(slug: string): Promise<BlogPost> {
     thumbnailUrl,
     mediumUrl: fm.mediumUrl,
     coverLink: fm.coverLink,
+    publishAt: fm.publishAt,
     content,
   };
 }
@@ -126,7 +140,8 @@ export async function getAllPostSlugs(): Promise<string[]> {
 export async function getAllPosts(): Promise<BlogPostMeta[]> {
   const slugs = await getAllPostSlugs();
   const posts = await Promise.all(slugs.map(readPostFile));
-  const metas: BlogPostMeta[] = posts.map((post) => ({
+  const visiblePosts = posts.filter((post) => isPostVisible(post.publishAt));
+  const metas: BlogPostMeta[] = visiblePosts.map((post) => ({
     slug: post.slug,
     title: post.title,
     subtitle: post.subtitle,

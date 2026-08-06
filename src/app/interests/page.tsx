@@ -8,6 +8,9 @@ import { TimelineRow } from '@/components/interests/timeline-row';
 import { TIMELINE, HOBBIES, INTERESTS, PROFILE_LINKS } from '@/lib/interests-data';
 import { getAllPosts } from '@/lib/blog';
 
+// ISR: the writing-cover lookup reads getAllPosts, so it needs the same scheduled-visibility refresh.
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'Interests',
   description:

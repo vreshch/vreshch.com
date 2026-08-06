@@ -3,6 +3,7 @@ title: 'I Replaced Figma, Canva, and PowerPoint With a Git Repo'
 subtitle: '24 HTML files by hand, 5 images shipped, 0 design tools opened. My logo, covers, social cards, and LinkedIn banner are all scripts in a repo.'
 description: 'I write 24 HTML files by hand and render five images with headless Chrome instead of opening Figma, Canva, or a slide deck. Here is the method.'
 date: '2026-08-06'
+publishAt: '2026-08-10T08:00:00Z'
 category: coding
 cover: images/cover.png
 ogImage: images/cover.png
