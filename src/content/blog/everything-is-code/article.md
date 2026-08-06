@@ -3,7 +3,7 @@ title: 'Look, Everything Is... Code'
 subtitle: 'My logo, covers, social cards, and LinkedIn banner are all scripts in a repo. 24 HTML files, one afternoon, here is the method.'
 description: 'I write 24 HTML files by hand and render five images with headless Chrome instead of opening Figma, Canva, or a slide deck. Here is the method.'
 date: '2026-08-06'
-publishAt: '2026-08-11T12:09:00Z'
+publishAt: '2026-08-11T13:09:00Z'
 category: coding
 cover: images/cover.png
 ogImage: images/cover.png
