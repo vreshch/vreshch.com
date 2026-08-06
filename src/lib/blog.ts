@@ -61,6 +61,15 @@ function resolveOgImageUrl(
   return resolveAssetUrl(slug, fm.ogImage) ?? coverUrl;
 }
 
+// gray-matter/js-yaml parses unquoted frontmatter dates (date: 2026-08-04) into
+// Date objects despite the string type here - normalize so sort/comparison never
+// mixes strings and Dates (quote new dates going forward, but stay defensive).
+function toDateString(value: string | Date | undefined): string | undefined {
+  if (value === undefined) return undefined;
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return value;
+}
+
 function calculateReadingTime(content: string): string {
   const words = content.trim().split(/\s+/).length;
   const minutes = Math.max(1, Math.round(words / WORDS_PER_MINUTE));
@@ -95,8 +104,8 @@ async function readPostFile(slug: string): Promise<BlogPost> {
     title: fm.title,
     subtitle: fm.subtitle,
     description: fm.description ?? fm.subtitle,
-    date: fm.date,
-    updated: fm.updated,
+    date: toDateString(fm.date) as string,
+    updated: toDateString(fm.updated),
     category: fm.category ?? 'coding',
     tags: fm.tags,
     readingTime: fm.readingTime ?? calculateReadingTime(content),
