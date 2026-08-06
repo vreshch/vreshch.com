@@ -8,7 +8,7 @@ category: coding
 cover: images/cover.png
 ogImage: images/cover.png
 readingTime: '7 min read'
-mediumUrl: 'PENDING-MEDIUM-URL'
+mediumUrl: 'https://medium.com/@vreshch/look-everything-is-code-bedfb6dff8e9'
 tags:
   - programming
   - design-systems
@@ -17,7 +17,7 @@ tags:
   - svg
 ---
 
-**[Read on Medium →](PENDING-MEDIUM-URL)** · **[Originally posted as a LinkedIn entry →](PENDING-LINKEDIN-URL)**
+**[Read on Medium →](https://medium.com/@vreshch/look-everything-is-code-bedfb6dff8e9)**
 
 My last article went out with five images. I wrote 24 HTML files by hand, rendered them through
 headless Chrome, and kept five - the cover alone took nine variants before one survived. Twenty-four
@@ -43,7 +43,7 @@ software. It invades things that were never code - my logo, my article covers, s
 > _Assets written as code can be aligned with each other, because they can share a value instead of
 > resembling one._
 
-**[Read on Medium →](PENDING-MEDIUM-URL)** · **[Original LinkedIn entry →](PENDING-LINKEDIN-URL)**
+**[Read on Medium →](https://medium.com/@vreshch/look-everything-is-code-bedfb6dff8e9)**
 
 ---
 
