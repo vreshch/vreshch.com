@@ -1,6 +1,6 @@
 ---
-title: 'Code Got Cheap. Now Everything I Make Is Code.'
-subtitle: '24 HTML files by hand, 5 images shipped, 0 design tools opened. My logo, covers, social cards, and LinkedIn banner are all scripts in a repo.'
+title: 'I Shipped Five Images With Code and Opened Zero Design Tools'
+subtitle: 'My logo, covers, social cards, and LinkedIn banner are all scripts in a repo. 24 HTML files, one afternoon, here is the method.'
 description: 'I write 24 HTML files by hand and render five images with headless Chrome instead of opening Figma, Canva, or a slide deck. Here is the method.'
 date: '2026-08-06'
 publishAt: '2026-08-10T08:00:00Z'
