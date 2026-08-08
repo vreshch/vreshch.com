@@ -3,6 +3,9 @@ import { PageHeader } from '@/components/page-header';
 import { PostCard } from '@/components/post-card';
 import { getAllPosts } from '@/lib/blog';
 
+// ISR: without this the index bakes at build time and a scheduled post never appears on its own.
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: 'Blog',
   description: 'Notes on agents, MCP, and the craft of shipping - with an occasional detour.',

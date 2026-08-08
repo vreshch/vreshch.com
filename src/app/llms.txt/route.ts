@@ -1,6 +1,8 @@
 import { getAllPosts } from '@/lib/blog';
 
 export const dynamic = 'force-static';
+// ISR: keeps scheduled posts flipping into the listing within the hour, no rebuild needed.
+export const revalidate = 3600;
 
 const ORIGIN = 'https://vreshch.com';
 

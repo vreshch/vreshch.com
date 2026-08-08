@@ -6,6 +6,9 @@ import { FeaturedProjectCard } from '@/components/featured-project-card';
 import { FEATURED_PROJECTS } from '@/lib/featured-projects';
 import { getAllPosts, formatPostDate, type BlogPostMeta } from '@/lib/blog';
 
+// ISR: the "Latest writing" widget reads getAllPosts, so it needs the same scheduled-visibility refresh.
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: { absolute: 'Volodymyr Vreshch - Software Engineer' },
   description:
