@@ -110,6 +110,15 @@ jobs:
           echo "🔑 Writing /opt/vreshch-com/.env (runtime secrets)..."
           ssh -i ~/.ssh/deploy_key root@${{ secrets.SERVER_HOST }} "install -m 600 /dev/stdin /opt/vreshch-com/.env" <<'ENV_EOF'
           RESEND_API_KEY=${{ secrets.RESEND_API_KEY }}
+          # SigNoz tracing over the WG mesh; unset token would leave these blank = tracer off.
+          OTEL_EXPORTER_OTLP_ENDPOINT=http://172.31.0.1:4318
+          OTEL_EXPORTER_OTLP_HEADERS=Authorization=Bearer%20${{ secrets.SIGNOZ_INGEST_TOKEN }}
+          OTEL_SERVICE_NAME=vreshch-web
+          OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production,service.namespace=side
+          OTEL_TRACES_SAMPLER=parentbased_traceidratio
+          OTEL_TRACES_SAMPLER_ARG=0.2
+          OTEL_METRICS_EXPORTER=none
+          OTEL_LOGS_EXPORTER=none
           CONTACT_TO_EMAIL=vreshch@gmail.com
           CONTACT_FROM_EMAIL=Volodymyr Vreshch <no-reply@mail.agentage.io>
           ENV_EOF
