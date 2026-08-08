@@ -34,7 +34,7 @@
     "test:e2e:ui": "npx playwright test --ui"
   },
   "dependencies": {
-    "@agentage/observability": "^0.4.0",
+    "@agentage/observability": "^0.6.1",
     "@chemistry/crystalview": "^3.0.0",
     "@chemistry/molpad": "^3.1.0",
     "@vercel/otel": "^2.1.3",
