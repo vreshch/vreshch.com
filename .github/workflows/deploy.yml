@@ -116,7 +116,7 @@ jobs:
           OTEL_SERVICE_NAME=vreshch-web
           OTEL_RESOURCE_ATTRIBUTES=deployment.environment=production,service.namespace=side
           OTEL_TRACES_SAMPLER=parentbased_traceidratio
-          OTEL_TRACES_SAMPLER_ARG=0.2
+          OTEL_TRACES_SAMPLER_ARG=1.0
           OTEL_METRICS_EXPORTER=none
           OTEL_LOGS_EXPORTER=none
           CONTACT_TO_EMAIL=vreshch@gmail.com
