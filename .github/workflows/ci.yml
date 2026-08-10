@@ -1,0 +1,42 @@
+name: CI
+
+# Verifies master AFTER a merge. This repo previously ran pr-validation.yml only, so
+# the first sign that master was broken was a deploy.
+#
+# Deliberately NOT merged into pr-validation.yml: that workflow does PR-specific work
+# (visual diff against the base branch, screenshots keyed by PR number) which is
+# meaningless on master. One file per role only holds when the roles are the same.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify
+        run: npm run verify
+
+      - name: Format check
+        run: npm run format:check
