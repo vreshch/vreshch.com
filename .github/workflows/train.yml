@@ -1,0 +1,86 @@
+name: Train
+
+# Fully automated Friday deps train: merge green dependabot PRs, then dispatch deploy.
+# Red run = the only alarm; there are no silent-skip states.
+on:
+  schedule:
+    - cron: '0 21 * * 5'
+  workflow_dispatch:
+    inputs:
+      bump_deps:
+        description: 'Merge green dependabot PRs'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write
+
+concurrency:
+  group: train
+  cancel-in-progress: false
+
+jobs:
+  deps:
+    name: Merge green dependabot PRs
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # schedule always bumps deps; dispatch only when bump_deps=true
+    if: github.event_name == 'schedule' || inputs.bump_deps
+    outputs:
+      merged_count: ${{ steps.merge.outputs.merged_count }}
+    steps:
+      - name: Squash-merge dependabot PRs whose checks are green
+        id: merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          MERGED=0
+          # Each bot PR was verified by pr-validation like any common PR; green = merge, red = leave open.
+          PRS=$(gh pr list -R "$REPO" --author "app/dependabot" --state open --json number --jq '.[].number')
+          if [ -z "$PRS" ]; then
+            echo "No open dependabot PRs." | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "merged_count=0" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "## Dependabot PRs" >> "$GITHUB_STEP_SUMMARY"
+          for PR in $PRS; do
+            SETTLED=false
+            for i in $(seq 1 20); do
+              OUT=$(gh pr checks "$PR" -R "$REPO" --json bucket 2>/dev/null || true); [ -z "$OUT" ] && OUT="[]"
+              PENDING=$(echo "$OUT" | jq '[.[] | select(.bucket=="pending")] | length')
+              [ "$PENDING" = "0" ] && { SETTLED=true; break; }
+              echo "poll $i: PR #$PR has $PENDING pending check(s)"; sleep 30
+            done
+            OUT=$(gh pr checks "$PR" -R "$REPO" --json bucket 2>/dev/null || true); [ -z "$OUT" ] && OUT="[]"
+            FAILED=$(echo "$OUT" | jq '[.[] | select(.bucket=="fail" or .bucket=="cancel")] | length')
+            if [ "$SETTLED" = "true" ] && [ "$FAILED" = "0" ]; then
+              if gh pr merge "$PR" -R "$REPO" --squash --delete-branch; then
+                echo "- #$PR merged" >> "$GITHUB_STEP_SUMMARY"
+                MERGED=$((MERGED + 1))
+              else
+                echo "- #$PR green but merge failed - left open" >> "$GITHUB_STEP_SUMMARY"
+              fi
+            else
+              echo "- #$PR left open (failed=$FAILED settled=$SETTLED)" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          done
+          echo "merged_count=$MERGED" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    name: Dispatch deploy
+    needs: deps
+    if: fromJSON(needs.deps.outputs.merged_count) > 0
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Dispatch deploy.yml
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh workflow run deploy.yml -R vreshch/vreshch.com
+          echo "Dispatched deploy.yml after merging ${{ needs.deps.outputs.merged_count }} dependabot PR(s)." >> "$GITHUB_STEP_SUMMARY"
