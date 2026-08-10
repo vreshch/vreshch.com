@@ -1,356 +1,42 @@
 name: CI
 
+# Verifies master AFTER a merge. This repo previously ran pr-validation.yml only, so
+# the first sign that master was broken was a deploy.
+#
+# Deliberately NOT merged into pr-validation.yml: that workflow does PR-specific work
+# (visual diff against the base branch, screenshots keyed by PR number) which is
+# meaningless on master. One file per role only holds when the roles are the same.
+
 on:
   push:
     branches: [master]
-  pull_request:
-    branches: [master]
-    types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
-  validate:
-    name: Validate Pull Request
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
     timeout-minutes: 15
-
     steps:
-      - name: Comment in progress
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const marker = '<!-- pr-validation-bot -->';
-            const body = `${marker}
-            ⏳ **PR Validation IN PROGRESS**
+      - uses: actions/checkout@v7
 
-            **Commit:** \`${{ github.event.pull_request.head.sha }}\`
-            **Branch:** \`${{ github.head_ref }}\`
-
-            **Checks:**
-            - ⏳ Dependencies
-            - ⏳ Linting
-            - ⏳ Format
-            - ⏳ Build
-            - ⏳ Docker build
-            - ⏳ E2E tests
-
-            ---
-            🔗 [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            ⏰ Started at: \`${new Date().toISOString()}\``;
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const existing = comments.find(c =>
-              c.user.login === 'github-actions[bot]' && c.body.startsWith(marker)
-            );
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body: body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: body,
-              });
-            }
-
-      - name: Checkout PR code
-        uses: actions/checkout@v7
-        with:
-          fetch-depth: 0
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: 'npm'
 
       - name: Install dependencies
-        id: install
         run: npm ci
 
-      - name: Lint code
-        id: lint
-        if: always() && steps.install.outcome == 'success'
-        run: npm run lint
+      - name: Verify
+        run: npm run verify
 
       - name: Format check
-        id: format
-        if: always() && steps.install.outcome == 'success'
         run: npm run format:check
-
-      - name: Build project
-        id: build
-        if: always() && steps.install.outcome == 'success'
-        run: npm run build
-
-      - name: Validate Dockerfile
-        id: docker
-        if: always() && steps.install.outcome == 'success'
-        run: docker build -t vreshch-com:ci-${{ github.run_id }} .
-
-      - name: Install Playwright browsers
-        if: always() && steps.build.outcome == 'success'
-        run: npx playwright install --with-deps chromium
-
-      - name: Extract base branch screenshots
-        if: always() && steps.build.outcome == 'success'
-        run: |
-          mkdir -p /tmp/screenshots-base
-          BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          git show "${BASE_SHA}":e2e/screenshots/ 2>/dev/null | \
-            grep '\.png$' | while read f; do
-              git show "${BASE_SHA}:e2e/screenshots/${f}" > "/tmp/screenshots-base/${f}" 2>/dev/null || true
-            done
-          echo "Base screenshots:"
-          ls /tmp/screenshots-base/ 2>/dev/null || echo "None found"
-
-      - name: Copy base screenshots as baselines
-        if: always() && steps.build.outcome == 'success'
-        run: |
-          if ls /tmp/screenshots-base/*.png 1>/dev/null 2>&1; then
-            cp /tmp/screenshots-base/*.png e2e/screenshots/
-            echo "Copied base branch screenshots as baselines"
-          else
-            echo "No base screenshots found — first run will generate baselines"
-          fi
-
-      - name: Run E2E tests (visual warnings only)
-        id: e2e
-        if: always() && steps.build.outcome == 'success'
-        continue-on-error: true
-        env:
-          CI: true
-          VISUAL_MODE: warning
-        run: npx playwright test 2>&1 | tee e2e-output.txt
-
-      - name: Collect current screenshots
-        if: always() && steps.e2e.outcome != 'skipped'
-        run: |
-          mkdir -p /tmp/screenshots-current
-          if [ -d "test-results" ]; then
-            find test-results -name "*-actual.png" | while read f; do
-              name=$(basename "$f" | sed 's/-actual\.png/.png/')
-              cp "$f" "/tmp/screenshots-current/$name"
-            done
-          fi
-          for f in e2e/screenshots/*.png; do
-            name=$(basename "$f")
-            if [ ! -f "/tmp/screenshots-current/$name" ]; then
-              cp "$f" "/tmp/screenshots-current/$name"
-            fi
-          done
-          echo "Current screenshots:"
-          ls /tmp/screenshots-current/
-
-      - name: Run smart diff comparison
-        if: always() && steps.e2e.outcome != 'skipped'
-        run: |
-          node scripts/compare-screenshots.js \
-            /tmp/screenshots-base \
-            /tmp/screenshots-current \
-            --output /tmp/comparison.json \
-            --diff-dir /tmp/screenshot-diffs \
-            --highlight-dir /tmp/screenshot-highlights
-
-      - name: Ensure ci-assets release exists
-        if: always() && steps.e2e.outcome != 'skipped'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release view ci-assets 2>/dev/null || \
-            gh release create ci-assets --title "CI Assets" --notes "Automated visual regression assets" --prerelease
-
-      - name: Upload images to release assets
-        if: always() && steps.e2e.outcome != 'skipped'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PR_NUM="${{ github.event.pull_request.number }}"
-          RUN_ID="${{ github.run_id }}"
-          REPO="${{ github.repository }}"
-          PREFIX="pr${PR_NUM}-run${RUN_ID}"
-
-          gh release view ci-assets --json assets --jq ".assets[].name" 2>/dev/null | \
-            grep "^pr${PR_NUM}-" | while read -r old; do
-              gh release delete-asset ci-assets "$old" --yes 2>/dev/null || true
-            done
-
-          CHANGED=$(node -e "
-            const r = JSON.parse(require('fs').readFileSync('/tmp/comparison.json','utf-8'));
-            r.images.filter(i => i.status === 'changed').forEach(i => console.log(i.name));
-          ")
-
-          mkdir -p /tmp/upload-staging
-          URLS=""
-
-          if [ -n "$CHANGED" ]; then
-            while IFS= read -r name; do
-              [ -z "$name" ] && continue
-              BEFORE_URL=""
-              AFTER_URL=""
-              HIGHLIGHT_URL=""
-
-              if [ -f "/tmp/screenshots-base/$name" ]; then
-                ASSET="${PREFIX}-before-${name}"
-                cp "/tmp/screenshots-base/$name" "/tmp/upload-staging/${ASSET}"
-                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
-                BEFORE_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
-              fi
-
-              if [ -f "/tmp/screenshots-current/$name" ]; then
-                ASSET="${PREFIX}-after-${name}"
-                cp "/tmp/screenshots-current/$name" "/tmp/upload-staging/${ASSET}"
-                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
-                AFTER_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
-              fi
-
-              if [ -f "/tmp/screenshot-highlights/highlight-$name" ]; then
-                ASSET="${PREFIX}-highlight-${name}"
-                cp "/tmp/screenshot-highlights/highlight-$name" "/tmp/upload-staging/${ASSET}"
-                gh release upload ci-assets "/tmp/upload-staging/${ASSET}" --clobber 2>/dev/null || true
-                HIGHLIGHT_URL="https://github.com/${REPO}/releases/download/ci-assets/${ASSET}"
-              fi
-
-              URLS="${URLS}${name}|${BEFORE_URL}|${AFTER_URL}|${HIGHLIGHT_URL}\n"
-            done <<< "$CHANGED"
-          fi
-
-          rm -rf /tmp/upload-staging
-          echo -e "$URLS" > /tmp/image-urls.txt
-
-      - name: Upload all screenshots (combined artifact)
-        if: always() && steps.e2e.outcome != 'skipped'
-        uses: actions/upload-artifact@v7
-        with:
-          name: all-screenshots
-          path: |
-            /tmp/screenshots-base/
-            /tmp/screenshots-current/
-            /tmp/screenshot-diffs/
-            /tmp/screenshot-highlights/
-            /tmp/comparison.json
-          retention-days: 14
-          if-no-files-found: ignore
-
-      - name: Comment on PR
-        if: always()
-        uses: actions/github-script@v9
-        with:
-          script: |
-            const fs = require('fs');
-            const marker = '<!-- pr-validation-bot -->';
-
-            // Standard checks
-            const checks = [
-              { name: 'Dependencies installed', outcome: '${{ steps.install.outcome }}' },
-              { name: 'Linting passed', outcome: '${{ steps.lint.outcome }}' },
-              { name: 'Format check passed', outcome: '${{ steps.format.outcome }}' },
-              { name: 'Build successful', outcome: '${{ steps.build.outcome }}' },
-              { name: 'Docker build', outcome: '${{ steps.docker.outcome }}' },
-              { name: 'E2E tests', outcome: '${{ steps.e2e.outcome }}' },
-            ];
-
-            const allPassed = checks.every(c => c.outcome === 'success');
-            const status = allPassed ? '✅ PASSED' : '❌ FAILED';
-            const emoji = allPassed ? '🎉' : '💥';
-
-            const checkLines = checks
-              .map(c => `- ${c.outcome === 'success' ? '✅' : c.outcome === 'skipped' ? '⏭️' : '❌'} ${c.name}`)
-              .join('\n');
-
-            // Visual regression section
-            let visualSection = '';
-            try {
-              const report = JSON.parse(fs.readFileSync('/tmp/comparison.json', 'utf-8'));
-              const { summary } = report;
-              const changedImages = report.images.filter(i => i.status === 'changed');
-
-              const urlMap = new Map();
-              try {
-                const lines = fs.readFileSync('/tmp/image-urls.txt', 'utf-8').trim().split('\n');
-                for (const line of lines) {
-                  if (!line.trim()) continue;
-                  const [name, before, after, highlight] = line.split('|');
-                  if (name) urlMap.set(name, { before, after, highlight });
-                }
-              } catch {}
-
-              if (changedImages.length > 0) {
-                visualSection += `\n**Visual Changes:** ${summary.changed} of ${summary.total} screenshots changed\n\n`;
-                for (const img of changedImages) {
-                  const pageName = img.name.replace('.png', '').replace(/-/g, ' ');
-                  const pct = img.changedPercent !== undefined ? ` — ${img.changedPercent}% changed` : '';
-                  const urls = urlMap.get(img.name);
-                  visualSection += `<details>\n<summary>📸 <strong>${pageName}</strong>${pct}</summary>\n\n`;
-                  if (urls?.before && urls?.after && urls?.highlight) {
-                    visualSection += `| Before | After | Diff |\n|--------|-------|------|\n`;
-                    visualSection += `| <img src="${urls.before}" width="280" /> | <img src="${urls.after}" width="280" /> | <img src="${urls.highlight}" width="280" /> |\n\n`;
-                  }
-                  visualSection += `</details>\n\n`;
-                }
-              } else {
-                visualSection += `\n**Visual Regression:** ✅ All ${summary.total} screenshots match — no changes.\n`;
-              }
-            } catch {
-              visualSection = '';
-            }
-
-            const body = `${marker}
-            ${emoji} **PR Validation ${status}**
-
-            **Commit:** \`${{ github.event.pull_request.head.sha }}\`
-            **Branch:** \`${{ github.head_ref }}\`
-
-            **Checks:**
-            ${checkLines}
-            ${visualSection}
-            ${allPassed ? '**Ready to merge!** ✨' : '**Please fix the failing checks.**'}
-
-            ---
-            🔗 [View workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            ⏰ Generated at: \`${new Date().toISOString()}\``;
-
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
-
-            const existing = comments.find(c =>
-              c.user.login === 'github-actions[bot]' && c.body.startsWith(marker)
-            );
-
-            if (existing) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existing.id,
-                body: body,
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: body,
-              });
-            }
