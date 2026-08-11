@@ -44,11 +44,20 @@ describe('lib/blog', () => {
       expect(post?.coverUrl).toBe(`/blog/${FIRST_POST_SLUG}/images/cover.png`);
     });
 
-    it('excludes a post scheduled for future publishAt from the listing', async () => {
+    it('never lists a post whose publishAt is still in the future', async () => {
+      // Asserts the INVARIANT over every post rather than naming one article. The
+      // previous version pinned a specific slug it expected to be hidden, so it
+      // passed only until that article published - which made a scheduled post going
+      // live look like a broken build.
+      // The listing type deliberately omits publishAt, so read it from the full
+      // post - that is also the honest check: the index must not surface anything
+      // the scheduler would still hide.
       const posts = await getAllPosts();
-      const post = posts.find((p) => p.slug === 'everything-is-code');
-      // Placeholder publishAt; PR body flags it must be set to the real Medium schedule before merge.
-      expect(post).toBeUndefined();
+      const now = new Date();
+      for (const meta of posts) {
+        const full = await getPost(meta.slug);
+        expect(isPostVisible(full?.publishAt, now)).toBe(true);
+      }
     });
   });
 
@@ -70,7 +79,11 @@ describe('lib/blog', () => {
     it('returns a scheduled post directly by slug regardless of publishAt', async () => {
       const post = await getPost('everything-is-code');
       expect(post).not.toBeNull();
-      expect(post?.publishAt).toBe('2026-08-10T08:00:00Z');
+      // Assert the BEHAVIOUR - a direct slug lookup ignores scheduling - not the
+      // literal timestamp. Pinning the exact publishAt made CI fail every time the
+      // post was rescheduled, which says nothing about getPost.
+      expect(post?.publishAt).toBeTruthy();
+      expect(isPostVisible(post!.publishAt!, new Date('2020-01-01T00:00:00Z'))).toBe(false);
     });
   });
 
