@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getAllPosts, getAllPostSlugs, getPost, formatPostDate } from './blog';
+import { getAllPosts, getAllPostSlugs, getPost, formatPostDate, isPostVisible } from './blog';
 
 const FIRST_POST_SLUG = 'vibe-coded-mcp-catalog';
 
@@ -43,6 +43,13 @@ describe('lib/blog', () => {
       const post = posts.find((p) => p.slug === FIRST_POST_SLUG);
       expect(post?.coverUrl).toBe(`/blog/${FIRST_POST_SLUG}/images/cover.png`);
     });
+
+    it('excludes a post scheduled for future publishAt from the listing', async () => {
+      const posts = await getAllPosts();
+      const post = posts.find((p) => p.slug === 'everything-is-code');
+      // Placeholder publishAt; PR body flags it must be set to the real Medium schedule before merge.
+      expect(post).toBeUndefined();
+    });
   });
 
   describe('getPost', () => {
@@ -59,11 +66,37 @@ describe('lib/blog', () => {
       const post = await getPost('does-not-exist');
       expect(post).toBeNull();
     });
+
+    it('returns a scheduled post directly by slug regardless of publishAt', async () => {
+      const post = await getPost('everything-is-code');
+      expect(post).not.toBeNull();
+      expect(post?.publishAt).toBe('2026-08-10T08:00:00Z');
+    });
   });
 
   describe('formatPostDate', () => {
     it('formats ISO date as long-month US date', () => {
       expect(formatPostDate('2026-05-10')).toBe('May 10, 2026');
+    });
+  });
+
+  describe('isPostVisible', () => {
+    const now = new Date('2026-08-06T00:00:00Z');
+
+    it('hides a post with a future publishAt', () => {
+      expect(isPostVisible('2026-08-10T08:00:00Z', now)).toBe(false);
+    });
+
+    it('shows a post with a past publishAt', () => {
+      expect(isPostVisible('2026-01-01T00:00:00Z', now)).toBe(true);
+    });
+
+    it('shows a post with no publishAt', () => {
+      expect(isPostVisible(undefined, now)).toBe(true);
+    });
+
+    it('shows a post whose publishAt is exactly now', () => {
+      expect(isPostVisible(now.toISOString(), now)).toBe(true);
     });
   });
 });

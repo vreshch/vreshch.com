@@ -1,6 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { getAllPosts, getAllTags } from '@/lib/blog';
 
+// ISR: keeps scheduled posts flipping into the sitemap within the hour, no rebuild needed.
+export const revalidate = 3600;
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://vreshch.com';
   const posts = await getAllPosts();

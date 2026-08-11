@@ -5,6 +5,9 @@ import { PageHeader } from '@/components/page-header';
 import { PostCard } from '@/components/post-card';
 import { getAllTags, getPostsByTag } from '@/lib/blog';
 
+// ISR: tag listings read getPostsByTag (-> getAllPosts), so they need the same refresh.
+export const revalidate = 3600;
+
 type Params = { tag: string };
 
 export async function generateStaticParams(): Promise<Params[]> {
