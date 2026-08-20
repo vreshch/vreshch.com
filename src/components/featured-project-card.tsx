@@ -23,6 +23,7 @@ export function FeaturedProjectCard({ project }: { project: FeaturedProject }) {
               sizes="(min-width: 768px) 50vw, 100vw"
               className="h-auto w-full"
               alt={project.name}
+              unoptimized
             />
           </div>
         ) : (

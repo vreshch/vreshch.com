@@ -30,6 +30,7 @@ export function NowThreadCard({
             height={image.height}
             sizes="(min-width: 768px) 33vw, 100vw"
             className="h-full w-full rounded-md object-cover object-top shadow-lg"
+            unoptimized={image.src.startsWith('/mockups/')}
           />
         </div>
       )}
