@@ -57,6 +57,13 @@ services:
       retries: 3
       start_period: 40s
 
+    volumes:
+      # optimized-image cache must survive deploys/restarts (p95 latency SLA)
+      - next-image-cache:/app/.next/cache
+
+volumes:
+  next-image-cache:
+
 networks:
   traefik-public:
     external: true

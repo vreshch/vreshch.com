@@ -61,6 +61,7 @@ function SiteCard({
             sizes="(min-width: 768px) 50vw, 100vw"
             className="h-auto w-full"
             alt={title}
+            unoptimized
           />
         </div>
         <div className="p-6">

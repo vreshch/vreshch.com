@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   output: 'standalone',
+  images: { minimumCacheTTL: 604800 },
 
   async redirects() {
     return [
