@@ -29,6 +29,8 @@ hers, dictated through a microphone that mangled her relentlessly - "smile" arri
 "miles", and the games shipped anyway. Fifty-two were mine, and nearly all of mine were deploys,
 tests and analytics. She made the games. I operated them.
 
+![The four games as they look in production: Scary Smile, Perot the parrot, Spranki, and the Crystal Rooms 3D start screen](/blog/coding-just-became-everyones-job/images/games.png)
+
 ## What she actually did
 
 The whole skill fits in one loop, and none of it is code:
