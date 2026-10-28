@@ -5,3 +5,7 @@ build
 coverage
 package-lock.json
 *.snap
+out
+playwright-report
+test-results
+src/content
