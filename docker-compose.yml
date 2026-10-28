@@ -27,17 +27,23 @@ services:
         # HTTP Router (redirect to HTTPS, but allow ACME challenges)
         - traefik.http.routers.vreshch-http.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
         - traefik.http.routers.vreshch-http.entrypoints=http
-        - traefik.http.routers.vreshch-http.middlewares=https-redirect
+        - traefik.http.routers.vreshch-http.middlewares=vreshch-www-to-apex,https-redirect
 
         # Create HTTPS redirect middleware that allows ACME challenges
         - traefik.http.middlewares.https-redirect.redirectscheme.scheme=https
         - traefik.http.middlewares.https-redirect.redirectscheme.permanent=true
+
+        # www -> apex (permanent, path preserved)
+        - traefik.http.middlewares.vreshch-www-to-apex.redirectregex.regex=^https?://www\.vreshch\.com/(.*)
+        - traefik.http.middlewares.vreshch-www-to-apex.redirectregex.replacement=https://vreshch.com/$${1}
+        - traefik.http.middlewares.vreshch-www-to-apex.redirectregex.permanent=true
 
         # HTTPS Router
         - traefik.http.routers.vreshch-https.rule=Host(`vreshch.com`) || Host(`www.vreshch.com`)
         - traefik.http.routers.vreshch-https.entrypoints=https
         - traefik.http.routers.vreshch-https.tls=true
         - traefik.http.routers.vreshch-https.tls.certresolver=letsencrypt
+        - traefik.http.routers.vreshch-https.middlewares=vreshch-www-to-apex
 
         # Service configuration
         - traefik.http.services.vreshch.loadbalancer.server.port=3000
