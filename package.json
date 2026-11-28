@@ -35,8 +35,8 @@
   },
   "dependencies": {
     "@agentage/observability": "^0.21.0",
-    "@chemistry/crystalview": "^3.1.17",
-    "@chemistry/molpad": "^3.2.15",
+    "@chemistry/crystalview": "^3.1.18",
+    "@chemistry/molpad": "^3.2.16",
     "@vercel/otel": "^2.3.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -51,7 +51,7 @@
     "remark-gfm": "^4.0.1",
     "sharp": "^0.35.5",
     "shiki": "^4.6.0",
-    "tailwind-merge": "^3.7.0",
+    "tailwind-merge": "^3.7.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
@@ -61,10 +61,10 @@
     "@testing-library/react": "^16.3.3",
     "@types/node": "^22.20.5",
     "@types/react": "^19.3.0",
-    "@typescript-eslint/eslint-plugin": "^8.73.0",
+    "@typescript-eslint/eslint-plugin": "^8.74.0",
     "@typescript-eslint/parser": "^8.57.1",
     "@vitejs/plugin-react": "^5.2.0",
-    "autoprefixer": "^10.6.2",
+    "autoprefixer": "^10.7.0",
     "eslint": "^9.39.5",
     "eslint-config-next": "^15.5.29",
     "eslint-config-prettier": "^10.1.5",
